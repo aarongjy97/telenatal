@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu, Tabs } from "antd";
+import { Layout, Menu, Tabs, Input } from "antd";
 import Consultation from "./Consultation";
 import HealthRecord from "./HealthRecord";
 import Ultrasound from "./Ultrasound";
@@ -8,10 +8,12 @@ import { UserOutlined } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
 const { Content, Sider } = Layout;
+const { Search } = Input;
 const userType = ["DOCTOR", "PATIENT"];
 
 export default function RecordsMain() {
   const user = userType[0];
+  const onSearch = value => console.log(value);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -21,6 +23,7 @@ export default function RecordsMain() {
           width={200}
           style={{ paddingTop: "20px" }}
         >
+          <Search placeholder="Search for patient" onSearch={onSearch} style={{ width: 190, paddingLeft: 5, paddingBottom: 5 }} />
           <Menu
             mode="inline"
             defaultSelectedKeys={["1"]}
