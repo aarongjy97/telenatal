@@ -50,8 +50,6 @@ export default function Ultrasound({ userType }) {
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
-  const [loading, setIsLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
 
   const createModal = () => {
     return (
@@ -143,7 +141,7 @@ export default function Ultrasound({ userType }) {
         </Row>
       )}
 
-      <Collapse defaultActiveKey={["1"]}>
+      <Collapse defaultActiveKey={["1"]} style={{marginTop: userType === "DOCTOR" ? 0 : 20}}>
         {records.map((record, index) => {
           return (
             <Panel header={record.time} key={index}>

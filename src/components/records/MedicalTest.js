@@ -131,7 +131,7 @@ export default function MedicalTest({ userType }) {
         </Row>
       )}
 
-      <Collapse defaultActiveKey={["1"]}>
+      <Collapse defaultActiveKey={["1"]} style={{marginTop: userType === "DOCTOR" ? 0 : 20}}>
         {records.map((record, index) => {
           return (
             <Panel header={record.time} key={index}>

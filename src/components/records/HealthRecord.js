@@ -20,7 +20,6 @@ import {
   HeartOutlined,
   DashboardOutlined,
   ColumnWidthOutlined,
-  DownloadOutlined,
   ForkOutlined,
   EditOutlined,
 } from "@ant-design/icons";
