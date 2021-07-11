@@ -29,7 +29,7 @@ const records = [
   }
 ];
 
-export default function Consultation() {
+export default function Consultation({userType}) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -94,14 +94,16 @@ export default function Consultation() {
   return (
     <>
       <Row justify="end" style={{paddingBottom: "20px"}}>
-        <Button
-          type="secondary"
-          onClick={() => setIsCreateModalVisible(true)}
-        >
-          <Title level={5}>
-            Add New Consultation
-          </Title>
-        </Button>
+        {userType === "DOCTOR" && (
+          <Button
+            type="secondary"
+            onClick={() => setIsCreateModalVisible(true)}
+          >
+            <Title level={5}>
+              Add New Consultation
+            </Title>
+          </Button>
+        )}
       </Row>
       <Collapse defaultActiveKey={['1']}>
         {records.map((record, index) => {
@@ -131,6 +133,7 @@ export default function Consultation() {
               <Row>
                 <Text>{record.description}</Text>
               </Row>
+              {userType === "DOCTOR" &&
               <Row justify="end" style={{paddingBottom: "20px"}}>
                 <Button
                   type="secondary"
@@ -141,12 +144,13 @@ export default function Consultation() {
                   </Text>
                 </Button>
               </Row>
+              }
             </Panel>
           )
         })}
       </Collapse>
-      {createModal()}
-      {editModal()}
+      {userType === "DOCTOR" && createModal()}
+      {userType === "DOCTOR" && editModal()}
     </>
   )
 }
