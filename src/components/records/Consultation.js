@@ -1,18 +1,14 @@
 import React from "react";
 import {
-  Collapse,
-  Modal,
-  Button,
-  Row,
-  Col,
-  Typography,
-  Form,
-  Input,
-} from "antd";
-import { useState } from "react";
+  Collapse, Modal, Button, Row, Col, Typography, Form,
+  Select,
+  Input
+} from 'antd';
+import {useState} from 'react';
 
-const { Panel } = Collapse;
-const { Text, Title } = Typography;
+const {Panel} = Collapse;
+const {Text, Title} = Typography;
+const { Option } = Select;
 
 const records = [
   {
@@ -42,25 +38,61 @@ export default function Consultation({ userType }) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const onFinish = values => {
+    console.log('Received values of form: ', values);
+  };
 
-  const [description, setDescription] = useState("");
   const createModal = () => {
     return (
       <Modal
-        title="Add New Consultation"
+        title="Create New Consultation Record"
         centered
         visible={isCreateModalVisible}
-        onOk={() => setIsCreateModalVisible(false)}
-        okText="Submit"
-        onCancel={() => setIsCreateModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsCreateModalVisible(false)}>
+            Cancel
+          </Button>,
+          <Button form="consultation-create" key="submit" htmlType="submit">
+            Submit
+          </Button>
+        ]}
       >
-        <Form form={form} name="nest-messages" onFinish={() => {}}>
+        <Form
+          form={form}
+          name="consultation-create"
+          onFinish={onFinish}
+        >
+          <Form.Item name="appointment" label="Appointment" rules={[{ required: true }]}>
+            <Select
+              placeholder="Select an appointment to save this record under."
+            >
+              {records.map((record, _) => {
+                return (
+                  <Option value={record.time}>{record.time}</Option>
+                )
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name={["diagnosis"]}
+            label="Diagnosis"
+            rules={[{required: true}]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            name={["medication"]}
+            label="Medication"
+            rules={[{required: true}]}
+          >
+            <Input.TextArea/>
+          </Form.Item>
           <Form.Item
             name={["description"]}
             label="Description"
             rules={[{ required: true }]}
           >
-            <Input.TextArea value={description} onChange={setDescription} />
+            <Input.TextArea/>
           </Form.Item>
         </Form>
       </Modal>
@@ -77,13 +109,18 @@ export default function Consultation({ userType }) {
         okText="Submit"
         onCancel={() => setIsEditModalVisible(false)}
       >
-        <Form form={form} name="nest-messages" onFinish={() => {}}>
+        <Form
+          form={form}
+          name="consultation-edit"
+          onFinish={() => {
+          }}
+        >
           <Form.Item
             name={["description"]}
             label="Description"
             rules={[{ required: true }]}
           >
-            <Input.TextArea value={description} onChange={setDescription} />
+            <Input.TextArea/>
           </Form.Item>
         </Form>
       </Modal>
