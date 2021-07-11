@@ -40,6 +40,10 @@ const records = [
       "Just a regular checkup, all seems good so far. Recommend to exercise more and have a healthier diet.",
   },
 ];
+const formItemLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 14 },
+};
 
 export default function Consultation({ userType }) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
@@ -65,7 +69,12 @@ export default function Consultation({ userType }) {
           </Button>,
         ]}
       >
-        <Form form={form} name="consultation-create" onFinish={onFinish}>
+        <Form
+          {...formItemLayout}
+          form={form}
+          name="consultation-create"
+          onFinish={onFinish}
+        >
           <Form.Item
             name="appointment"
             label="Appointment"
