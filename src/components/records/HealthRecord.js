@@ -14,6 +14,7 @@ import {
   Form,
   Select,
   Input,
+  DatePicker,
 } from "antd";
 import {
   HeartOutlined,
@@ -87,13 +88,24 @@ export default function HealthRecord({ userType }) {
           name="health-record-create"
           onFinish={onFinish}
         >
-          <Form.Item name="appointment" label="Appointment">
-            <Select placeholder="Select an appointment to save this record under.">
-              {records.map((record, _) => {
-                return <Option value={record.time}>{record.time}</Option>;
-              })}
-            </Select>
-          </Form.Item>
+          {userType === "DOCTOR" && (
+            <Form.Item
+              name="appointment"
+              label="Appointment"
+              rules={[{ required: true }]}
+            >
+              <Select placeholder="Select an appointment to save this record under.">
+                {records.map((record, _) => {
+                  return <Option value={record.time}>{record.time}</Option>;
+                })}
+              </Select>
+            </Form.Item>
+          )}
+          {userType === "PATIENT" && (
+            <Form.Item name="date" label="Date" rules={[{ required: true }]}>
+              <DatePicker />
+            </Form.Item>
+          )}
           <Form.Item
             name={["weight"]}
             label="Weight"
