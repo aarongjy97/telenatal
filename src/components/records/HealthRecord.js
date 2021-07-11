@@ -1,5 +1,9 @@
 import React from "react";
-import {Collapse, Row, Col, Typography} from 'antd';
+import {
+  Collapse, Row, Col, Card,
+  Layout, Statistic, Typography
+} from 'antd';
+import {HeartOutlined} from "@ant-design/icons";
 
 const {Panel} = Collapse;
 const {Text, Title} = Typography;
@@ -61,6 +65,21 @@ export default function HealthRecord() {
                   <Title level={5}>Resting Heartrate</Title>
                 </Row>
                 <Row>
+                  <Layout
+                    className="layout"
+                    style={{padding: "0 0px 0 40px", minHeight: "10vh"}}
+                  >
+                    <Card>
+                      <Statistic
+                        title="Heart Rate"
+                        value={12}
+                        precision={0}
+                        prefix={<HeartOutlined/>}
+                        valueStyle={{color: "#3f8600"}}
+                        suffix="bpm"
+                      />
+                    </Card>
+                  </Layout>
                   <Text>{record.hr}</Text>
                 </Row>
               </Col>
