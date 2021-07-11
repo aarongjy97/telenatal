@@ -1,13 +1,20 @@
 import React from "react";
 import {
-  Collapse, Modal, Button, Row, Col, Typography, Form,
+  Collapse,
+  Modal,
+  Button,
+  Row,
+  Col,
+  Typography,
+  Form,
   Select,
-  Input
-} from 'antd';
-import {useState} from 'react';
+  Input,
+} from "antd";
+import { useState } from "react";
+import { EditOutlined } from "@ant-design/icons";
 
-const {Panel} = Collapse;
-const {Text, Title} = Typography;
+const { Panel } = Collapse;
+const { Text, Title } = Typography;
 const { Option } = Select;
 
 const records = [
@@ -38,8 +45,8 @@ export default function Consultation({ userType }) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const onFinish = values => {
-    console.log('Received values of form: ', values);
+  const onFinish = (values) => {
+    console.log("Received values of form: ", values);
   };
 
   const createModal = () => {
@@ -47,6 +54,7 @@ export default function Consultation({ userType }) {
       <Modal
         title="Create New Consultation Record"
         centered
+        onCancel={() => setIsCreateModalVisible(false)}
         visible={isCreateModalVisible}
         footer={[
           <Button key="cancel" onClick={() => setIsCreateModalVisible(false)}>
@@ -54,45 +62,41 @@ export default function Consultation({ userType }) {
           </Button>,
           <Button form="consultation-create" key="submit" htmlType="submit">
             Submit
-          </Button>
+          </Button>,
         ]}
       >
-        <Form
-          form={form}
-          name="consultation-create"
-          onFinish={onFinish}
-        >
-          <Form.Item name="appointment" label="Appointment" rules={[{ required: true }]}>
-            <Select
-              placeholder="Select an appointment to save this record under."
-            >
+        <Form form={form} name="consultation-create" onFinish={onFinish}>
+          <Form.Item
+            name="appointment"
+            label="Appointment"
+            rules={[{ required: true }]}
+          >
+            <Select placeholder="Select an appointment to save this record under.">
               {records.map((record, _) => {
-                return (
-                  <Option value={record.time}>{record.time}</Option>
-                )
+                return <Option value={record.time}>{record.time}</Option>;
               })}
             </Select>
           </Form.Item>
           <Form.Item
             name={["diagnosis"]}
             label="Diagnosis"
-            rules={[{required: true}]}
+            rules={[{ required: true }]}
           >
             <Input.TextArea />
           </Form.Item>
           <Form.Item
             name={["medication"]}
             label="Medication"
-            rules={[{required: true}]}
+            rules={[{ required: true }]}
           >
-            <Input.TextArea/>
+            <Input.TextArea />
           </Form.Item>
           <Form.Item
             name={["description"]}
             label="Description"
             rules={[{ required: true }]}
           >
-            <Input.TextArea/>
+            <Input.TextArea />
           </Form.Item>
         </Form>
       </Modal>
@@ -109,18 +113,13 @@ export default function Consultation({ userType }) {
         okText="Submit"
         onCancel={() => setIsEditModalVisible(false)}
       >
-        <Form
-          form={form}
-          name="consultation-edit"
-          onFinish={() => {
-          }}
-        >
+        <Form form={form} name="consultation-edit" onFinish={() => {}}>
           <Form.Item
             name={["description"]}
             label="Description"
             rules={[{ required: true }]}
           >
-            <Input.TextArea/>
+            <Input.TextArea />
           </Form.Item>
         </Form>
       </Modal>
@@ -129,16 +128,17 @@ export default function Consultation({ userType }) {
 
   return (
     <>
-      <Row justify="end" style={{ paddingBottom: "20px" }}>
-        {userType === "DOCTOR" && (
+      {userType === "DOCTOR" && (
+        <Row justify="end" style={{ paddingBottom: "20px" }}>
           <Button
             type="secondary"
             onClick={() => setIsCreateModalVisible(true)}
           >
             <Title level={5}>Add New Consultation</Title>
           </Button>
-        )}
-      </Row>
+        </Row>
+      )}
+
       <Collapse defaultActiveKey={["1"]}>
         {records.map((record, index) => {
           return (
@@ -152,7 +152,7 @@ export default function Consultation({ userType }) {
                     <Text>{record.diagnosis}</Text>
                   </Row>
                 </Col>
-                <Col>
+                <Col flex="auto">
                   <Row>
                     <Title level={5}>Medication/Prescription</Title>
                   </Row>
@@ -160,6 +160,20 @@ export default function Consultation({ userType }) {
                     <Text>{record.medication}</Text>
                   </Row>
                 </Col>
+
+                {userType === "DOCTOR" && (
+                  <Col justify="end">
+                    <Row justify="end" style={{ paddingBottom: "20px" }}>
+                      <Button
+                        type="secondary"
+                        icon={<EditOutlined />}
+                        onClick={() => setIsEditModalVisible(true)}
+                      >
+                        <Text>Edit</Text>
+                      </Button>
+                    </Row>
+                  </Col>
+                )}
               </Row>
               <Row>
                 <Title level={5}>Description</Title>
@@ -167,16 +181,6 @@ export default function Consultation({ userType }) {
               <Row>
                 <Text>{record.description}</Text>
               </Row>
-              {userType === "DOCTOR" && (
-                <Row justify="end" style={{ paddingBottom: "20px" }}>
-                  <Button
-                    type="secondary"
-                    onClick={() => setIsEditModalVisible(true)}
-                  >
-                    <Text>Edit</Text>
-                  </Button>
-                </Row>
-              )}
             </Panel>
           );
         })}
