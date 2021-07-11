@@ -11,7 +11,7 @@ const { Content, Sider } = Layout;
 const userType = ["DOCTOR", "PATIENT"];
 
 export default function RecordsMain() {
-  const user = userType[1];
+  const user = userType[0];
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
