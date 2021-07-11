@@ -21,7 +21,7 @@ const records = [
   },
 ];
 
-export default function MedicalTest() {
+export default function MedicalTest({ userType }) {
   return (
     <Collapse defaultActiveKey={["1"]}>
       {records.map((record, index) => {

@@ -24,7 +24,7 @@ const records = [
   },
 ];
 
-export default function Ultrasound() {
+export default function Ultrasound({ userType }) {
   return (
     <Collapse defaultActiveKey={["1"]}>
       {records.map((record, index) => {
