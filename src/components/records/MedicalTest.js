@@ -142,15 +142,17 @@ export default function MedicalTest({ userType }) {
                 <Col flex="auto">
                   <Divider orientation="left">Test</Divider>
                 </Col>
-                <Col justify="end" style={{ paddingLeft: "15px" }}>
-                  <Button
-                    type="secondary"
-                    onClick={() => setIsEditModalVisible(true)}
-                    icon={<EditOutlined />}
-                  >
-                    <Text>Edit</Text>
-                  </Button>
-                </Col>
+                {userType === "DOCTOR" && (
+                  <Col justify="end" style={{ paddingLeft: "15px" }}>
+                    <Button
+                      type="secondary"
+                      onClick={() => setIsEditModalVisible(true)}
+                      icon={<EditOutlined />}
+                    >
+                      <Text>Edit</Text>
+                    </Button>
+                  </Col>
+                )}
               </Row>
               <Row style={{ paddingBottom: 20 }}>
                 <Text>{record.testName}</Text>
