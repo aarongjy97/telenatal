@@ -50,6 +50,8 @@ export default function Ultrasound({ userType }) {
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
+  const [loading, setIsLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
 
   const createModal = () => {
     return (
@@ -89,7 +91,7 @@ export default function Ultrasound({ userType }) {
             label="Upload Image"
             rules={[{ required: true }]}
           >
-            <Upload>
+            <Upload accept=".png, .jpg, .jpeg">
               <Button icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>
           </Form.Item>

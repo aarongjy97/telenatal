@@ -21,6 +21,7 @@ import {
   DashboardOutlined,
   ColumnWidthOutlined,
   DownloadOutlined,
+  ForkOutlined,
   EditOutlined,
 } from "@ant-design/icons";
 
@@ -205,7 +206,7 @@ export default function HealthRecord({ userType }) {
                             title="Weight"
                             value={record.weight}
                             precision={0}
-                            prefix={<DownloadOutlined />}
+                            prefix={<DashboardOutlined />}
                             valueStyle={{ color: "#b86f1b" }}
                             suffix="kg"
                           />
@@ -271,7 +272,7 @@ export default function HealthRecord({ userType }) {
                             title="Blood Pressure"
                             value={record.bp}
                             precision={0}
-                            prefix={<DashboardOutlined />}
+                            prefix={<ForkOutlined />}
                             valueStyle={{ color: "#ad0e2d" }}
                             suffix="mm Hg"
                           />
