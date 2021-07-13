@@ -4,9 +4,9 @@ import "./theme/vars.less";
 import Header from "./components/Header";
 import Overview from "./components/overview/Overview";
 import Teleconference from "./components/teleconference/Teleconference";
+import RecordsMain from "./components/records/RecordsMain";
 
 export default function App() {
-  // document.body.classList.add('telenatal');
   return (
     <Router>
       <div id="root">
@@ -17,6 +17,9 @@ export default function App() {
           </Route>
           <Route exact path="/meet">
             <Teleconference />
+            </Route>
+          <Route exact path="/records">
+            <RecordsMain />
           </Route>
         </Switch>
       </div>

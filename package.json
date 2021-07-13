@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@babel/core": "7.12.3",
     "@nivo/core": "^0.72.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
