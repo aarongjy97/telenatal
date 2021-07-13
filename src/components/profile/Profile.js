@@ -564,8 +564,8 @@ const ProfessionalDetails = () => {
 export default function Profile() {
 
   return (
-    <Layout>
-      <Row>
+    <Layout style={{ height: "100%" }}>
+      <Row style={{ height: "100%" }}>
         <Col className="profile-left" span={14}>
           {user === "DOCTOR" && (
             <ProfessionalDetails/>
