@@ -5,7 +5,7 @@
 General
 ----------------------------------------------------------------*/
 
-html, body {
+html, body, div#root {
   height: 100%
 }
 
@@ -55,49 +55,27 @@ Header
 Profile
 ----------------------------------------------------------------*/
 
-.profile-background {
-  background-color: gray;
+
+#profile {
   height: 100vh;
-  width: 100vw;
 }
 
-.profile-box {
-  background-color: pink;
-  width: 80vw;
-  height: 80vh;
-  display: flex;
-  justify-content: center;
-  margin: auto;
-  margin-top: 2em;
-  margin-bottom: 2em;
-  padding: 20px;
-  // height: 75vh;
-  // width: 75vw;
-  // margin:0 auto;
-  // display: table;
-  // margin-right: auto;
-  // margin-left: auto;
-  // padding-top: 5em;
+#profile .profile-left {
+  padding-top: 5em;
 }
 
-.profile-left {
-  padding: 4em;
-  height: 100%;
+#profile .profile-right {
+  padding-top: 5em;
 }
 
-.profile-right {
-  padding: 4em;
-  height: 100%;
-}
-
-.profile-image {
+#profile .profile-image {
   display: block;
   text-align: center;
   margin: auto;
   padding: 1em;
 }
 
-.profile-button {
+#profile .profile-button {
   display: block;
   text-align: center;
   margin: auto;

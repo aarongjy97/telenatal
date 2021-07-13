@@ -9,7 +9,7 @@ import RecordsMain from "./components/records/RecordsMain";
 export default function App() {
   return (
     <Router>
-      <div id="root" style={{ height: "100%" }}>
+      <div id="root">
         <Header />
         <Switch>
           <Route exact path="/">
