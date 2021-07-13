@@ -17,7 +17,7 @@ export default function App() {
           </Route>
           <Route exact path="/meet">
             <Teleconference />
-            </Route>
+          </Route>
           <Route exact path="/records">
             <RecordsMain />
           </Route>
