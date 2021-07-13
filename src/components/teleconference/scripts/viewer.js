@@ -1,7 +1,7 @@
 import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc';
 import KinesisVideo from 'aws-sdk/clients/kinesisvideo';
 import KinesisVideoSignalingChannels from 'aws-sdk/clients/kinesisvideosignalingchannels';
-import config from "../tempConfig";
+import config from "../../../../../tempConfig";
 const startViewer = async (viewer) => {
   // const viewer = {
   //   signalingClient: null,

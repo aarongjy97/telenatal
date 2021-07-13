@@ -6,7 +6,7 @@ import ChatPanel from "./ChatPanel";
 import { Row, Col, Button, Spin } from "antd";
 import { startMaster, stopMaster, sendMasterMessage } from "./scripts/master";
 import { startViewer, stopViewer, sendViewerMessage } from "./scripts/viewer";
-import config from "./tempConfig";
+import config from "../../../../tempConfig";
 
 export default function Teleconference(props) {
   // const user = UseContext(user)
