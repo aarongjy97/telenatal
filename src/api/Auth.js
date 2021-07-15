@@ -25,7 +25,15 @@ export async function loginPatient(email, password) {
  *  postalCode: Number
  * }
  */
-export async function registerPatient(patient) {
-	return await axios.post(`${API_ENDPOINT}/auth/patient/register`, patient);
+export async function registerPatient(name, password, email, phone, dob, address, postalCode) {
+	return await axios.post(`${API_ENDPOINT}/auth/patient/register`, {
+    name: name,
+    password: password,
+    email: email,
+    phone: phone,
+    dob: dob,
+    address: address, 
+    postalCode: postalCode
+  });
 }
 
