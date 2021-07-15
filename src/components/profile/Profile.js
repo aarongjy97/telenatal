@@ -105,7 +105,7 @@ export default function Profile() {
 
   return (
     <Layout id="profile">
-      <Row>
+      <Row style={{ height:"100%" }}>
         <Col className="profile-left" span={14}>
           {user === "DOCTOR" && (
             <ProfessionalProfile 

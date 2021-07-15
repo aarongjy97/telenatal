@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Overview from "./components/overview/Overview";
 import Profile from "./components/profile/Profile";
 import RecordsMain from "./components/records/RecordsMain";
+import Appointments from "./components/appointments/Appointments";
 
 export default function App() {
   return (
@@ -20,6 +21,9 @@ export default function App() {
           </Route>
           <Route exact path="/profile">
             <Profile />
+          </Route>
+          <Route exact path="/appointments">
+            <Appointments />
           </Route>
         </Switch>
       </div>
