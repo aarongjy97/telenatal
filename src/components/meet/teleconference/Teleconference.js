@@ -11,7 +11,7 @@ import {
 //   createMeeting,
 //   deleteMeeting,
 // } from "./scripts/connector";
-import constants from "../constants";
+import {constants} from "../constants"
 import BeforeCallView from "./BeforeCallView";
 import PlaceholderView from "./PlaceholderView";
 import AfterCallView from "./AfterCallView";
@@ -34,6 +34,7 @@ export default function Teleconference(props) {
   }
 
   // render
+  console.log(props.view)
   switch (props.view) {
     case constants.MEETING_VIEW:
       return (
@@ -48,6 +49,7 @@ export default function Teleconference(props) {
     case constants.AFTER_CALL_VIEW:
       return <AfterCallView />;
     default:
+      console.log("placeholder")
       return <PlaceholderView />;
   }
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import Teleconference from "./teleconference/Teleconference";
-import constants from "./constants";
+import {constants} from "./constants";
 import { Row } from "antd";
 export default function Meet(props) {
   const [meetingCache, setMeetingCache] = React.useState({});
@@ -22,7 +22,12 @@ export default function Meet(props) {
   // the one that pieces together all the components (appointment list, records input, teleconference)
   return (
     <Row>
-      <Teleconference onJoinCall={onJoinCall} onEndcall={onEndCall} appointment={appointment}/>
+      <Teleconference
+        view={teleconView}
+        onJoinCall={onJoinCall}
+        onEndcall={onEndCall}
+        appointment={appointment}
+      />
     </Row>
   );
 }
