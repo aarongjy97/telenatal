@@ -1,7 +1,6 @@
-import { Layout, Menu, Row, Col } from "antd";
+import { Layout, Menu, Row, Col, Avatar } from "antd";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import Icon from "@ant-design/icons";
 
 const { SubMenu } = Menu;
 
@@ -45,7 +44,7 @@ export default function Header() {
             Appointments
             <Link to="/appointments"/>
           </Menu.Item>
-          <SubMenu key="SubMenu" icon={<Icon component={() => (<img src="avatar.jpg" alt="Profile" height="30px" style={{borderRadius:"50%"}} />)} />}>
+          <SubMenu key="SubMenu" icon={<Avatar size="medium" icon={<img src="avatar.jpg" alt="Profile" height="30px" style={{borderRadius:"50%"}} />} />}>
             <Menu.Item key="5">
               Profile
               <Link to="/profile"/>
