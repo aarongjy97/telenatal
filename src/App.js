@@ -4,6 +4,7 @@ import "./theme/vars.less";
 import Header from "./components/Header";
 import Overview from "./components/overview/Overview";
 import Profile from "./components/profile/Profile";
+import Meet from "./components/meet/Meet";
 import RecordsMain from "./components/records/RecordsMain";
 import Appointments from "./components/appointments/Appointments";
 
@@ -15,6 +16,9 @@ export default function App() {
         <Switch>
           <Route exact path="/">
             <Overview />
+          </Route>
+          <Route exact path="/meet">
+            <Meet />
           </Route>
           <Route exact path="/records">
             <RecordsMain />
