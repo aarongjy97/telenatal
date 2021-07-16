@@ -42,7 +42,19 @@ var appointments = [{
   "healthRecordId": null,
   "ultrasoundId": null,
   "testRecordId": null
-}]
+}, {
+  "appointmentId": "A0011",
+  "datetime": "27 Aug 2021 12:30:00 AM",
+  "location": "Changi General Hospital Consultation Room 45",
+  "purpose": "Consultation",
+  "remarks": "Not feeling well",
+  "patientId": "PA0001",
+  "professionalId": "PR0001",
+  "consultationRecordId": null,
+  "healthRecordId": null,
+  "ultrasoundId": null,
+  "testRecordId": null
+},]
 
 // Sort appointments by decreasing date
 appointments.sort(function(a, b) {
@@ -53,16 +65,38 @@ appointments.sort(function(a, b) {
 
 const user = "DOCTOR"; // PATIENT or DOCTOR
 
+export function sameDay(d1, d2) {
+  return d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate();
+}
+
+export function sameMonth(d1, d2) {
+  return d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth();
+}
+
+export function formatAMPM(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ampm;
+  return strTime;
+}
+
 export default function Appointments() {
 
     return (
       <Layout id="appointments">
         <Row style={{ height:"100%" }}>
-          <Col span={16}>
+          <Col span={18}>
             <AppointmentsCalendar 
               appointments={appointments} />
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Row>
               <AppointmentsControl 
                 user={user} />

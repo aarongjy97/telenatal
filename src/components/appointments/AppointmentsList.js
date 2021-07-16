@@ -1,6 +1,5 @@
 import React from "react";
 import { Layout, Row, List, Card } from "antd";
-import InfiniteScroll from 'react-infinite-scroller';
 
 export default function AppointmentsList({ appointments, user }) {
   return (

@@ -1,56 +1,69 @@
 import React from "react";
 import { Calendar, Badge } from "antd";
-
-function getListData(value) {
-  let listData;
-  switch (value.date()) {
-    case 8:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-      ];
-      break;
-    case 10:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'error', content: 'This is error event.' },
-      ];
-      break;
-    default:
-  }
-  return listData || [];
-}
-
-function dateCellRender(value) {
-  const listData = getListData(value);
-  return (
-    <ul className="events">
-      {listData.map(item => (
-        <li key={item.content}>
-          <Badge status={item.type} text={item.content} />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function getMonthData(value) {
-  if (value.month() === 8) {
-    return 1394;
-  }
-}
-
-function monthCellRender(value) {
-  const num = getMonthData(value);
-  return num ? (
-    <div className="notes-month">
-      <section>{num}</section>
-      <span>Backlog number</span>
-    </div>
-  ) : null;
-}
+import { sameDay, sameMonth, formatAMPM } from "./Appointments";
 
 export default function AppointmentsCalendar({ appointments }) {
+
+  function monthCellRender(value) {
+    var calendarDate = value.toDate();
+    var appointmentList = {};
+
+    for (var index in appointments) {
+      var appointment = appointments[index];
+      var appointmentDate = new Date(appointment.datetime);
+      var appointmentPurpose = appointment.purpose;
+
+      if (sameMonth(appointmentDate, calendarDate)) {
+        if (appointmentPurpose in appointmentList) {
+          var currentCount = appointmentList[appointmentPurpose];
+          appointmentList[appointmentPurpose] = currentCount + 1;
+        } else {
+          appointmentList[appointmentPurpose] = 1;
+        };
+      }
+    }
+
+    return (
+      <>
+        {Object.keys(appointmentList).map(function(key, index) {
+          var appointmentPurpose = key;
+          var appointmentCount = appointmentList[key];
+          var appointmentString = appointmentCount + " " + appointmentPurpose + (appointmentCount !== 1 ? "s" : "")
+          return (
+            <li>
+              <Badge
+                color={"pink"}
+                text={appointmentString} />
+            </li>
+          )
+        })}
+      </>
+    );
+  }
+
+  function dateCellRender(value) {
+    var calendarDate = value.startOf('day').toDate();
+
+    return (
+      <>
+        {appointments.map(appointment => {
+          var appointmentDate = new Date(appointment.datetime);
+          var appointmentString = formatAMPM(appointmentDate) + " " + appointment.purpose;
+
+          if (sameDay(calendarDate, appointmentDate)) {
+            return (
+              <li key={appointmentString}>
+                <Badge color="pink" text={appointmentString} />
+              </li>
+            );
+          } else {
+            return null;
+          }
+        })}
+      </>
+    );
+  }
+
   return (
     <Calendar
       dateCellRender={dateCellRender}
