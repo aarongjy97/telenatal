@@ -92,16 +92,18 @@ export default function Appointments() {
     return (
       <Layout id="appointments">
         <Row style={{ height:"100%" }}>
-          <Col span={18}>
-            <AppointmentsCalendar 
-              appointments={appointments} />
+          <Col className="left" span={16}>
+            <div className="calendar">
+              <AppointmentsCalendar 
+                appointments={appointments} />
+            </div>
           </Col>
-          <Col span={6}>
-            <Row>
+          <Col className="right" span={8}>
+            <Row className="control">
               <AppointmentsControl 
                 user={user} />
             </Row>
-            <Row>
+            <Row className="list">
               <AppointmentsList
                 appointments={appointments} 
                 user={user}

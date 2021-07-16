@@ -106,9 +106,9 @@ export default function Profile() {
   return (
     <Layout id="profile">
       <Row style={{ height:"100%" }}>
-        <Col className="profile-left" span={14}>
+        <Col className="left" span={14}>
           {user === "DOCTOR" && (
-            <ProfessionalProfile 
+            <ProfessionalProfile
               profile={profile} />
           )}
           {user === "PATIENT" && (
@@ -116,8 +116,8 @@ export default function Profile() {
               profile={profile} />
           )}
         </Col>
-        <Col className="profile-right" span={6}>
-          <div className="profile-image">
+        <Col className="right" span={6}>
+          <div className="image">
             <Avatar
               size={{
                 xs: 48,
@@ -129,7 +129,7 @@ export default function Profile() {
               }}
               src={profile.profileImage} alt="Profile" />
           </div>
-          <div className="profile-button">
+          <div className="button">
             <Uploader />
           </div>
         </Col>

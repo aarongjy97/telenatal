@@ -59,26 +59,26 @@ Profile
   height: 100vh;
 }
 
-#profile .profile-left {
+#profile .left {
   margin: auto;
 }
 
-#profile .profile-right {
+#profile .right {
   margin: auto;
-}
 
-#profile .profile-image {
-  display: block;
-  text-align: center;
-  margin: auto;
-  padding: 1em;
-}
+  .image {
+    display: block;
+    text-align: center;
+    margin: auto;
+    padding: 1em;
+  };
 
-#profile .profile-button {
-  display: block;
-  text-align: center;
-  margin: auto;
-  padding: 1em;
+  .button {
+    display: block;
+    text-align: center;
+    margin: auto;
+    padding: 1em;
+  };
 }
 
 /*----------------------------------------------------------------
@@ -89,7 +89,55 @@ Appointments
   height: 100vh;
 }
 
-#appointments .buttons {
-  padding: 1em;
-  width: 100%;
+#appointments .left {
+  padding: 2em;
+  padding-right: 1em;
+
+  .calendar {
+    padding: 2em;
+    background-color: @calendar-bg;
+  };
+}
+
+#appointments .right {
+  padding: 2em;
+  padding-left: 1em;
+
+  .control {
+    margin-bottom: 1em;
+
+    .buttons {
+      width: 100%;
+      display: flex;
+      margin: auto;
+
+    };
+  };
+
+  .list {
+    padding: 1em;
+    background-color: @calendar-bg;
+
+    .title {
+      text-align: center;
+      color: @magenta-6;
+      margin: auto;
+      padding-bottom: 0.5em;
+      font-weight: 600;
+      font-size: large;
+    };
+
+    .card {
+      border-color: @primary-color;
+      background-color: @magenta-1;
+
+      p {
+        margin: 0;
+        span {
+          font-weight: 500;
+          font-size: medium;
+        };
+      };
+    };
+  };
 }
