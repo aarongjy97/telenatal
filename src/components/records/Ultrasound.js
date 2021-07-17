@@ -149,7 +149,7 @@ export default function Ultrasound({ userType }) {
           return (
             <Panel header={record.time} key={index}>
               <Row style={{ paddingBottom: "20px" }}>
-                <Col span={8} style={{ paddingLeft: 20 }}>
+                <Col span={6} style={{ paddingLeft: 20 }}>
                   <Row>
                     <Title level={5}>Image</Title>
                   </Row>
@@ -157,7 +157,7 @@ export default function Ultrasound({ userType }) {
                     <Image width={200} height={200} src={record.image} />
                   </Row>
                 </Col>
-                <Col flex="auto">
+                <Col span={6} flex="auto" style={{ paddingLeft: 10 }}>
                   <Row>
                     <Title level={5}>Notes</Title>
                   </Row>
@@ -165,20 +165,35 @@ export default function Ultrasound({ userType }) {
                     <Text>{record.notes}</Text>
                   </Row>
                 </Col>
-                {userType === "DOCTOR" && (
-                  <Col justify="end">
-                    <Row justify="end" style={{ paddingBottom: "20px" }}>
-                      <Button
-                        type="secondary"
-                        icon={<EditOutlined />}
-                        onClick={() => setIsEditModalVisible(true)}
-                      >
-                        <Text>Edit</Text>
-                      </Button>
-                    </Row>
-                  </Col>
-                )}
+
+                <Col span={6} style={{ paddingLeft: 20 }}>
+                  <Row>
+                    <Title level={5}>Image</Title>
+                  </Row>
+                  <Row>
+                    <Image width={200} height={200} src={record.image} />
+                  </Row>
+                </Col>
+                <Col span={6} style={{ paddingLeft: 10 }}>
+                  <Row>
+                    <Title level={5}>Notes</Title>
+                  </Row>
+                  <Row>
+                    <Text>{record.notes}</Text>
+                  </Row>
+                </Col>
               </Row>
+              {userType === "DOCTOR" && (
+                <Row justify="end" style={{ paddingBottom: "20px" }}>
+                  <Button
+                    type="secondary"
+                    icon={<EditOutlined />}
+                    onClick={() => setIsEditModalVisible(true)}
+                  >
+                    <Text>Edit</Text>
+                  </Button>
+                </Row>
+              )}
             </Panel>
           );
         })}

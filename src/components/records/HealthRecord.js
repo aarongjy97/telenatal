@@ -55,7 +55,7 @@ const records = [
 ];
 
 const formItemLayout = {
-  labelCol: { span: 8 },
+  labelCol: { span: 10 },
   wrapperCol: { span: 14 },
 };
 export default function HealthRecord({ userType }) {
@@ -115,7 +115,7 @@ export default function HealthRecord({ userType }) {
           </Form.Item>
           <Form.Item
             name={["waist-measurement"]}
-            label="Waist Measurement"
+            label="Waist Measurement (cm)"
             rules={[{ required: true }]}
           >
             <Input />

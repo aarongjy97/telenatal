@@ -26,6 +26,5 @@ export async function loginPatient(email, password) {
  * }
  */
 export async function registerPatient(patient) {
-	return await axios.post(`${API_ENDPOINT}/auth/patient/register`, patient);
+  return await axios.post(`${API_ENDPOINT}/auth/patient/register`, patient);
 }
-

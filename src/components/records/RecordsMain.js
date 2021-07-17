@@ -13,7 +13,7 @@ const userType = ["DOCTOR", "PATIENT"];
 
 export default function RecordsMain() {
   const user = userType[0];
-  const onSearch = value => console.log(value);
+  const onSearch = (value) => console.log(value);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -23,7 +23,11 @@ export default function RecordsMain() {
           width={200}
           style={{ paddingTop: "20px" }}
         >
-          <Search placeholder="Search for patient" onSearch={onSearch} style={{ width: 190, paddingLeft: 5, paddingBottom: 5 }} />
+          <Search
+            placeholder="Search for patient"
+            onSearch={onSearch}
+            style={{ width: 190, paddingLeft: 5, paddingBottom: 5 }}
+          />
           <Menu
             mode="inline"
             defaultSelectedKeys={["1"]}

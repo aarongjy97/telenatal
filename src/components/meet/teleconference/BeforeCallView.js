@@ -2,10 +2,9 @@ import React from "react";
 import { Row, Col, Card, Button } from "antd";
 
 export default function BeforeCallView(props) {
-
   const onJoinCall = () => {
-    props.onJoinCall()
-  }
+    props.onJoinCall();
+  };
 
   return (
     <Row>

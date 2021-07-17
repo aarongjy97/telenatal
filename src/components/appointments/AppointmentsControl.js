@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import { Space, Button, Form, Input, Modal } from "antd";
-import { ReadOutlined, EditOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import {
+  ReadOutlined,
+  EditOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 },
 };
 
-
 export default function AppointmentsControl({ user }) {
   const [isBookModalVisible, setIsBookModalVisible] = useState(false);
-  const [isRescheduleModalVisible, setIsRescheduleModalVisible] = useState(false);
+  const [isRescheduleModalVisible, setIsRescheduleModalVisible] = useState(
+    false
+  );
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
   const [form] = Form.useForm();
   const onFinish = (values) => {
@@ -33,14 +38,13 @@ export default function AppointmentsControl({ user }) {
           </Button>,
         ]}
       >
-
         <Form
           {...formItemLayout}
           form={form}
           name="consultation-create"
           onFinish={onFinish}
         >
-          {user === "DOCTOR" &&
+          {user === "DOCTOR" && (
             <Form.Item
               name="patient"
               label="Patient"
@@ -48,8 +52,8 @@ export default function AppointmentsControl({ user }) {
             >
               <Input.TextArea />
             </Form.Item>
-          }
-          {user === "PATIENT" &&
+          )}
+          {user === "PATIENT" && (
             <Form.Item
               name="professional"
               label="Professional"
@@ -57,19 +61,11 @@ export default function AppointmentsControl({ user }) {
             >
               <Input.TextArea />
             </Form.Item>
-          }
-          <Form.Item
-            name={["date"]}
-            label="Date"
-            rules={[{ required: true }]}
-          >
+          )}
+          <Form.Item name={["date"]} label="Date" rules={[{ required: true }]}>
             <Input.TextArea />
           </Form.Item>
-          <Form.Item
-            name={["time"]}
-            label="Time"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name={["time"]} label="Time" rules={[{ required: true }]}>
             <Input.TextArea />
           </Form.Item>
           <Form.Item
@@ -99,7 +95,10 @@ export default function AppointmentsControl({ user }) {
         onCancel={() => setIsRescheduleModalVisible(false)}
         visible={isRescheduleModalVisible}
         footer={[
-          <Button key="cancel" onClick={() => setIsRescheduleModalVisible(false)}>
+          <Button
+            key="cancel"
+            onClick={() => setIsRescheduleModalVisible(false)}
+          >
             Cancel
           </Button>,
           <Button form="consultation-create" key="submit" htmlType="submit">
@@ -107,7 +106,6 @@ export default function AppointmentsControl({ user }) {
           </Button>,
         ]}
       >
-
         <Form
           {...formItemLayout}
           form={form}
@@ -149,7 +147,6 @@ export default function AppointmentsControl({ user }) {
           </Button>,
         ]}
       >
-
         <Form
           {...formItemLayout}
           form={form}
@@ -170,38 +167,35 @@ export default function AppointmentsControl({ user }) {
 
   return (
     <>
-    <Space
-      className="buttons"
-      direction="vertical"
-      >
-      <Button
-        block
-        icon={<ReadOutlined />}
-        onClick={() => setIsBookModalVisible(true)}
-        style={{ background: "#ffd6e7" }}
+      <Space className="buttons" direction="vertical">
+        <Button
+          block
+          icon={<ReadOutlined />}
+          onClick={() => setIsBookModalVisible(true)}
+          style={{ background: "#ffd6e7" }}
         >
-        Book Appointment
-      </Button>
-      <Button
-        block
-        icon={<EditOutlined />}
-        onClick={() => setIsRescheduleModalVisible(true)}
-        style={{ background: "#fff0f6" }}
+          Book Appointment
+        </Button>
+        <Button
+          block
+          icon={<EditOutlined />}
+          onClick={() => setIsRescheduleModalVisible(true)}
+          style={{ background: "#fff0f6" }}
         >
-        Reschedule Appointment
-      </Button>
-      <Button
-        block
-        icon={<CloseCircleOutlined />}
-        onClick={() => setIsCancelModalVisible(true)}
-        style={{ background: "#d9d9d9" }}
+          Reschedule Appointment
+        </Button>
+        <Button
+          block
+          icon={<CloseCircleOutlined />}
+          onClick={() => setIsCancelModalVisible(true)}
+          style={{ background: "#d9d9d9" }}
         >
-        Cancel Appointment
-      </Button>
-    </Space>
-    { bookModal() }
-    { rescheduleModal() }
-    { cancelModal() }
+          Cancel Appointment
+        </Button>
+      </Space>
+      {bookModal()}
+      {rescheduleModal()}
+      {cancelModal()}
     </>
   );
-};
+}
