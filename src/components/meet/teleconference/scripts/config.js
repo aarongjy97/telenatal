@@ -2,7 +2,6 @@ export default class Config {
   // aws config
   static region = "us-east-1";
 
-
   // key codes
   KEY_CODES = {
     TAB: 9,
@@ -11,11 +10,11 @@ export default class Config {
     ARROW_UP: 38,
     ARROW_DOWN: 40,
   };
-  
+
   // video quality
   VIDEO_INPUT_QUALITY = {
-    '360p': '360p (nHD) @ 15 fps (600 Kbps max)',
-    '540p': '540p (qHD) @ 15 fps (1.4 Mbps max)',
-    '720p': '720p (HD) @ 15 fps (1.4 Mbps max)',
+    "360p": "360p (nHD) @ 15 fps (600 Kbps max)",
+    "540p": "540p (qHD) @ 15 fps (1.4 Mbps max)",
+    "720p": "720p (HD) @ 15 fps (1.4 Mbps max)",
   };
-};
+}

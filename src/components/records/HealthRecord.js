@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+import dotenv from "dotenv";
 import {
   Divider,
   Tooltip,
@@ -53,17 +55,28 @@ const records = [
     notes: "Feeling more fatigue in the past few days",
   },
 ];
+dotenv.config();
+const API_ENDPOINT = process.env.API_ENDPOINT;
 
 const formItemLayout = {
-  labelCol: { span: 8 },
+  labelCol: { span: 10 },
   wrapperCol: { span: 14 },
 };
 export default function HealthRecord({ userType }) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
+
+  async function createRecord(values) {
+    return await axios.post(`${API_ENDPOINT}/medical-record`, {
+      data: {
+        ...values
+      },
+    });
+  }
+
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+    createRecord(values).then(r => console.log(r.toString()));
   };
 
   const createModal = () => {
@@ -115,7 +128,7 @@ export default function HealthRecord({ userType }) {
           </Form.Item>
           <Form.Item
             name={["waist-measurement"]}
-            label="Waist Measurement"
+            label="Waist Measurement (cm)"
             rules={[{ required: true }]}
           >
             <Input />

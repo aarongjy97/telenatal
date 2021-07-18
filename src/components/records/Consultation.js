@@ -101,8 +101,8 @@ export default function Consultation({ userType }) {
             <Input.TextArea />
           </Form.Item>
           <Form.Item
-            name={["description"]}
-            label="Description"
+            name={["notes"]}
+            label="Notes"
             rules={[{ required: true }]}
           >
             <Input.TextArea />
@@ -124,8 +124,8 @@ export default function Consultation({ userType }) {
       >
         <Form form={form} name="consultation-edit" onFinish={() => {}}>
           <Form.Item
-            name={["description"]}
-            label="Description"
+            name={["notes"]}
+            label="Notes"
             rules={[{ required: true }]}
           >
             <Input.TextArea />
@@ -188,7 +188,7 @@ export default function Consultation({ userType }) {
                 )}
               </Row>
               <Row>
-                <Title level={5}>Description</Title>
+                <Title level={5}>Notes</Title>
               </Row>
               <Row>
                 <Text>{record.description}</Text>

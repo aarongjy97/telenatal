@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 import {
   // VideoTileGrid,
   LocalVideo,
   RemoteVideo,
   useMeetingManager,
-} from 'amazon-chime-sdk-component-library-react';
-import {Row, Col} from 'antd'
+} from "amazon-chime-sdk-component-library-react";
+import { Row, Col } from "antd";
 
 export default function MeetingView(props) {
   const meetingManager = useMeetingManager();
@@ -22,15 +22,14 @@ export default function MeetingView(props) {
     //   // At this point you can let users setup their devices, or start the session immediately
     //   meetingManager.start();
     // })
-    
-  })
+  });
 
   return (
     <Row>
       <Col>
-      <LocalVideo/>
-      <RemoteVideo/>
+        <LocalVideo />
+        <RemoteVideo />
       </Col>
     </Row>
   );
-};
+}

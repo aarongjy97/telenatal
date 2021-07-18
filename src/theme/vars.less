@@ -5,6 +5,10 @@
 General
 ----------------------------------------------------------------*/
 
+html, body, div#root {
+  height: 100%
+}
+
 .menu {
   color: @blue-5;
   background-color: @gold-2;
@@ -45,4 +49,95 @@ Header
 
 .buttons {
   margin-left: auto;
+}
+
+/*----------------------------------------------------------------
+Profile
+----------------------------------------------------------------*/
+
+#profile {
+  height: 100vh;
+}
+
+#profile .left {
+  margin: auto;
+}
+
+#profile .right {
+  margin: auto;
+
+  .image {
+    display: block;
+    text-align: center;
+    margin: auto;
+    padding: 1em;
+  };
+
+  .button {
+    display: block;
+    text-align: center;
+    margin: auto;
+    padding: 1em;
+  };
+}
+
+/*----------------------------------------------------------------
+Appointments
+----------------------------------------------------------------*/
+
+#appointments {
+  height: 100vh;
+}
+
+#appointments .left {
+  padding: 2em;
+  padding-right: 1em;
+
+  .calendar {
+    padding: 2em;
+    background-color: @calendar-bg;
+  };
+}
+
+#appointments .right {
+  padding: 2em;
+  padding-left: 1em;
+
+  .control {
+    margin-bottom: 1em;
+
+    .buttons {
+      width: 100%;
+      display: flex;
+      margin: auto;
+
+    };
+  };
+
+  .list {
+    padding: 1em;
+    background-color: @calendar-bg;
+
+    .title {
+      text-align: center;
+      color: @magenta-6;
+      margin: auto;
+      padding-bottom: 0.5em;
+      font-weight: 600;
+      font-size: large;
+    };
+
+    .card {
+      border-color: @primary-color;
+      background-color: @magenta-1;
+
+      p {
+        margin: 0;
+        span {
+          font-weight: 500;
+          font-size: medium;
+        };
+      };
+    };
+  };
 }

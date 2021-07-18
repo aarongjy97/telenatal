@@ -36,4 +36,3 @@ export async function registerPatient(name, password, email, phone, dob, address
     postalCode: postalCode
   });
 }
-
