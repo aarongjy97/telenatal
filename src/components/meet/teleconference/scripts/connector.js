@@ -1,103 +1,33 @@
-const uuid = require("uuid/v4");
-const AWS = require("aws-sdk");
-const config = require("./config");
+import axios from "axios";
 
+const JOIN = "/meeting/join";
+const DELETE = "/meeting/delete";
+const CREATE = "/meeting/create";
 
-const chime = new AWS.Chime({ region: config.region });
-// const alternateEndpoint = process.env.ENDPOINT;
-// if (alternateEndpoint) {
-//   console.log('Using endpoint: ' + alternateEndpoint);
-//   chime.createMeeting({ ClientRequestToken: uuid() }, () => {});
-//   AWS.NodeHttpClient.sslAgent.options.rejectUnauthorized = false;
-//   chime.endpoint = new AWS.Endpoint(alternateEndpoint);
-// } else {
-chime.endpoint = new AWS.Endpoint(
-  "https://service.chime.aws.amazon.com/console"
-);
-// }
+const ENDPOINT = "https://7nzxpc9cn6.execute-api.us-east-1.amazonaws.com";
 
-const log = (message) => {
-  console.log(`${new Date().toISOString()} ${message}`);
+const joinCall = async (meetingId) => {
+  console.log(ENDPOINT + JOIN);
+  var res = await axios.put(ENDPOINT + JOIN, {
+    params: { meetingId: meetingId },
+  });
+  console.log(res);
+  console.log("result from joinCall: " + res.data);
+  return res.data;
 };
 
-const init = () => {
-
-}
-
-const joinCall = (meetingCache, attendeeCache, title, name) => {
-  const title = title;
-  const name = name;
-  const region = config.region || "us-east-1";
-
-  if (!meetingCache[title]) {
-    meetingCache[title] = await chime
-      .createMeeting({
-        ClientRequestToken: uuid(),
-        MediaRegion: region,
-      })
-      .promise();
-    attendeeCache[title] = {};
-  }
-  const joinInfo = {
-    JoinInfo: {
-      Title: title,
-      Meeting: meetingCache[title].Meeting,
-      Attendee: (
-        await chime
-          .createAttendee({
-            MeetingId: meetingCache[title].Meeting.MeetingId,
-            ExternalUserId: uuid(),
-          })
-          .promise()
-      ).Attendee,
-    },
-  };
-  attendeeCache[title][joinInfo.JoinInfo.Attendee.AttendeeId] = name;
-  log(JSON.stringify(joinInfo, null, 2));
-  return meetingCache, attendeeCache, joinInfo
+const deleteMeeting = async (meetingId) => {
+  var res = await axios.delete(ENDPOINT + DELETE, {
+    params: { meetingId: meetingId },
+  });
+  console.log("result from deleteMeeting: " + res.data);
+  return res.data;
 };
 
-const getAttendeeInfo = (attendeeCache, attendee, title) => {
-  const attendeeInfo = {
-    AttendeeInfo: {
-      AttendeeId: attendee,
-      Name: attendeeCache[title][attendee],
-    },
-  };
-  return attendeeCache, attendeeInfo
+const createMeeting = async () => {
+  var res = await axios.post(ENDPOINT + CREATE);
+  console.log("result from createMeeting: " + res.data);
+  return res.data;
 };
 
-const createMeeting = (meetingCache, attendeeCache, title) => {
-  if (!meetingCache[title]) {
-    meetingCache[title] = await chime
-      .createMeeting({
-        ClientRequestToken: uuid(),
-        // NotificationsConfiguration: {
-        //   SqsQueueArn: 'Paste your arn here',
-        //   SnsTopicArn: 'Paste your arn here'
-        // }
-      })
-      .promise();
-    attendeeCache[title] = {};
-  }
-  const joinInfo = {
-    JoinInfo: {
-      Title: title,
-      Meeting: meetingCache[title].Meeting,
-    },
-  };
-  log(JSON.stringify(joinInfo, null, 2));
-  return meetingCache, attendeeCache, joinInfo
-};
-
-const deleteMeeting = (meetingCache, attendeeCache, title) => {
-  const title = query.title;
-  await chime
-    .deleteMeeting({
-      MeetingId: meetingCache[title].Meeting.MeetingId,
-    })
-    .promise();
-  return meetingCache, attendeeCache
-};
-
-export {joinCall, getAttendeeInfo, createMeeting, deleteMeeting}
+export { joinCall, deleteMeeting, createMeeting };
