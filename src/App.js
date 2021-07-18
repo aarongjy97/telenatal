@@ -1,6 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./theme/vars.less";
+import Home from "./components/home/Home";
+import Login from "./components/login/Login";
+import Register from "./components/register/Register";
 import Header from "./components/Header";
 import Overview from "./components/overview/Overview";
 import Profile from "./components/profile/Profile";
@@ -15,6 +18,15 @@ export default function App() {
         <Header />
         <Switch>
           <Route exact path="/">
+            <Home />
+          </Route>
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/register">
+            <Register />
+          </Route>
+          <Route exact path="/overview">
             <Overview />
           </Route>
           <Route exact path="/meet">

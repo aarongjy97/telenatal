@@ -1,31 +1,38 @@
-import { Layout, Menu, Row, Col, Avatar } from "antd";
+import { Layout, Menu, Row, Col, Avatar, Button } from "antd";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const { SubMenu } = Menu;
 
-const loggedIn = false;
+const loggedIn = false; // To be replaced
+
+var logoUrl =
+  loggedIn === false
+    ? "/"
+    : "/overview";
 
 export default function Header() {
   const { Header } = Layout;
   let location = useLocation();
   const mappings = {
-    "/": "1",
+    "/overview": "1",
     "/meet": "2",
     "/records": "3",
     "/appointments": "4",
-    "/profile": "5",
+    "/profile": "5"
   };
 
   return (
-    <Header className="header">
+    <Header id="header">
       <Row className="navbar">
         <Col className="logo">
-          <img src="logo.png" alt="TeleNatal Logo" height="40px" />
-          TeleNatal
+          <a href={logoUrl}>
+            <img src="logo.png" alt="TeleNatal Logo" height="40px"/>
+            TeleNatal
+          </a>
         </Col>
-        {loggedIn === true &&
-          <Col className="buttons">
+        <Col className="buttons">
+          {loggedIn === true &&
             <Menu
               theme="dark"
               mode="horizontal"
@@ -70,8 +77,19 @@ export default function Header() {
                 <Menu.Item key="">Logout</Menu.Item>
               </SubMenu>
             </Menu>
-          </Col>
-        }
+          }
+          {loggedIn === false &&
+            <>
+              <Button type="primary" href="/login">
+                Login
+              </Button>
+              &nbsp;&nbsp;&nbsp;
+              <Button type="primary" href="/register">
+                Register
+              </Button>
+            </>
+          }
+        </Col>
       </Row>
     </Header>
   );

@@ -19,7 +19,7 @@ html, body, div#root {
   background-color: @gold-2;
 }
 
-//@layout-header-background: @magenta-4;
+@layout-header-background: @magenta-2;
 @primary-color: @magenta-6;
 @info-color: @primary-color;
 @success-color: @green-6;
@@ -32,23 +32,55 @@ html, body, div#root {
 /*----------------------------------------------------------------
 Header
 ----------------------------------------------------------------*/
-.header {
+#header {
   min-width: "100vh";
+
+  .navbar {
+    display: flex;
+
+    .logo {
+      font-family: "Merriweather";
+      font-size: x-large;
+      font-weight: 700;
+      color: @primary-color;
+    };
+
+    .buttons {
+      margin-left: auto;
+    };
+  };
 }
 
-.navbar {
-  display: flex;
-}
+/*----------------------------------------------------------------
+Header
+----------------------------------------------------------------*/
 
-.logo {
-  font-family: "Merriweather";
-  font-size: x-large;
-  font-weight: 700;
-  color: @primary-color;
-}
+#home {
+  background-color: @magenta-2;
+  height: 100vh;
 
-.buttons {
-  margin-left: auto;
+  .centerRow {
+    height: 100vh;
+    margin: auto;
+  }
+
+  .centerCol {
+    margin: auto;
+  }
+
+  p {
+    font-weight: 300;
+    margin: auto;
+    text-align: center;
+    font-size: xx-large;
+    color: @magenta-7;
+  };
+
+  span {
+    font-weight: 600;
+    font-style: italic;
+    color: @magenta-7;
+  }
 }
 
 /*----------------------------------------------------------------
