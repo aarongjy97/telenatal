@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const { SubMenu } = Menu;
 
-const loggedIn = false; // To be replaced
+const loggedIn = true; // To be replaced
 
 var logoUrl =
   loggedIn === false
@@ -27,7 +27,7 @@ export default function Header() {
       <Row className="navbar">
         <Col className="logo">
           <a href={logoUrl}>
-            <img src="logo.png" alt="TeleNatal Logo" height="40px"/>
+            <img src="logo.svg" alt="TeleNatal Logo" height="40px"/>
             TeleNatal
           </a>
         </Col>
