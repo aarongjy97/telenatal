@@ -20,6 +20,8 @@ html, body, div#root {
 }
 
 @layout-header-background: @magenta-2;
+@menu-bg: @layout-header-background;
+@layout-sider-background: @magenta-10;
 @primary-color: @magenta-6;
 @info-color: @primary-color;
 @success-color: @green-6;
@@ -27,7 +29,7 @@ html, body, div#root {
 @error-color: @red-5;
 @highlight-color: @red-5;
 @warning-color: @gold-6;
-@normal-color: #d9d9d9;
+@normal-color: #f3f3f3;
 
 /*----------------------------------------------------------------
 Header
@@ -52,7 +54,7 @@ Header
 }
 
 /*----------------------------------------------------------------
-Header
+Home
 ----------------------------------------------------------------*/
 
 #home {
@@ -111,6 +113,36 @@ Profile
     margin: auto;
     padding: 1em;
   };
+}
+
+/*----------------------------------------------------------------
+Meet
+----------------------------------------------------------------*/
+
+/*----------------------------------------------------------------
+Records
+----------------------------------------------------------------*/
+
+#records {
+  height: 100vh;
+
+  .patientSider {
+    width: 10vw;
+
+    .patientSearch {
+      padding: 1em;
+      padding-top: 1.25em;
+    }
+
+    .patientMenu {
+      background-color: @magenta-10;
+    };
+  };
+
+  .recordContent {
+    padding: 1em;
+  }
+
 }
 
 /*----------------------------------------------------------------

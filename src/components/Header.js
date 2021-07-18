@@ -34,7 +34,7 @@ export default function Header() {
         <Col className="buttons">
           {loggedIn === true &&
             <Menu
-              theme="dark"
+              theme="light"
               mode="horizontal"
               defaultSelectedKeys={mappings[location.pathname]}
             >

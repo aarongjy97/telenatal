@@ -4,7 +4,7 @@ import Consultation from "./Consultation";
 import HealthRecord from "./HealthRecord";
 import Ultrasound from "./Ultrasound";
 import MedicalTest from "./MedicalTest";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, MessageOutlined, DashboardOutlined, ScanOutlined, ExperimentOutlined } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
 const { Content, Sider } = Layout;
@@ -16,23 +16,24 @@ export default function RecordsMain() {
   const onSearch = (value) => console.log(value);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout id="records">
       {user === "DOCTOR" && (
         <Sider
-          className="site-layout-background"
-          width={200}
-          style={{ paddingTop: "20px" }}
+          className="patientSider"
+          width={250}
         >
           <Search
-            placeholder="Search for patient"
+            className="patientSearch"
+            placeholder="Search for Patient"
             onSearch={onSearch}
-            style={{ width: 190, paddingLeft: 5, paddingBottom: 5 }}
+            allowClear="true"
+            enterButton
           />
           <Menu
+            className="patientMenu"
             mode="inline"
             defaultSelectedKeys={["1"]}
             defaultOpenKeys={["sub1"]}
-            style={{ height: "100%" }}
             theme="dark"
           >
             <Menu.Item icon={<UserOutlined />} key="1">
@@ -50,44 +51,48 @@ export default function RecordsMain() {
           </Menu>
         </Sider>
       )}
-      <Content style={{ paddingTop: "20px" }}>
-        <Tabs defaultActiveKey="1" style={{ paddingLeft: "20px" }}>
+      <Content className="recordContent">
+        <Tabs defaultActiveKey="1">
           <TabPane
-            style={{
-              marginTop: "-16px",
-              paddingRight: "10px",
-            }}
-            tab="Checkup/Consultation"
+            tab={
+              <span>
+                <MessageOutlined />
+                Consultation Record
+              </span>
+            }
             key="1"
           >
             <Consultation userType={user} />
           </TabPane>
           <TabPane
-            style={{
-              marginTop: "-16px",
-              paddingRight: "10px",
-            }}
-            tab="Health Record"
+            tab={
+              <span>
+                <DashboardOutlined />
+                Health Record
+              </span>
+            }
             key="2"
           >
             <HealthRecord userType={user} />
           </TabPane>
           <TabPane
-            style={{
-              marginTop: "-16px",
-              paddingRight: "10px",
-            }}
-            tab="Ultrasound Scan"
+            tab={
+              <span>
+                <ScanOutlined />
+                Ultrasound Scan Record
+              </span>
+            }
             key="3"
           >
             <Ultrasound userType={user} />
           </TabPane>
           <TabPane
-            style={{
-              marginTop: "-16px",
-              paddingRight: "10px",
-            }}
-            tab="Medical Test"
+            tab={
+              <span>
+                <ExperimentOutlined />
+                Medical Test Record
+              </span>
+            }
             key="4"
           >
             <MedicalTest userType={user} />
