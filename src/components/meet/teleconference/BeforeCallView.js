@@ -10,13 +10,10 @@ export default function BeforeCallView(props) {
   return (
     <>
       <Space align="center" direction="vertical">
-        <Card title={props.appointment.title}>
-          {props.appointment.name}
-          {/* Meeting name: {purpose}:{patientName}/{doctorName or clinicName}*/}
-          {/* Meeting deets: Datetime, Remarks */}
+        <Card title={props.appointment.purpose}>
+          {props.appointment.datetime}
         </Card>
         <PreviewVideo />
-
         <Button type="primary" onClick={onJoinCall}>
           Join Call
         </Button>

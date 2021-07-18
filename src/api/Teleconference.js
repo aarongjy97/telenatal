@@ -4,7 +4,7 @@ const JOIN = "/meeting/join";
 const DELETE = "/meeting/delete";
 const CREATE = "/meeting/create";
 
-const ENDPOINT = "https://7nzxpc9cn6.execute-api.us-east-1.amazonaws.com";
+const ENDPOINT = process.env.API_ENDPOINT;
 
 const joinCall = async (meetingId) => {
   console.log(ENDPOINT + JOIN);

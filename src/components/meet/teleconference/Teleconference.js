@@ -9,7 +9,11 @@ import { constants } from "../constants";
 import BeforeCallView from "./BeforeCallView";
 import PlaceholderView from "./PlaceholderView";
 import AfterCallView from "./AfterCallView";
-import { joinCall, createMeeting, deleteMeeting } from "./scripts/connector";
+import {
+  joinCall,
+  createMeeting,
+  deleteMeeting,
+} from "../../../api/Teleconference";
 export default function Teleconference(props) {
   const meetingManager = useMeetingManager();
   const meetingStatus = useMeetingStatus();
