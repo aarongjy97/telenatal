@@ -21,6 +21,14 @@ export async function getPatientAppointment(patientId) {
   });
 }
 
+export async function getProfessionalAppointment(professionalId) {
+  return await axios.get(`${API_ENDPOINT}/appointments/patient`, {
+    params: {
+      professionalId: professionalId,
+    },
+  });
+}
+
 export async function updateAppointment(appointment) {
   return await axios.put(`${API_ENDPOINT}/appointment`, appointment);
 }
