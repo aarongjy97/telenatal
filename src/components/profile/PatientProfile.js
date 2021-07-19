@@ -21,7 +21,6 @@ const formItemLayout = {
     },
   },
 };
-
 const tailFormItemLayout = {
   wrapperCol: {
     xs: {

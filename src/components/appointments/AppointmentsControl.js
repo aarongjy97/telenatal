@@ -13,9 +13,8 @@ const formItemLayout = {
 
 export default function AppointmentsControl({ user }) {
   const [isBookModalVisible, setIsBookModalVisible] = useState(false);
-  const [isRescheduleModalVisible, setIsRescheduleModalVisible] = useState(
-    false
-  );
+  const [isRescheduleModalVisible, setIsRescheduleModalVisible] =
+    useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
   const [form] = Form.useForm();
   const onFinish = (values) => {

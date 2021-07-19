@@ -1,5 +1,6 @@
 import React from "react";
-import { Row, Col, Card, Button } from "antd";
+import { Row, Col, Card, Button, Space } from "antd";
+import { PreviewVideo } from "amazon-chime-sdk-component-library-react";
 
 export default function BeforeCallView(props) {
   const onJoinCall = () => {
@@ -7,24 +8,16 @@ export default function BeforeCallView(props) {
   };
 
   return (
-    <Row>
-      <Row>
-        <Col>
-          <Card title="Dummy meeting title">
-            Blah blah blah meeting deets
-            {/* Meeting name: {purpose}:{patientName}/{doctorName or clinicName}*/}
-            {/* Meeting deets: Datetime, Remarks */}
-          </Card>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col>
-          <Button type="primary" shape="circle" onClick={onJoinCall}>
-            Join Call
-          </Button>
-        </Col>
-      </Row>
-    </Row>
+    <>
+      <Space align="center" direction="vertical">
+        <Card title={props.appointment.purpose}>
+          {props.appointment.datetime}
+        </Card>
+        <PreviewVideo />
+        <Button type="primary" onClick={onJoinCall}>
+          Join Call
+        </Button>
+      </Space>
+    </>
   );
 }
