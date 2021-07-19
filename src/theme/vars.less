@@ -19,7 +19,9 @@ html, body, div#root {
   background-color: @gold-2;
 }
 
-//@layout-header-background: @magenta-4;
+@layout-header-background: @magenta-2;
+@menu-bg: @layout-header-background;
+@layout-sider-background: @magenta-10;
 @primary-color: @magenta-6;
 @info-color: @primary-color;
 @success-color: @green-6;
@@ -27,58 +29,163 @@ html, body, div#root {
 @error-color: @red-5;
 @highlight-color: @red-5;
 @warning-color: @gold-6;
-@normal-color: #d9d9d9;
+@normal-color: #f3f3f3;
 
 /*----------------------------------------------------------------
 Header
 ----------------------------------------------------------------*/
-.header {
+#header {
   min-width: "100vh";
-}
 
-.navbar {
-  display: flex;
-}
+  .navbar {
+    display: flex;
 
-.logo {
-  font-family: "Merriweather";
-  font-size: x-large;
-  font-weight: 700;
-  color: @primary-color;
-}
+    .logo {
+      font-family: "Merriweather";
+      font-size: x-large;
+      font-weight: 700;
+      color: @primary-color;
+    };
 
-.buttons {
-  margin-left: auto;
+    .buttons {
+      margin-left: auto;
+    };
+  };
 }
 
 /*----------------------------------------------------------------
-Profile
+Home
+----------------------------------------------------------------*/
+
+#home {
+  background-color: @magenta-2;
+  height: 100vh;
+
+  .centerRow {
+    height: 100vh;
+    margin: auto;
+  }
+
+  .centerCol {
+    margin: auto;
+  }
+
+  p {
+    font-weight: 300;
+    margin: auto;
+    text-align: center;
+    font-size: xx-large;
+    color: @magenta-7;
+  };
+
+  span {
+    font-weight: 500;
+    font-style: italic;
+  }
+}
+
+/*----------------------------------------------------------------
+Profile/Register
 ----------------------------------------------------------------*/
 
 #profile {
   height: 100vh;
+
+  .row {
+    margin: auto;
+
+    .left {
+      margin-top: auto;
+      margin-bottom: auto;
+      width: 45vw;
+
+      p {
+        font-size: x-large;
+        font-weight: 600;
+        color: @magenta-7;
+        padding-left: 7em;
+      };
+    };
+  
+    .right {
+      margin-top: auto;
+      margin-bottom: auto;
+      width: 20vw;
+  
+      .image {
+        display: block;
+        text-align: center;
+        margin: auto;
+        padding: 1em;
+      };
+    
+      .button {
+        display: block;
+        text-align: center;
+        margin: auto;
+        padding: 1em;
+      };
+    };
+  };  
 }
 
-#profile .left {
+/*----------------------------------------------------------------
+Login
+----------------------------------------------------------------*/
+
+#login {
+  height: 100vh;
+  display: block;
   margin: auto;
+
+  .row {
+    height: 100vh;
+
+    .col {
+      margin: auto;
+
+      p {
+        font-size: x-large;
+        font-weight: 600;
+        color: @magenta-7;
+        padding-left: 7em;
+      };
+  
+      #loginForm {
+        margin: auto;
+      };
+    };
+  };
 }
 
-#profile .right {
-  margin: auto;
+/*----------------------------------------------------------------
+Meet
+----------------------------------------------------------------*/
 
-  .image {
-    display: block;
-    text-align: center;
-    margin: auto;
-    padding: 1em;
+/*----------------------------------------------------------------
+Records
+----------------------------------------------------------------*/
+
+#records {
+  height: 100vh;
+
+  .patientSider {
+    width: 10vw;
+
+    .patientSearch {
+      padding: 1em;
+      padding-top: 1.25em;
+    }
+
+    .patientMenu {
+      background-color: @magenta-10;
+    };
   };
 
-  .button {
-    display: block;
-    text-align: center;
-    margin: auto;
+  .recordContent {
     padding: 1em;
-  };
+  }
+
 }
 
 /*----------------------------------------------------------------
@@ -90,21 +197,21 @@ Appointments
 }
 
 #appointments .left {
-  padding: 2em;
-  padding-right: 1em;
+  padding: 1em;
+  padding-right: 0.5em;
 
   .calendar {
-    padding: 2em;
+    padding: 1em;
     background-color: @calendar-bg;
   };
 }
 
 #appointments .right {
-  padding: 2em;
-  padding-left: 1em;
+  padding: 1em;
+  padding-left: 0.5em;
 
   .control {
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
 
     .buttons {
       width: 100%;

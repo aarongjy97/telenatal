@@ -6,7 +6,7 @@ const { Option } = Select;
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 16,
+      span: 6,
     },
     sm: {
       span: 8,
@@ -14,10 +14,10 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: {
-      span: 20,
+      span: 10,
     },
     sm: {
-      span: 14,
+      span: 12,
     },
   },
 };
@@ -40,19 +40,35 @@ export default function ProfessionalProfile({ profile }) {
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
+    if (typeof profile === 'undefined') {
+      // make POST request to create profile
+    } else {
+      // make POST request to update profile
+    }
   };
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}
-      >
-        <Option value="65">+65</Option>
-      </Select>
+      +65
     </Form.Item>
   );
+
+  var initialValues = {}
+  if (typeof profile != 'undefined') {
+    initialValues = {
+      name: profile.name,
+      gender: profile.gender,
+      address: profile.address,
+      email: profile.email,
+      postalCode: profile.postalCode,
+      phone: profile.phone,
+      clinicName: profile.clinicName,
+      clinicAddress: profile.clinicAddress,
+      clinicPostalCode: profile.clinicPostalCode,
+      medicalLicense: profile.medicalLicenseNo,
+      education: profile.education
+    }
+  }
 
   return (
     <Form
@@ -60,20 +76,7 @@ export default function ProfessionalProfile({ profile }) {
       form={form}
       name="professionalProfile"
       onFinish={onFinish}
-      initialValues={{
-        name: profile.name,
-        gender: profile.gender,
-        address: profile.address,
-        email: profile.email,
-        postalCode: profile.postalCode,
-        phone: profile.phone,
-        clinicName: profile.clinicName,
-        clinicAddress: profile.clinicAddress,
-        clinicPostalCode: profile.clinicPostalCode,
-        medicalLicense: profile.medicalLicenseNo,
-        education: profile.education,
-        prefix: "65",
-      }}
+      initialValues={initialValues}
       scrollToFirstError
     >
       <Form.Item
@@ -89,6 +92,38 @@ export default function ProfessionalProfile({ profile }) {
       >
         <Input />
       </Form.Item>
+
+            <Form.Item
+        name="email"
+        label="E-mail"
+        rules={[
+          {
+            type: "email",
+            message: "The input is not valid E-mail!",
+          },
+          {
+            required: true,
+            message: "Please input your E-mail!",
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      {typeof profile == 'undefined' &&
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your password!',
+            },
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+      }
 
       <Form.Item
         name="gender"
@@ -115,23 +150,6 @@ export default function ProfessionalProfile({ profile }) {
             type: "array",
             required: true,
             message: "Please input your place of residence!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="email"
-        label="E-mail"
-        rules={[
-          {
-            type: "email",
-            message: "The input is not valid E-mail!",
-          },
-          {
-            required: true,
-            message: "Please input your E-mail!",
           },
         ]}
       >
@@ -241,9 +259,35 @@ export default function ProfessionalProfile({ profile }) {
       </Form.Item>
 
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
-          Save update
-        </Button>
+        {typeof profile === 'undefined' &&
+          <>
+            <Button type="primary" htmlType="submit">
+              Register
+            </Button>
+            &nbsp;&nbsp;&nbsp;
+            <Button type="default" href="/">
+              Back to Home
+            </Button>
+            <Button type="link" href="/login">
+              Have an account? Login instead
+            </Button>
+          </>
+        }
+        {typeof profile !== 'undefined' &&
+          <>
+            <Button type="primary" htmlType="submit">
+              Save update
+            </Button>
+            &nbsp;&nbsp;&nbsp;
+            <Button type="default"
+              onClick={() => {
+                form.resetFields();
+              }}
+            >
+              Clear changes
+            </Button>
+          </>
+        }
       </Form.Item>
     </Form>
   );

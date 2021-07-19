@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { Layout, Upload, Button, message, Avatar, Row, Col } from "antd";
-import ImgCrop from "antd-img-crop";
-import { UploadOutlined } from "@ant-design/icons";
+import React from "react";
+import { Layout, Row, Col } from "antd";
 import PatientProfile from "./PatientProfile";
 import ProfessionalProfile from "./ProfessionalProfile";
+import ProfileImage from "./ProfileImage";
 
 const patientProfile = {
   patientId: "PA0001",
@@ -44,97 +43,20 @@ const user = "DOCTOR"; // Change this for now to toggle between modes
 var profile =
   user === "PATIENT"
     ? patientProfile
-    : user === "DOCTOR"
-    ? professionalProfile
-    : "ERROR!";
-
-const Uploader = () => {
-  const [fileList, setFileList] = useState([]);
-
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt1M = file.size / 1024 / 1024 < 1;
-    if (!isLt1M) {
-      message.error("Image must smaller than 1MB!");
-    }
-    return isJpgOrPng && isLt1M;
-  };
-
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-
-    // Upload Profile Image to DB
-
-    // Pull and refresh
-  };
-
-  const onPreview = async (file) => {
-    let src = file.url;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-
-    if (imgWindow) {
-      imgWindow.document.write(image.outerHTML);
-    } else {
-      window.location.href = src;
-    }
-  };
-
-  return (
-    <ImgCrop grid>
-      <Upload
-        fileList={fileList}
-        accept={"image/jpeg,image/png"}
-        beforeUpload={beforeUpload}
-        onChange={onChange}
-        onPreview={onPreview}
-        showUploadList={false}
-      >
-        <Button icon={<UploadOutlined />}>Update Profile Image</Button>
-      </Upload>
-    </ImgCrop>
-  );
-};
+    : professionalProfile;
 
 export default function Profile() {
   return (
     <Layout id="profile">
-      <Row style={{ height: "100%" }}>
-        <Col className="left" span={14}>
+      <Row className="row" style={{ height: "100%" }}>
+        <Col className="left">
+          <p>Edit Profile</p>
           {user === "DOCTOR" && <ProfessionalProfile profile={profile} />}
           {user === "PATIENT" && <PatientProfile profile={profile} />}
         </Col>
-        <Col className="right" span={6}>
-          <div className="image">
-            <Avatar
-              size={{
-                xs: 48,
-                sm: 64,
-                md: 84,
-                lg: 120,
-                xl: 180,
-                xxl: 220,
-              }}
-              src={profile.profileImage}
-              alt="Profile"
-            />
-          </div>
-          <div className="button">
-            <Uploader />
-          </div>
+        <Col className="right">
+          <ProfileImage profile={profile} />
         </Col>
-        <Col span={4}></Col>
       </Row>
     </Layout>
   );
