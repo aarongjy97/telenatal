@@ -13,7 +13,7 @@ export async function getAppointment(appointmentId) {
   });
 }
 
-export async function getPatientAppointment(patientId) {
+export async function getPatientAppointments(patientId) {
   return await axios.get(`${API_ENDPOINT}/appointments/patient`, {
     params: {
       patientId: patientId,
@@ -21,8 +21,24 @@ export async function getPatientAppointment(patientId) {
   });
 }
 
-export async function getProfessionalAppointment(professionalId) {
-  return await axios.get(`${API_ENDPOINT}/appointments/patient`, {
+export async function getProfessionalAppointments(professionalId) {
+  return await axios.get(`${API_ENDPOINT}/appointments/professional`, {
+    params: {
+      professionalId: professionalId,
+    },
+  });
+}
+
+export async function getPatientUpcomingAppointments(patientId) {
+  return await axios.get(`${API_ENDPOINT}/appointments/patient/upcoming`, {
+    params: {
+      patientId: patientId,
+    },
+  });
+}
+
+export async function getProfessionalUpcomingAppointments(professionalId) {
+  return await axios.get(`${API_ENDPOINT}/appointments/professional/upcoming`, {
     params: {
       professionalId: professionalId,
     },
