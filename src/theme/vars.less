@@ -79,39 +79,82 @@ Home
   };
 
   span {
-    font-weight: 600;
+    font-weight: 500;
     font-style: italic;
-    color: @magenta-7;
   }
 }
 
 /*----------------------------------------------------------------
-Profile
+Profile/Register
 ----------------------------------------------------------------*/
 
 #profile {
   height: 100vh;
+
+  .row {
+    margin: auto;
+
+    .left {
+      margin-top: auto;
+      margin-bottom: auto;
+      width: 45vw;
+
+      p {
+        font-size: x-large;
+        font-weight: 600;
+        color: @magenta-7;
+        padding-left: 7em;
+      };
+    };
+  
+    .right {
+      margin-top: auto;
+      margin-bottom: auto;
+      width: 20vw;
+  
+      .image {
+        display: block;
+        text-align: center;
+        margin: auto;
+        padding: 1em;
+      };
+    
+      .button {
+        display: block;
+        text-align: center;
+        margin: auto;
+        padding: 1em;
+      };
+    };
+  };  
 }
 
-#profile .left {
+/*----------------------------------------------------------------
+Login
+----------------------------------------------------------------*/
+
+#login {
+  height: 100vh;
+  display: block;
   margin: auto;
-}
 
-#profile .right {
-  margin: auto;
+  .row {
+    height: 100vh;
 
-  .image {
-    display: block;
-    text-align: center;
-    margin: auto;
-    padding: 1em;
-  };
+    .col {
+      margin: auto;
 
-  .button {
-    display: block;
-    text-align: center;
-    margin: auto;
-    padding: 1em;
+      p {
+        font-size: x-large;
+        font-weight: 600;
+        color: @magenta-7;
+        padding-left: 7em;
+      };
+  
+      #loginForm {
+        margin: auto;
+      };
+    };
   };
 }
 
@@ -154,21 +197,21 @@ Appointments
 }
 
 #appointments .left {
-  padding: 2em;
-  padding-right: 1em;
+  padding: 1em;
+  padding-right: 0.5em;
 
   .calendar {
-    padding: 2em;
+    padding: 1em;
     background-color: @calendar-bg;
   };
 }
 
 #appointments .right {
-  padding: 2em;
-  padding-left: 1em;
+  padding: 1em;
+  padding-left: 0.5em;
 
   .control {
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
 
     .buttons {
       width: 100%;

@@ -1,12 +1,13 @@
 import React from "react";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, DatePicker } from "antd";
+import moment from "moment";
 
 const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 16,
+      span: 6,
     },
     sm: {
       span: 8,
@@ -14,13 +15,14 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: {
-      span: 20,
+      span: 10,
     },
     sm: {
-      span: 14,
+      span: 12,
     },
   },
 };
+
 const tailFormItemLayout = {
   wrapperCol: {
     xs: {
@@ -34,45 +36,49 @@ const tailFormItemLayout = {
   },
 };
 
+
 export default function PatientProfile({ profile }) {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
+    if (typeof profile === 'undefined') {
+      // make POST request to create profile
+    } else {
+      // make POST request to update profile
+    }
   };
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}
-      >
-        <Option value="65">+65</Option>
-      </Select>
+      +65
     </Form.Item>
   );
+
+  const dateFormat = 'YYYY-MM-DD';
+
+  var initialValues = {}
+  if (typeof profile != 'undefined') {
+    initialValues = {
+      name: profile.name,
+      address: profile.address,
+      email: profile.email,
+      postalCode: profile.postalCode,
+      phone: profile.phone,
+      drugAllergies: profile.drugAllergies,
+      healthConditions: profile.healthConditions,
+      babyName: profile.babyName,
+      babyGender: profile.babyGender
+    }
+  }
 
   return (
     <Form
       {...formItemLayout}
       form={form}
-      name="register"
+      name="patientProfile"
       onFinish={onFinish}
-      initialValues={{
-        name: profile.name,
-        address: profile.address,
-        dob: profile.dob,
-        email: profile.email,
-        postalCode: profile.postalCode,
-        phone: profile.phone,
-        drugAllergies: profile.drugAllergies,
-        healthConditions: profile.healthConditions,
-        dueDate: profile.dueDate,
-        babyName: profile.babyName,
-        babyGender: profile.babyGender,
-        prefix: "65",
-      }}
+      initialValues={initialValues}
       scrollToFirstError
     >
       <Form.Item
@@ -106,6 +112,21 @@ export default function PatientProfile({ profile }) {
         <Input />
       </Form.Item>
 
+      {typeof profile == 'undefined' &&
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your password!',
+            },
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+        }      
+
       <Form.Item
         name="address"
         label="Address"
@@ -125,13 +146,13 @@ export default function PatientProfile({ profile }) {
         label="Date of Birth"
         rules={[
           {
-            type: "array",
             required: true,
             message: "Please input your date of birth!",
           },
         ]}
+
       >
-        <Input />
+        <DatePicker defaultValue={moment(profile.dob, dateFormat)} format={'YYYY-MM-DD'} />
       </Form.Item>
 
       <Form.Item
@@ -195,20 +216,6 @@ export default function PatientProfile({ profile }) {
       </Form.Item>
 
       <Form.Item
-        name="dueDate"
-        label="Expected Due Date"
-        rules={[
-          {
-            type: "array",
-            required: false,
-            message: "Please input your expected due date!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
         name="babyName"
         label="Baby's Name"
         rules={[
@@ -239,10 +246,49 @@ export default function PatientProfile({ profile }) {
         </Select>
       </Form.Item>
 
+      <Form.Item
+        name="dueDate"
+        label="Expected Due Date"
+        rules={[
+          {
+            required: false,
+            message: "Please input your expected due date!",
+          },
+        ]}
+      >
+        <DatePicker defaultValue={moment(profile.dueDate, dateFormat)} format={'YYYY-MM-DD'} />
+      </Form.Item>
+
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
-          Save update
-        </Button>
+        {typeof profile == 'undefined' &&
+          <>
+            <Button type="primary" htmlType="submit">
+              Register
+            </Button>
+            &nbsp;&nbsp;&nbsp;
+            <Button type="default" href="/">
+              Back to Home
+            </Button>
+            <Button type="link" href="/login">
+              Have an account? Login instead
+            </Button>
+          </>
+        }
+        {typeof profile != 'undefined' &&
+          <>
+            <Button type="primary" htmlType="submit">
+              Save update
+            </Button>
+            &nbsp;&nbsp;&nbsp;
+            <Button type="default"
+              onClick={() => {
+                form.resetFields();
+              }}
+            >
+              Clear changes
+            </Button>
+          </>
+        }
       </Form.Item>
     </Form>
   );
