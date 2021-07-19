@@ -56,3 +56,11 @@ export async function createAppointment(
     professionalId: professionalId,
   });
 }
+
+export async function getDoctors() {
+  return await axios.get(`${API_ENDPOINT}/professional/doctors`);
+}
+
+export async function getNurses() {
+  return await axios.get(`${API_ENDPOINT}/professional/nurses`);
+}
