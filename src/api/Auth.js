@@ -3,14 +3,12 @@ import axios from "axios";
 
 dotenv.config();
 
-const API_ENDPOINT = process.env.API_ENDPOINT;
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 
 export async function loginPatient(email, password) {
-  return await axios.get(`${API_ENDPOINT}/auth/patient/login`, {
-    data: {
+  return await axios.post(`${API_ENDPOINT}/auth/patient/login`, {
       email: email,
       password: password,
-    },
   });
 }
 
