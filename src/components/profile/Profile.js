@@ -1,5 +1,6 @@
 import React from "react";
 import { Layout, Row, Col } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import PatientProfile from "./PatientProfile";
 import ProfessionalProfile from "./ProfessionalProfile";
 import ProfileImage from "./ProfileImage";
@@ -50,9 +51,16 @@ export default function Profile() {
     <Layout id="profile">
       <Row className="row" style={{ height: "100%" }}>
         <Col className="left">
-          <p>Edit Profile</p>
-          {user === "DOCTOR" && <ProfessionalProfile profile={profile} />}
-          {user === "PATIENT" && <PatientProfile profile={profile} />}
+          <Row className="top">
+            <EditOutlined />&nbsp;Edit Profile
+          </Row>
+          <Row className="bottom">
+            {user === "DOCTOR"
+              ? <ProfessionalProfile profile={profile} />
+              : <PatientProfile profile={profile} />
+            }
+          </Row>
+
         </Col>
         <Col className="right">
           <ProfileImage profile={profile} />

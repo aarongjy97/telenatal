@@ -126,6 +126,20 @@ export default function ProfessionalProfile({ profile }) {
       }
 
       <Form.Item
+        name="address"
+        label="Address"
+        rules={[
+          {
+            type: "array",
+            required: true,
+            message: "Please input your place of residence!",
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
         name="gender"
         label="Gender"
         rules={[
@@ -140,21 +154,7 @@ export default function ProfessionalProfile({ profile }) {
           <Option value="female">Female</Option>
           <Option value="other">Other</Option>
         </Select>
-      </Form.Item>
-
-      <Form.Item
-        name="address"
-        label="Address"
-        rules={[
-          {
-            type: "array",
-            required: true,
-            message: "Please input your place of residence!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
+      </Form.Item>      
 
       <Form.Item
         name="postalCode"
