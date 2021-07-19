@@ -3,20 +3,20 @@ import axios from "axios";
 
 dotenv.config();
 
-const API_ENDPOINT = process.env.API_ENDPOINT;
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 
 export async function getAppointment(appointmentId) {
   return await axios.get(`${API_ENDPOINT}/appointment`, {
-    data: {
+    params: {
       appointmentId: appointmentId,
     },
   });
 }
 
 export async function getPatientAppointment(patientId) {
-  return await axios.get(`${API_ENDPOINT}/appointment/patient`, {
-    data: {
-      patientId: patientId
+  return await axios.get(`${API_ENDPOINT}/appointments/patient`, {
+    params: {
+      patientId: patientId,
     },
   });
 }
@@ -27,20 +27,24 @@ export async function updateAppointment(appointment) {
 
 export async function deleteAppointment(appointmentId) {
   return await axios.delete(`${API_ENDPOINT}/appointment`, {
-		data: {
-			appointmentId: appointmentId,
-		}
-	});
+    data: {
+      appointmentId: appointmentId,
+    },
+  });
 }
 
-export async function createAppointment(date, location, postalCode, patientId, professionalId) {
+export async function createAppointment(
+  date,
+  location,
+  postalCode,
+  patientId,
+  professionalId
+) {
   return await axios.post(`${API_ENDPOINT}/appointment`, {
-		data: {
-			date: date,
-			location: location,
-			postalCode: postalCode,
-			patientId: patientId,
-			professionalId: professionalId
-		}
-	});
+    date: date,
+    location: location,
+    postalCode: postalCode,
+    patientId: patientId,
+    professionalId: professionalId,
+  });
 }
