@@ -36,7 +36,6 @@ const tailFormItemLayout = {
   },
 };
 
-
 export default function PatientProfile({ profile }) {
   const [form] = Form.useForm();
 
@@ -71,6 +70,16 @@ export default function PatientProfile({ profile }) {
       babyGender: profile.babyGender
     }
   }
+
+  var defaultDob =
+    typeof profile == 'undefined'
+    ? null
+    : moment(profile.dob, dateFormat);
+
+  var defaultDueDate =
+    typeof profile == 'undefined'
+    ? null
+    : moment(profile.dueDate, dateFormat);
 
   return (
     <Form
@@ -125,7 +134,7 @@ export default function PatientProfile({ profile }) {
         >
           <Input.Password />
         </Form.Item>
-        }      
+        }
 
       <Form.Item
         name="address"
@@ -150,9 +159,8 @@ export default function PatientProfile({ profile }) {
             message: "Please input your date of birth!",
           },
         ]}
-
       >
-        <DatePicker defaultValue={moment(profile.dob, dateFormat)} format={'YYYY-MM-DD'} />
+        <DatePicker defaultValue={defaultDob} format={'YYYY-MM-DD'} />
       </Form.Item>
 
       <Form.Item
@@ -256,11 +264,12 @@ export default function PatientProfile({ profile }) {
           },
         ]}
       >
-        <DatePicker defaultValue={moment(profile.dueDate, dateFormat)} format={'YYYY-MM-DD'} />
+        <DatePicker defaultValue={defaultDueDate} format={'YYYY-MM-DD'} />
       </Form.Item>
 
       <Form.Item {...tailFormItemLayout}>
-        {typeof profile == 'undefined' &&
+        {typeof profile == 'undefined'
+          ?
           <>
             <Button type="primary" htmlType="submit">
               Register
@@ -273,8 +282,7 @@ export default function PatientProfile({ profile }) {
               Have an account? Login instead
             </Button>
           </>
-        }
-        {typeof profile != 'undefined' &&
+          :
           <>
             <Button type="primary" htmlType="submit">
               Save update

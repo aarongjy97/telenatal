@@ -99,26 +99,44 @@ Profile/Register
       margin-bottom: auto;
       width: 45vw;
 
-      p {
-        font-size: x-large;
-        font-weight: 600;
-        color: @magenta-7;
-        padding-left: 7em;
-      };
+        .top {
+          margin: 1.5em 0 1.5em 0;
+          font-size: x-large;
+          font-weight: 600;
+          color: @magenta-7;
+          padding-left: 7em;
+
+          .title {
+            width: 80%;
+            float: left;
+          };
+
+          .toggle {
+            width: 20%;
+            float: right;
+          };
+        };
+
+        .bottom {
+          #patientProfile, #professionalProfile {
+            width: 100%;
+            margin: auto;
+          }
+        }
     };
-  
+
     .right {
       margin-top: auto;
       margin-bottom: auto;
       width: 20vw;
-  
+
       .image {
         display: block;
         text-align: center;
         margin: auto;
         padding: 1em;
       };
-    
+
       .button {
         display: block;
         text-align: center;
@@ -126,7 +144,7 @@ Profile/Register
         padding: 1em;
       };
     };
-  };  
+  };
 }
 
 /*----------------------------------------------------------------
@@ -144,15 +162,29 @@ Login
     .col {
       margin: auto;
 
-      p {
-        font-size: x-large;
-        font-weight: 600;
-        color: @magenta-7;
-        padding-left: 7em;
+      .top {
+        margin: 1.5em 0 1.5em 0;
+
+        .title {
+          width: 80%;
+          float: left;
+          padding-left: 7em;
+          font-size: x-large;
+          font-weight: 600;
+          color: @magenta-7;
+        };
+
+        .toggle {
+          width: 20%;
+          float: right;
+        };
       };
-  
-      #loginForm {
-        margin: auto;
+
+      .bottom {
+        #loginForm {
+          width: 100%;
+          margin: auto;
+        };
       };
     };
   };
