@@ -9,6 +9,7 @@ import {
   Form,
   Select,
   Input,
+  Empty,
 } from "antd";
 import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
@@ -17,35 +18,12 @@ const { Panel } = Collapse;
 const { Text, Title } = Typography;
 const { Option } = Select;
 
-const records = [
-  {
-    time: "6 Jul 2021, 6.30pm",
-    diagnosis: "Healthy",
-    medication: "NIL",
-    description:
-      "Just a regular checkup, all seems good so far. Recommend to exercise more and have a healthier diet.",
-  },
-  {
-    time: "5 Jul 2021, 4.30pm",
-    diagnosis: "Healthy",
-    medication: "NIL",
-    description:
-      "Just a regular checkup, all seems good so far. Recommend to exercise more and have a healthier diet.",
-  },
-  {
-    time: "20 Jun 2021, 8.00am",
-    diagnosis: "Healthy",
-    medication: "NIL",
-    description:
-      "Just a regular checkup, all seems good so far. Recommend to exercise more and have a healthier diet.",
-  },
-];
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 },
 };
 
-export default function Consultation({ userType }) {
+export default function Consultation({ userType, consultationRecords, patientRecords }) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -81,8 +59,11 @@ export default function Consultation({ userType }) {
             rules={[{ required: true }]}
           >
             <Select placeholder="Select an appointment to save this record under.">
-              {records.map((record, _) => {
-                return <Option value={record.time}>{record.time}</Option>;
+              {patientRecords?.flatMap((record, index) => {
+                if (record["consultationRecord"] != null) {
+                  return []
+                }
+                return [<Option value={record.date} key={index}>{new Date(record.date).toUTCString()}</Option>];
               })}
             </Select>
           </Form.Item>
@@ -143,60 +124,64 @@ export default function Consultation({ userType }) {
             type="secondary"
             onClick={() => setIsCreateModalVisible(true)}
           >
-            <Title level={5}>Add New Consultation</Title>
+            <Title level={5}>Add New Consultation Record</Title>
           </Button>
         </Row>
       )}
 
-      <Collapse
-        defaultActiveKey={["1"]}
-        style={{ marginTop: userType === "DOCTOR" ? 0 : 20 }}
-      >
-        {records.map((record, index) => {
-          return (
-            <Panel header={record.time} key={index}>
-              <Row style={{ paddingBottom: "20px" }}>
-                <Col span={8}>
-                  <Row>
-                    <Title level={5}>Diagnosis</Title>
-                  </Row>
-                  <Row>
-                    <Text>{record.diagnosis}</Text>
-                  </Row>
-                </Col>
-                <Col flex="auto">
-                  <Row>
-                    <Title level={5}>Medication/Prescription</Title>
-                  </Row>
-                  <Row>
-                    <Text>{record.medication}</Text>
-                  </Row>
-                </Col>
-
-                {userType === "DOCTOR" && (
-                  <Col justify="end">
-                    <Row justify="end" style={{ paddingBottom: "20px" }}>
-                      <Button
-                        type="secondary"
-                        icon={<EditOutlined />}
-                        onClick={() => setIsEditModalVisible(true)}
-                      >
-                        <Text>Edit</Text>
-                      </Button>
+      {consultationRecords && consultationRecords?.length > 0 ? (
+        <Collapse
+          defaultActiveKey={["0"]}
+          style={{ marginTop: userType === "DOCTOR" ? 0 : 20 }}
+        >
+          {consultationRecords.map((record, index) => {
+            return (
+              <Panel header={record.date} key={index}>
+                <Row style={{ paddingBottom: "20px" }}>
+                  <Col span={8}>
+                    <Row>
+                      <Title level={5}>Diagnosis</Title>
+                    </Row>
+                    <Row>
+                      <Text>{record.diagnosis}</Text>
                     </Row>
                   </Col>
-                )}
-              </Row>
-              <Row>
-                <Title level={5}>Notes</Title>
-              </Row>
-              <Row>
-                <Text>{record.description}</Text>
-              </Row>
-            </Panel>
-          );
-        })}
-      </Collapse>
+                  <Col flex="auto">
+                    <Row>
+                      <Title level={5}>Medication/Prescription</Title>
+                    </Row>
+                    <Row>
+                      <Text>{record.medication}</Text>
+                    </Row>
+                  </Col>
+
+                  {userType === "DOCTOR" && (
+                    <Col justify="end">
+                      <Row justify="end" style={{ paddingBottom: "20px" }}>
+                        <Button
+                          type="secondary"
+                          icon={<EditOutlined />}
+                          onClick={() => setIsEditModalVisible(true)}
+                        >
+                          <Text>Edit</Text>
+                        </Button>
+                      </Row>
+                    </Col>
+                  )}
+                </Row>
+                <Row>
+                  <Title level={5}>Notes</Title>
+                </Row>
+                <Row>
+                  <Text>{record.notes}</Text>
+                </Row>
+              </Panel>
+            );
+          })}
+        </Collapse>
+      ) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      )}
       {userType === "DOCTOR" && createModal()}
       {userType === "DOCTOR" && editModal()}
     </>
