@@ -75,12 +75,12 @@ export default function HealthRecord({
               rules={[{ required: true }]}
             >
               <Select placeholder="Select an appointment to save this record under.">
-                {patientRecords?.flatMap((record, index) => {
+                {patientRecords?.flatMap((record, _) => {
                   if (record["healthRecord"] != null) {
                     return [];
                   }
                   return [
-                    <Option value={record.date} key={index}>
+                    <Option value={record.date} key={record.appointmentId}>
                       {new Date(record.date).toUTCString()}
                     </Option>,
                   ];
