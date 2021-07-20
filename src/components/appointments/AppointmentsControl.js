@@ -134,7 +134,7 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
             rules={[{ required: true }]}
           >
             <Cascader
-              options={options}
+              options={newAppointmentsOption}
               expandTrigger="hover"
               placeholder="Select your appointment slot"
             />
