@@ -3,9 +3,12 @@ import { Layout, Row, Col } from "antd";
 import AppointmentsList from "./AppointmentsList";
 import AppointmentsCalendar from "./AppointmentsCalendar";
 import AppointmentsControl from "./AppointmentsControl";
-import { getPatientAppointments, getPatientUpcomingAppointments } from "../../api/Appointment";
+import {
+  getPatientAppointments,
+  getPatientUpcomingAppointments,
+} from "../../api/Appointment";
 
-const patientId = "gengen@gengen.com"
+const patientId = "gengen@gengen.com";
 const user = "PATIENT"; // PATIENT or DOCTOR
 
 export function sameDay(d1, d2) {
@@ -26,7 +29,7 @@ export function formatAMPM(date) {
   var date = new Date(date);
   var hours = date.getHours();
   var minutes = date.getMinutes();
-  var ampm = hours >= 12 ? "pm" : "am";
+  var ampm = hours >= 12 ? "PM" : "AM";
   hours = hours % 12;
   hours = hours ? hours : 12; // the hour '0' should be '12'
   minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -46,22 +49,29 @@ export function formatDate(date) {
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
-    useEffect(() => {
-      getPatientAppointments(patientId)
-        .then((result) => {
-          setAppointments(result.data);
-        })
-        .catch((error) => console.log(error));
-    }, []);
-  
+  useEffect(() => {
+    getPatientAppointments(patientId)
+      .then((result) => {
+        setAppointments(result.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
-    useEffect(() => {
-      getPatientUpcomingAppointments(patientId)
-        .then((result) => {
-          setUpcomingAppointments(result.data);
-        })
-        .catch((error) => console.log(error));
-    }, []);
+  useEffect(() => {
+    getPatientUpcomingAppointments(patientId)
+      .then((result) => {
+        setUpcomingAppointments(result.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  // Sort appointments by decreasing date
+  upcomingAppointments.sort(function (a, b) {
+    var dateA = new Date(a.datetime);
+    var dateB = new Date(b.datetime);
+    return dateA < dateB ? 1 : -1;
+  });
 
   return (
     <Layout id="appointments">
@@ -73,10 +83,16 @@ export default function Appointments() {
         </Col>
         <Col className="right" span={8}>
           <Row className="control">
-            <AppointmentsControl user={user} />
+            <AppointmentsControl
+              upcomingAppointments={upcomingAppointments}
+              user={user}
+            />
           </Row>
           <Row className="list">
-            <AppointmentsList upcomingAppointments={upcomingAppointments} user={user} />
+            <AppointmentsList
+              upcomingAppointments={upcomingAppointments}
+              user={user}
+            />
           </Row>
         </Col>
       </Row>
