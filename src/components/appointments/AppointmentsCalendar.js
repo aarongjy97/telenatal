@@ -9,7 +9,7 @@ export default function AppointmentsCalendar({ appointments }) {
 
     for (var index in appointments) {
       var appointment = appointments[index];
-      var appointmentDate = new Date(appointment.datetime);
+      var appointmentDate = new Date(appointment.date);
       var appointmentPurpose = appointment.purpose;
 
       if (sameMonth(appointmentDate, calendarDate)) {
@@ -48,7 +48,7 @@ export default function AppointmentsCalendar({ appointments }) {
     return (
       <>
         {appointments.map((appointment) => {
-          var appointmentDate = new Date(appointment.datetime);
+          var appointmentDate = new Date(appointment.date);
           var appointmentString =
             formatAMPM(appointmentDate) + " " + appointment.purpose;
 

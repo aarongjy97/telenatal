@@ -1,12 +1,14 @@
-@import '~antd/lib/style/themes/default.less';
-@import '~antd/dist/antd.less';
+@import "~antd/lib/style/themes/default.less";
+@import "~antd/dist/antd.less";
 
 /*----------------------------------------------------------------
 General
 ----------------------------------------------------------------*/
 
-html, body, div#root {
-  height: 100%
+html,
+body,
+div#root {
+  height: 100%;
 }
 
 .menu {
@@ -45,12 +47,12 @@ Header
       font-size: x-large;
       font-weight: 700;
       color: @primary-color;
-    };
+    }
 
     .buttons {
       margin-left: auto;
-    };
-  };
+    }
+  }
 }
 
 /*----------------------------------------------------------------
@@ -76,7 +78,7 @@ Home
     text-align: center;
     font-size: xx-large;
     color: @magenta-7;
-  };
+  }
 
   span {
     font-weight: 500;
@@ -99,31 +101,32 @@ Profile/Register
       margin-bottom: auto;
       width: 45vw;
 
-        .top {
-          margin: 1.5em 0 1.5em 0;
-          font-size: x-large;
-          font-weight: 600;
-          color: @magenta-7;
-          padding-left: 7em;
+      .top {
+        margin: 1.5em 0 1.5em 0;
+        font-size: x-large;
+        font-weight: 600;
+        color: @magenta-7;
+        padding-left: 7em;
 
-          .title {
-            width: 80%;
-            float: left;
-          };
-
-          .toggle {
-            width: 20%;
-            float: right;
-          };
-        };
-
-        .bottom {
-          #patientProfile, #professionalProfile {
-            width: 100%;
-            margin: auto;
-          }
+        .title {
+          width: 80%;
+          float: left;
         }
-    };
+
+        .toggle {
+          width: 20%;
+          float: right;
+        }
+      }
+
+      .bottom {
+        #patientProfile,
+        #professionalProfile {
+          width: 100%;
+          margin: auto;
+        }
+      }
+    }
 
     .right {
       margin-top: auto;
@@ -135,16 +138,16 @@ Profile/Register
         text-align: center;
         margin: auto;
         padding: 1em;
-      };
+      }
 
       .button {
         display: block;
         text-align: center;
         margin: auto;
         padding: 1em;
-      };
-    };
-  };
+      }
+    }
+  }
 }
 
 /*----------------------------------------------------------------
@@ -172,22 +175,22 @@ Login
           font-size: x-large;
           font-weight: 600;
           color: @magenta-7;
-        };
+        }
 
         .toggle {
           width: 20%;
           float: right;
-        };
-      };
+        }
+      }
 
       .bottom {
         #loginForm {
           width: 100%;
           margin: auto;
-        };
-      };
-    };
-  };
+        }
+      }
+    }
+  }
 }
 
 /*----------------------------------------------------------------
@@ -211,13 +214,12 @@ Records
 
     .patientMenu {
       background-color: @magenta-10;
-    };
-  };
+    }
+  }
 
   .recordContent {
     padding: 1em;
   }
-
 }
 
 /*----------------------------------------------------------------
@@ -235,7 +237,7 @@ Appointments
   .calendar {
     padding: 1em;
     background-color: @calendar-bg;
-  };
+  }
 }
 
 #appointments .right {
@@ -243,28 +245,35 @@ Appointments
   padding-left: 0.5em;
 
   .control {
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
 
     .buttons {
       width: 100%;
       display: flex;
       margin: auto;
-
-    };
-  };
+    }
+  }
 
   .list {
     padding: 1em;
     background-color: @calendar-bg;
 
     .title {
+      width: 100%;
       text-align: center;
-      color: @magenta-6;
+      color: @magenta-7;
       margin: auto;
       padding-bottom: 0.5em;
       font-weight: 600;
       font-size: large;
-    };
+      display: block;
+    }
+
+    .content {
+      width: 100%;
+      margin: auto;
+      display: block;
+    }
 
     .card {
       border-color: @primary-color;
@@ -275,8 +284,8 @@ Appointments
         span {
           font-weight: 500;
           font-size: medium;
-        };
-      };
-    };
-  };
+        }
+      }
+    }
+  }
 }
