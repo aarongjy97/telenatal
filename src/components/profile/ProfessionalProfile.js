@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, Radio } from "antd";
 
 const { Option } = Select;
 
@@ -58,6 +58,7 @@ export default function ProfessionalProfile({ profile }) {
     initialValues = {
       name: profile.name,
       gender: profile.gender,
+      type: profile.type,
       address: profile.address,
       email: profile.email,
       postalCode: profile.postalCode,
@@ -149,12 +150,12 @@ export default function ProfessionalProfile({ profile }) {
           },
         ]}
       >
-        <Select placeholder="select your gender">
+        <Select placeholder="Select your gender">
           <Option value="male">Male</Option>
           <Option value="female">Female</Option>
           <Option value="other">Other</Option>
         </Select>
-      </Form.Item>      
+      </Form.Item>
 
       <Form.Item
         name="postalCode"
@@ -229,6 +230,36 @@ export default function ProfessionalProfile({ profile }) {
       >
         <Input />
       </Form.Item>
+
+      <Form.Item
+        name="type"
+        label="Practitioner Type"
+        rules={[
+          {
+            type: "array",
+            required: true,
+            message: "Please input your clinic postal code!",
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>  
+
+      <Form.Item
+        name="type"
+        label="Practitioner Type"
+        rules={[
+          {
+            required: true,
+            message: "Please select your practitioner type!",
+          },
+        ]}
+      >
+        <Radio.Group>
+          <Radio value={1}>Doctor</Radio>
+          <Radio value={2}>Nurse</Radio>
+        </Radio.Group>
+      </Form.Item>  
 
       <Form.Item
         name="medicalLicense"
