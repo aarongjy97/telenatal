@@ -33,7 +33,11 @@ const formItemLayout = {
   labelCol: { span: 10 },
   wrapperCol: { span: 14 },
 };
-export default function HealthRecord({ userType, healthRecords, patientRecords }) {
+export default function HealthRecord({
+  userType,
+  healthRecords,
+  patientRecords,
+}) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -75,7 +79,11 @@ export default function HealthRecord({ userType, healthRecords, patientRecords }
                   if (record["healthRecord"] != null) {
                     return [];
                   }
-                  return [<Option value={record.date} key={index}>{new Date(record.date).toUTCString()}</Option>];
+                  return [
+                    <Option value={record.date} key={index}>
+                      {new Date(record.date).toUTCString()}
+                    </Option>,
+                  ];
                 })}
               </Select>
             </Form.Item>

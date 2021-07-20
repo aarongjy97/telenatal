@@ -23,7 +23,11 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 };
 
-export default function Consultation({ userType, consultationRecords, patientRecords }) {
+export default function Consultation({
+  userType,
+  consultationRecords,
+  patientRecords,
+}) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -61,9 +65,13 @@ export default function Consultation({ userType, consultationRecords, patientRec
             <Select placeholder="Select an appointment to save this record under.">
               {patientRecords?.flatMap((record, index) => {
                 if (record["consultationRecord"] != null) {
-                  return []
+                  return [];
                 }
-                return [<Option value={record.date} key={index}>{new Date(record.date).toUTCString()}</Option>];
+                return [
+                  <Option value={record.date} key={index}>
+                    {new Date(record.date).toUTCString()}
+                  </Option>,
+                ];
               })}
             </Select>
           </Form.Item>
