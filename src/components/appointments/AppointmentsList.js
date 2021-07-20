@@ -5,15 +5,16 @@ import {
   PushpinOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { formatDate } from "./Appointments";
 
-export default function AppointmentsList({ appointments, user }) {
+export default function AppointmentsList({ upcomingAppointments, user }) {
   return (
     <>
       <Row className="title">Upcoming Appointments</Row>
       <Row className="content">
         <List
           grid={{ gutter: 16, column: 1 }}
-          dataSource={appointments}
+          dataSource={upcomingAppointments}
           itemLayout="vertical"
           renderItem={(appointment) => (
             <List.Item>
@@ -23,23 +24,23 @@ export default function AppointmentsList({ appointments, user }) {
                 </p>
                 <p>
                   <ClockCircleOutlined />
-                  &nbsp;{appointment.datetime}
+                  &nbsp;{formatDate(appointment.date)}
                 </p>
                 {user === "DOCTOR" && (
                   <p>
                     <UserOutlined />
-                    &nbsp;Name of Patient {appointment.patientId}
+                    &nbsp;{appointment.patientName}
                   </p>
                 )}
                 {user === "PATIENT" && (
                   <p>
                     <UserOutlined />
-                    &nbsp;Name of Doctor {appointment.professionalId}
+                    &nbsp;{appointment.professionalName}
                   </p>
                 )}
                 <p>
                   <PushpinOutlined />
-                  &nbsp;{appointment.location}
+                  &nbsp;{appointment.location} S({appointment.postalCode})
                 </p>
               </Card>
             </List.Item>

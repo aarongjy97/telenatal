@@ -1,72 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Row, Col } from "antd";
 import AppointmentsList from "./AppointmentsList";
 import AppointmentsCalendar from "./AppointmentsCalendar";
 import AppointmentsControl from "./AppointmentsControl";
+import { getPatientAppointments, getPatientUpcomingAppointments } from "../../api/Appointment";
 
-var appointments = [
-  {
-    appointmentId: "A0001",
-    datetime: "27 Aug 2021 08:45:00 AM",
-    location: "Changi General Hospital Consultation Room 45",
-    purpose: "Checkup",
-    remarks: "Not feeling well",
-    patientId: "PA0001",
-    professionalId: "PR0001",
-    consultationRecordId: null,
-    healthRecordId: null,
-    ultrasoundId: null,
-    testRecordId: null,
-  },
-  {
-    appointmentId: "A0002",
-    datetime: "9 Jul 2021 10:45:00 AM",
-    location: "Home",
-    purpose: "Checkup",
-    remarks: "Not feeling well",
-    patientId: "PA0001",
-    professionalId: "PR0001",
-    consultationRecordId: null,
-    healthRecordId: null,
-    ultrasoundId: null,
-    testRecordId: null,
-  },
-  {
-    appointmentId: "A0003",
-    datetime: "13 Dec 2020 10:45:00 AM",
-    location: "Changi General Hospital Consultation Room 45",
-    purpose: "Checkup",
-    remarks: "Not feeling well",
-    patientId: "PA0001",
-    professionalId: "PR0001",
-    consultationRecordId: null,
-    healthRecordId: null,
-    ultrasoundId: null,
-    testRecordId: null,
-  },
-  {
-    appointmentId: "A0011",
-    datetime: "27 Aug 2021 12:30:00 AM",
-    location: "Changi General Hospital Consultation Room 45",
-    purpose: "Consultation",
-    remarks: "Not feeling well",
-    patientId: "PA0001",
-    professionalId: "PR0001",
-    consultationRecordId: null,
-    healthRecordId: null,
-    ultrasoundId: null,
-    testRecordId: null,
-  },
-];
-
-// Sort appointments by decreasing date
-appointments.sort(function (a, b) {
-  var dateA = new Date(a.datetime);
-  var dateB = new Date(b.datetime);
-  return dateA < dateB ? 1 : -1;
-});
-
-const user = "DOCTOR"; // PATIENT or DOCTOR
+const patientId = "gengen@gengen.com"
+const user = "PATIENT"; // PATIENT or DOCTOR
 
 export function sameDay(d1, d2) {
   return (
@@ -83,6 +23,7 @@ export function sameMonth(d1, d2) {
 }
 
 export function formatAMPM(date) {
+  var date = new Date(date);
   var hours = date.getHours();
   var minutes = date.getMinutes();
   var ampm = hours >= 12 ? "pm" : "am";
@@ -93,7 +34,35 @@ export function formatAMPM(date) {
   return strTime;
 }
 
+export function formatDate(date) {
+  var date = new Date(date);
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  var date = date.getDate();
+  var strTime = formatAMPM(date);
+  var strDate = year + "-" + month + "-" + date + " " + strTime;
+  return strDate;
+}
+
 export default function Appointments() {
+  const [appointments, setAppointments] = useState([]);
+    useEffect(() => {
+      getPatientAppointments(patientId)
+        .then((result) => {
+          setAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    }, []);
+  
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+    useEffect(() => {
+      getPatientUpcomingAppointments(patientId)
+        .then((result) => {
+          setUpcomingAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    }, []);
+
   return (
     <Layout id="appointments">
       <Row style={{ height: "100%" }}>
@@ -107,7 +76,7 @@ export default function Appointments() {
             <AppointmentsControl user={user} />
           </Row>
           <Row className="list">
-            <AppointmentsList appointments={appointments} user={user} />
+            <AppointmentsList upcomingAppointments={upcomingAppointments} user={user} />
           </Row>
         </Col>
       </Row>
