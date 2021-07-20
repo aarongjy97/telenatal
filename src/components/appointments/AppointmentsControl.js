@@ -169,25 +169,28 @@ export default function AppointmentsControl({ user }) {
       <Space className="buttons" direction="vertical">
         <Button
           block
+          type="primary"
           icon={<ReadOutlined />}
           onClick={() => setIsBookModalVisible(true)}
-          style={{ background: "#ffd6e7" }}
+          style={{ background: "#c41d7f" }}
         >
           Book Appointment
         </Button>
         <Button
           block
+          type="primary"
           icon={<EditOutlined />}
           onClick={() => setIsRescheduleModalVisible(true)}
-          style={{ background: "#fff0f6" }}
+          style={{ background: "#f759ab" }}
         >
           Reschedule Appointment
         </Button>
         <Button
           block
+          type="primary"
           icon={<CloseCircleOutlined />}
           onClick={() => setIsCancelModalVisible(true)}
-          style={{ background: "#d9d9d9" }}
+          style={{ background: "#8c8c8c" }}
         >
           Cancel Appointment
         </Button>
