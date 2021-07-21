@@ -15,7 +15,12 @@ import {
   CloseCircleOutlined,
 } from "@ant-design/icons";
 import { formatDate } from "./Appointments";
-import { updateAppointment, deleteAppointment } from "../../api/Appointment";
+import {
+  getAppointment,
+  updateAppointment,
+  deleteAppointment,
+} from "../../api/Appointment";
+import AppointmentCard from "./AppointmentCard";
 
 const { Option } = Select;
 
@@ -29,6 +34,7 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
   const [isRescheduleModalVisible, setIsRescheduleModalVisible] =
     useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState();
   const [form] = Form.useForm();
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
@@ -41,6 +47,14 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       label: formatDate(upcomingAppointments[i].date),
     };
   }
+
+  var upcomingAppointmentsChange = (appointmentId) => {
+    getAppointment(appointmentId)
+      .then((result) => {
+        setSelectedAppointment(result.data);
+      })
+      .catch((error) => console.log(error));
+  };
 
   var newAppointmentsOption = [
     {
@@ -206,14 +220,17 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       const appointmentId = values.appointment;
       updateAppointment(appointmentId);
       setIsRescheduleModalVisible(false);
-      // TODO: Refresh page
+      window.location.replace("/appointments");
     };
 
     return (
       <Modal
         title="Reschedule Existing Appointment"
         centered
-        onCancel={() => setIsRescheduleModalVisible(false)}
+        onCancel={() => {
+          setIsRescheduleModalVisible(false);
+          setSelectedAppointment();
+        }}
         visible={isRescheduleModalVisible}
         footer={[
           <Button
@@ -246,6 +263,7 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
             <Select
               placeholder="Select appointment to reschedule"
               options={upcomingAppointmentsOption}
+              onChange={upcomingAppointmentsChange}
             />
           </Form.Item>
 
@@ -260,6 +278,8 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
               placeholder="Select your appointment slot"
             />
           </Form.Item>
+
+          <AppointmentCard appointment={selectedAppointment} user={user} />
         </Form>
       </Modal>
     );
@@ -270,14 +290,17 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       const appointmentId = values.appointment;
       deleteAppointment(appointmentId);
       setIsCancelModalVisible(false);
-      // TODO: Refresh page
+      window.location.replace("/appointments");
     };
 
     return (
       <Modal
         title="Cancel Existing Appointment"
         centered
-        onCancel={() => setIsCancelModalVisible(false)}
+        onCancel={() => {
+          setIsCancelModalVisible(false);
+          setSelectedAppointment();
+        }}
         visible={isCancelModalVisible}
         footer={[
           <Button key="cancel" onClick={() => setIsCancelModalVisible(false)}>
@@ -301,10 +324,12 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
           >
             <Select
               placeholder="Select appointment to cancel"
+              onChange={upcomingAppointmentsChange}
               options={upcomingAppointmentsOption}
             />
           </Form.Item>
         </Form>
+        <AppointmentCard appointment={selectedAppointment} user={user} />
       </Modal>
     );
   };
