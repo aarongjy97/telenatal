@@ -11,7 +11,7 @@ export default function BeforeCallView(props) {
     <>
       <Space align="center" direction="vertical">
         <Card title={props.appointment.purpose}>
-          {props.appointment.datetime}
+          {props.appointment.date}
         </Card>
         <PreviewVideo />
         <Button type="primary" onClick={onJoinCall}>
