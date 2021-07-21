@@ -1,11 +1,6 @@
 import React from "react";
-import { Row, List, Card } from "antd";
-import {
-  ClockCircleOutlined,
-  PushpinOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { formatDate } from "./Appointments";
+import { Row, List } from "antd";
+import AppointmentCard from "./AppointmentCard";
 
 export default function AppointmentsList({ upcomingAppointments, user }) {
   return (
@@ -18,31 +13,7 @@ export default function AppointmentsList({ upcomingAppointments, user }) {
           itemLayout="vertical"
           renderItem={(appointment) => (
             <List.Item>
-              <Card className="card">
-                <p>
-                  <span>{appointment.purpose}</span>
-                </p>
-                <p>
-                  <ClockCircleOutlined />
-                  &nbsp;{formatDate(appointment.date)}
-                </p>
-                {user === "DOCTOR" && (
-                  <p>
-                    <UserOutlined />
-                    &nbsp;{appointment.patientName}
-                  </p>
-                )}
-                {user === "PATIENT" && (
-                  <p>
-                    <UserOutlined />
-                    &nbsp;{appointment.professionalName}
-                  </p>
-                )}
-                <p>
-                  <PushpinOutlined />
-                  &nbsp;{appointment.location} S({appointment.postalCode})
-                </p>
-              </Card>
+              <AppointmentCard appointment={appointment} user={user} />
             </List.Item>
           )}
         />

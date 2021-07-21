@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Space,
   Button,
@@ -15,7 +15,14 @@ import {
   CloseCircleOutlined,
 } from "@ant-design/icons";
 import { formatDate } from "./Appointments";
-import { updateAppointment, deleteAppointment } from "../../api/Appointment";
+import {
+  getAppointment,
+  updateAppointment,
+  deleteAppointment,
+  getDoctors,
+  getNurses,
+} from "../../api/Appointment";
+import AppointmentCard from "./AppointmentCard";
 
 const { Option } = Select;
 
@@ -34,6 +41,7 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
     console.log("Received values of form: ", values);
   };
 
+  // Load options for appointment selection
   var upcomingAppointmentsOption = [];
   for (let i = 0; i < upcomingAppointments.length; i++) {
     upcomingAppointmentsOption[i] = {
@@ -41,6 +49,62 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       label: formatDate(upcomingAppointments[i].date),
     };
   }
+
+  // Render change for appointment selection
+  const [selectedAppointment, setSelectedAppointment] = useState();
+  var upcomingAppointmentsChange = (appointmentId) => {
+    getAppointment(appointmentId)
+      .then((result) => {
+        setSelectedAppointment(result.data);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  // Fetch all doctors
+  const [doctors, setDoctors] = useState([]);
+  useEffect(() => {
+    getDoctors()
+      .then((result) => {
+        setDoctors(result.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  // console.log(doctors);
+
+  // Fetch all nurses
+  const [nurses, setNurses] = useState([]);
+  useEffect(() => {
+    getNurses()
+      .then((result) => {
+        setNurses(result.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  // TODO: Fetch all patients
+  const [patients, setPatients] = useState([]);
+
+  // Load options for medical professionals
+  var doctorOption = { value: "doctor", label: "Doctor", options: [] };
+  for (let i = 0; i < doctors.length; i++) {
+    doctorOption.options[i] = {
+      value: doctors[i]["email"],
+      label: doctors[i]["name"],
+    };
+  }
+  var nurseOption = { value: "nurse", label: "Nurse", options: [] };
+  for (let i = 0; i < nurses.length; i++) {
+    nurseOption.options[i] = {
+      value: nurses[i]["email"],
+      label: nurses[i]["name"],
+    };
+  }
+  var professionalOption = [doctorOption, nurseOption];
+
+  console.log(professionalOption);
+
+  // Load options for patients
 
   var newAppointmentsOption = [
     {
@@ -120,11 +184,10 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
               label="Professional"
               rules={[{ required: true }]}
             >
-              <Select placeholder="Select your medical professional">
-                <Option value="male">Doctor1</Option>
-                <Option value="female">Doctor2</Option>
-                <Option value="other">Doctor3</Option>
-              </Select>
+              <Select
+                placeholder="Select your medical professional"
+                options={professionalOption}
+              />
             </Form.Item>
           )}
 
@@ -206,14 +269,17 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       const appointmentId = values.appointment;
       updateAppointment(appointmentId);
       setIsRescheduleModalVisible(false);
-      // TODO: Refresh page
+      window.location.replace("/appointments");
     };
 
     return (
       <Modal
         title="Reschedule Existing Appointment"
         centered
-        onCancel={() => setIsRescheduleModalVisible(false)}
+        onCancel={() => {
+          setIsRescheduleModalVisible(false);
+          setSelectedAppointment();
+        }}
         visible={isRescheduleModalVisible}
         footer={[
           <Button
@@ -246,6 +312,7 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
             <Select
               placeholder="Select appointment to reschedule"
               options={upcomingAppointmentsOption}
+              onChange={upcomingAppointmentsChange}
             />
           </Form.Item>
 
@@ -260,6 +327,8 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
               placeholder="Select your appointment slot"
             />
           </Form.Item>
+
+          <AppointmentCard appointment={selectedAppointment} user={user} />
         </Form>
       </Modal>
     );
@@ -270,14 +339,17 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       const appointmentId = values.appointment;
       deleteAppointment(appointmentId);
       setIsCancelModalVisible(false);
-      // TODO: Refresh page
+      window.location.replace("/appointments");
     };
 
     return (
       <Modal
         title="Cancel Existing Appointment"
         centered
-        onCancel={() => setIsCancelModalVisible(false)}
+        onCancel={() => {
+          setIsCancelModalVisible(false);
+          setSelectedAppointment();
+        }}
         visible={isCancelModalVisible}
         footer={[
           <Button key="cancel" onClick={() => setIsCancelModalVisible(false)}>
@@ -301,10 +373,12 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
           >
             <Select
               placeholder="Select appointment to cancel"
+              onChange={upcomingAppointmentsChange}
               options={upcomingAppointmentsOption}
             />
           </Form.Item>
         </Form>
+        <AppointmentCard appointment={selectedAppointment} user={user} />
       </Modal>
     );
   };
