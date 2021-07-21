@@ -197,6 +197,24 @@ Login
 Meet
 ----------------------------------------------------------------*/
 
+#meet {
+  height: 100vh;
+
+  .appointmentDetails {
+    .videoConference {
+      height: 60vh;
+    }
+
+    .infoPanel {
+      height: 40vh;
+    }
+  }
+
+  .appointmentList {
+    background-color: @calendar-bg;
+  }
+}
+
 /*----------------------------------------------------------------
 Records
 ----------------------------------------------------------------*/
@@ -257,27 +275,27 @@ Appointments
       margin: auto;
     }
   }
+}
 
-  .list {
-    padding: 1em;
-    background-color: @calendar-bg;
+#appointmentList {
+  padding: 1em;
+  background-color: @calendar-bg;
 
-    .title {
-      width: 100%;
-      text-align: center;
-      color: @magenta-7;
-      margin: auto;
-      padding-bottom: 0.5em;
-      font-weight: 600;
-      font-size: large;
-      display: block;
-    }
+  .title {
+    width: 100%;
+    text-align: center;
+    color: @magenta-7;
+    margin: auto;
+    padding-bottom: 0.5em;
+    font-weight: 600;
+    font-size: large;
+    display: block;
+  }
 
-    .content {
-      width: 100%;
-      margin: auto;
-      display: block;
-    }
+  .content {
+    width: 100%;
+    margin: auto;
+    display: block;
   }
 }
 

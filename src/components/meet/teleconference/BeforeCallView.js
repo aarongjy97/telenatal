@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card, Button, Space } from "antd";
+import { Card, Button, Space } from "antd";
 import { PreviewVideo } from "amazon-chime-sdk-component-library-react";
 
 export default function BeforeCallView(props) {
@@ -11,7 +11,7 @@ export default function BeforeCallView(props) {
     <>
       <Space align="center" direction="vertical">
         <Card title={props.appointment.purpose}>
-          {props.appointment.datetime}
+          {props.appointment.date}
         </Card>
         <PreviewVideo />
         <Button type="primary" onClick={onJoinCall}>

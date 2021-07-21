@@ -1,5 +1,6 @@
 import React from "react";
 import { Descriptions, Row, Col } from "antd";
+import { formatDate } from "../../utils";
 
 // maps fields to readable format
 const patientFields = [
@@ -13,7 +14,7 @@ const patientFields = [
 ];
 
 const appointmentFields = [
-  ["datetime", "Appointment Time"],
+  ["date", "Appointment Date Time"],
   ["location", "Location"],
   ["purpose", "Visit Purpose"],
   ["remarks", "Visit Remarks"],
@@ -34,7 +35,11 @@ export default function AppointmentDetails(props) {
     return appointmentFields.map((item, i) => {
       return (
         <Descriptions.Item key={i} label={item[1]}>
-          {props.appointment[item[0]]}
+          {item[0] === "date" ? (
+            <>{formatDate(props.appointment[item[0]])}</>
+          ) : (
+            <>{props.appointment[item[0]]}</>
+          )}
         </Descriptions.Item>
       );
     });
