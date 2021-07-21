@@ -41,7 +41,7 @@ export default function ProfessionalProfile({ profile }) {
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    if (typeof profile === 'undefined') {
+    if (typeof profile === "undefined") {
       registerProfessional(
         values.name,
         values.password,
@@ -55,7 +55,6 @@ export default function ProfessionalProfile({ profile }) {
         .then((result) => {
           console.log(result);
           window.location.replace("/login");
-
         })
         .catch((error) => console.log(error));
     } else {
@@ -69,8 +68,8 @@ export default function ProfessionalProfile({ profile }) {
     </Form.Item>
   );
 
-  var initialValues = {}
-  if (typeof profile != 'undefined') {
+  var initialValues = {};
+  if (typeof profile != "undefined") {
     initialValues = {
       name: profile.name,
       gender: profile.gender,
@@ -83,8 +82,8 @@ export default function ProfessionalProfile({ profile }) {
       clinicAddress: profile.clinicAddress,
       clinicPostalCode: profile.clinicPostalCode,
       medicalLicenseNo: profile.medicalLicenseNo,
-      education: profile.education
-    }
+      education: profile.education,
+    };
   }
 
   return (
@@ -109,7 +108,7 @@ export default function ProfessionalProfile({ profile }) {
         <Input />
       </Form.Item>
 
-            <Form.Item
+      <Form.Item
         name="email"
         label="E-mail"
         rules={[
@@ -126,20 +125,20 @@ export default function ProfessionalProfile({ profile }) {
         <Input />
       </Form.Item>
 
-      {typeof profile == 'undefined' &&
+      {typeof profile == "undefined" && (
         <Form.Item
           label="Password"
           name="password"
           rules={[
             {
               required: true,
-              message: 'Please input your password!',
+              message: "Please input your password!",
             },
           ]}
         >
           <Input.Password />
         </Form.Item>
-      }
+      )}
 
       <Form.Item
         name="address"
@@ -284,7 +283,7 @@ export default function ProfessionalProfile({ profile }) {
       </Form.Item>
 
       <Form.Item {...tailFormItemLayout}>
-        {typeof profile === 'undefined' &&
+        {typeof profile === "undefined" && (
           <>
             <Button type="primary" htmlType="submit">
               Register
@@ -297,14 +296,15 @@ export default function ProfessionalProfile({ profile }) {
               Have an account? Login instead
             </Button>
           </>
-        }
-        {typeof profile !== 'undefined' &&
+        )}
+        {typeof profile !== "undefined" && (
           <>
             <Button type="primary" htmlType="submit">
               Save update
             </Button>
             &nbsp;&nbsp;&nbsp;
-            <Button type="default"
+            <Button
+              type="default"
               onClick={() => {
                 form.resetFields();
               }}
@@ -312,7 +312,7 @@ export default function ProfessionalProfile({ profile }) {
               Clear changes
             </Button>
           </>
-        }
+        )}
       </Form.Item>
     </Form>
   );

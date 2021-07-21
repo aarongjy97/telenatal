@@ -14,42 +14,6 @@ const patientId = "gengen@gengen.com";
 const professionalId = "hayoonchul@gmail.com";
 const user = "PATIENT"; // PATIENT or DOCTOR
 
-export function sameDay(d1, d2) {
-  return (
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate()
-  );
-}
-
-export function sameMonth(d1, d2) {
-  return (
-    d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth()
-  );
-}
-
-export function formatAMPM(date) {
-  var date = new Date(date);
-  var hours = date.getHours();
-  var minutes = date.getMinutes();
-  var ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  var strTime = hours + ":" + minutes + ampm;
-  return strTime;
-}
-
-export function formatDate(date) {
-  var date = new Date(date);
-  var year = date.getFullYear();
-  var month = date.getMonth() + 1;
-  var date = date.getDate();
-  var strTime = formatAMPM(date);
-  var strDate = year + "-" + month + "-" + date + " " + strTime;
-  return strDate;
-}
-
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
   useEffect(() => {

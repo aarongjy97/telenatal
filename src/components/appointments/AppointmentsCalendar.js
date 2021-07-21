@@ -1,6 +1,6 @@
 import React from "react";
 import { Calendar, Badge } from "antd";
-import { sameDay, sameMonth, formatAMPM } from "./Appointments";
+import { sameDay, sameMonth, formatTime } from "../utils";
 
 export default function AppointmentsCalendar({ appointments }) {
   function monthCellRender(value) {
@@ -50,9 +50,9 @@ export default function AppointmentsCalendar({ appointments }) {
 
           if (sameDay(calendarDate, appointmentDate)) {
             return (
-              <li>
+              <li key={appointment.appointmentId}>
                 <Badge color="pink" />
-                <span>{formatAMPM(appointmentDate)}</span> {appointment.purpose}
+                <span>{formatTime(appointmentDate)}</span> {appointment.purpose}
               </li>
             );
           } else {

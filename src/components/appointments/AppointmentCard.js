@@ -5,7 +5,7 @@ import {
   PushpinOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { formatDate } from "./Appointments";
+import { formatDate } from "../utils";
 
 export default function AppointmentCard({ appointment, user }) {
   return (

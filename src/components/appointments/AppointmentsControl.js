@@ -14,7 +14,7 @@ import {
   EditOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
-import { formatDate } from "./Appointments";
+import { formatDate } from "../utils";
 import {
   getAppointment,
   updateAppointment,
@@ -36,7 +36,9 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
   const [isRescheduleModalVisible, setIsRescheduleModalVisible] =
     useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [selectedPurpose, setSelectedPurpose] = useState();
   const [form] = Form.useForm();
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
@@ -70,8 +72,6 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       .catch((error) => console.log(error));
   }, []);
 
-  // console.log(doctors);
-
   // Fetch all nurses
   const [nurses, setNurses] = useState([]);
   useEffect(() => {
@@ -102,10 +102,12 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
   }
   var professionalOption = [doctorOption, nurseOption];
 
-  console.log(professionalOption);
+  // TODO: Load options for patients
+  var patientOption = [];
 
-  // Load options for patients
+  // TODO: Fetch available appointments
 
+  // TODO: Load options for available appointments
   var newAppointmentsOption = [
     {
       value: "2021-08-30",
@@ -142,10 +144,22 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       <Modal
         title="Book New Appointment"
         centered
-        onCancel={() => setIsBookModalVisible(false)}
+        getContainer={false}
+        onCancel={() => {
+          setIsBookModalVisible(false);
+          setSelectedPurpose();
+          form.resetFields();
+        }}
         visible={isBookModalVisible}
         footer={[
-          <Button key="cancel" onClick={() => setIsBookModalVisible(false)}>
+          <Button
+            key="cancel"
+            onClick={() => {
+              setIsBookModalVisible(false);
+              setSelectedPurpose();
+              form.resetFields();
+            }}
+          >
             Cancel
           </Button>,
           <Button
@@ -168,13 +182,17 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
             <Form.Item
               name="patient"
               label="Patient"
-              rules={[{ required: true }]}
+              rules={[
+                {
+                  required: true,
+                  message: "Please select a patient!",
+                },
+              ]}
             >
-              <Select placeholder="Select your patient">
-                <Option value="male">Patient1</Option>
-                <Option value="female">Patient2</Option>
-                <Option value="other">Patient3</Option>
-              </Select>
+              <Select
+                placeholder="Select your patient"
+                options={patientOption}
+              />
             </Form.Item>
           )}
 
@@ -182,7 +200,12 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
             <Form.Item
               name="professional"
               label="Professional"
-              rules={[{ required: true }]}
+              rules={[
+                {
+                  required: true,
+                  message: "Please select a medical professional!",
+                },
+              ]}
             >
               <Select
                 placeholder="Select your medical professional"
@@ -194,7 +217,12 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
           <Form.Item
             name={["dateTime"]}
             label="Date Time"
-            rules={[{ required: true }]}
+            rules={[
+              {
+                required: true,
+                message: "Please select an appointment slot!",
+              },
+            ]}
           >
             <Cascader
               options={newAppointmentsOption}
@@ -209,18 +237,28 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
             rules={[
               {
                 required: true,
-                message: "Please input the visit purpose!",
+                message: "Please select the visit purpose!",
               },
             ]}
           >
-            <Radio.Group>
+            <Radio.Group
+              onChange={(values) => setSelectedPurpose(values.target.value)}
+            >
               <Space direction="vertical">
-                <Radio value={1}>Option A</Radio>
-                <Radio value={2}>Option B</Radio>
-                <Radio value={3}>Option C</Radio>
-                <Radio value={4}>
-                  More...
-                  <Input style={{ width: 100, marginLeft: 10 }} />
+                <Radio name={"Check up"} value={"Check up"}>
+                  Check up
+                </Radio>
+                <Radio name={"Ultrasound"} value={"Ultrasound"}>
+                  Ultrasound
+                </Radio>
+                <Radio name={"Vaccination"} value={"Vaccination"}>
+                  Vaccination
+                </Radio>
+                <Radio name={"Others"} value={"Others"}>
+                  Others
+                  {selectedPurpose === "Others" ? (
+                    <Input style={{ width: 100, marginLeft: 10 }} />
+                  ) : null}
                 </Radio>
               </Space>
             </Radio.Group>
@@ -276,19 +314,30 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       <Modal
         title="Reschedule Existing Appointment"
         centered
+        getContainer={false}
         onCancel={() => {
           setIsRescheduleModalVisible(false);
           setSelectedAppointment();
+          form.resetFields();
         }}
         visible={isRescheduleModalVisible}
         footer={[
           <Button
             key="cancel"
-            onClick={() => setIsRescheduleModalVisible(false)}
+            onClick={() => {
+              setIsRescheduleModalVisible(false);
+              setSelectedAppointment();
+              form.resetFields();
+            }}
           >
             Cancel
           </Button>,
-          <Button type="primary" form="rescheduleAppointment" htmlType="submit">
+          <Button
+            type="primary"
+            form="rescheduleAppointment"
+            key="submit"
+            htmlType="submit"
+          >
             Submit
           </Button>,
         ]}
@@ -346,16 +395,30 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       <Modal
         title="Cancel Existing Appointment"
         centered
+        getContainer={false}
         onCancel={() => {
           setIsCancelModalVisible(false);
           setSelectedAppointment();
+          form.resetFields();
         }}
         visible={isCancelModalVisible}
         footer={[
-          <Button key="cancel" onClick={() => setIsCancelModalVisible(false)}>
+          <Button
+            key="cancel"
+            onClick={() => {
+              setIsCancelModalVisible(false);
+              setSelectedAppointment();
+              form.resetFields();
+            }}
+          >
             Cancel
           </Button>,
-          <Button type="primary" form="cancelAppointment" htmlType="submit">
+          <Button
+            type="primary"
+            form="cancelAppointment"
+            key="submit"
+            htmlType="submit"
+          >
             Submit
           </Button>,
         ]}
