@@ -31,7 +31,7 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 };
 
-export default function AppointmentControl({ upcomingAppointments, user }) {
+export default function AppointmentsControl({ upcomingAppointments, user }) {
   const [isBookModalVisible, setIsBookModalVisible] = useState(false);
   const [isRescheduleModalVisible, setIsRescheduleModalVisible] =
     useState(false);
