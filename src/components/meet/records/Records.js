@@ -2,7 +2,7 @@ import React from "react";
 import { Tabs, BackTop } from "antd";
 import Consultation from "./Consultation";
 import HealthRecord from "./HealthRecord";
-import AppointmentDetails from "./AppoinmentDetails";
+import AppointmentDetails from "./AppointmentDetails";
 import MedicalTest from "./MedicalTest";
 import Ultrasound from "./Ultrasound";
 const dummyHealthRecords = [

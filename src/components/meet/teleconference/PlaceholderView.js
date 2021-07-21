@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card, Space, Layout } from "antd";
+import { Card } from "antd";
 
 export default function PlaceholderView(props) {
   return (

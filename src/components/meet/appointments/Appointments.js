@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, List, Card, Icon } from "antd";
+import { List, Card } from "antd";
 import {
   ClockCircleOutlined,
   PushpinOutlined,
