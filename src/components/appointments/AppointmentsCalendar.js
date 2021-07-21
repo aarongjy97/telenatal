@@ -27,14 +27,12 @@ export default function AppointmentsCalendar({ appointments }) {
         {Object.keys(appointmentList).map(function (key, index) {
           var appointmentPurpose = key;
           var appointmentCount = appointmentList[key];
-          var appointmentString =
-            appointmentCount +
-            " " +
-            appointmentPurpose +
-            (appointmentCount !== 1 ? "s" : "");
+
           return (
             <li>
-              <Badge color={"pink"} text={appointmentString} />
+              <Badge color="pink" />
+              <span>{appointmentCount}</span>{" "}
+              {appointmentPurpose + (appointmentCount !== 1 ? "s" : "")}
             </li>
           );
         })}
@@ -49,13 +47,12 @@ export default function AppointmentsCalendar({ appointments }) {
       <>
         {appointments.map((appointment) => {
           var appointmentDate = new Date(appointment.date);
-          var appointmentString =
-            formatAMPM(appointmentDate) + " " + appointment.purpose;
 
           if (sameDay(calendarDate, appointmentDate)) {
             return (
-              <li key={appointmentString}>
-                <Badge color="pink" text={appointmentString} />
+              <li>
+                <Badge color="pink" />
+                <span>{formatAMPM(appointmentDate)}</span> {appointment.purpose}
               </li>
             );
           } else {
