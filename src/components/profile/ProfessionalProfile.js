@@ -255,7 +255,7 @@ export default function ProfessionalProfile({ profile }) {
           <Radio value={"doctor"}>Doctor</Radio>
           <Radio value={"nurse"}>Nurse</Radio>
         </Radio.Group>
-      </Form.Item>  
+      </Form.Item>
 
       <Form.Item
         name="medicalLicenseNo"

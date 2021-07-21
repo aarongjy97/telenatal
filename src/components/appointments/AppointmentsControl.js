@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Space,
   Button,
@@ -19,6 +19,8 @@ import {
   getAppointment,
   updateAppointment,
   deleteAppointment,
+  getDoctors,
+  getNurses,
 } from "../../api/Appointment";
 import AppointmentCard from "./AppointmentCard";
 
@@ -34,12 +36,12 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
   const [isRescheduleModalVisible, setIsRescheduleModalVisible] =
     useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] = useState();
   const [form] = Form.useForm();
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
 
+  // Load options for appointment selection
   var upcomingAppointmentsOption = [];
   for (let i = 0; i < upcomingAppointments.length; i++) {
     upcomingAppointmentsOption[i] = {
@@ -48,6 +50,8 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
     };
   }
 
+  // Render change for appointment selection
+  const [selectedAppointment, setSelectedAppointment] = useState();
   var upcomingAppointmentsChange = (appointmentId) => {
     getAppointment(appointmentId)
       .then((result) => {
@@ -55,6 +59,52 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
       })
       .catch((error) => console.log(error));
   };
+
+  // Fetch all doctors
+  const [doctors, setDoctors] = useState([]);
+  useEffect(() => {
+    getDoctors()
+      .then((result) => {
+        setDoctors(result.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  // console.log(doctors);
+
+  // Fetch all nurses
+  const [nurses, setNurses] = useState([]);
+  useEffect(() => {
+    getNurses()
+      .then((result) => {
+        setNurses(result.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  // TODO: Fetch all patients
+  const [patients, setPatients] = useState([]);
+
+  // Load options for medical professionals
+  var doctorOption = { value: "doctor", label: "Doctor", options: [] };
+  for (let i = 0; i < doctors.length; i++) {
+    doctorOption.options[i] = {
+      value: doctors[i]["email"],
+      label: doctors[i]["name"],
+    };
+  }
+  var nurseOption = { value: "nurse", label: "Nurse", options: [] };
+  for (let i = 0; i < nurses.length; i++) {
+    nurseOption.options[i] = {
+      value: nurses[i]["email"],
+      label: nurses[i]["name"],
+    };
+  }
+  var professionalOption = [doctorOption, nurseOption];
+
+  console.log(professionalOption);
+
+  // Load options for patients
 
   var newAppointmentsOption = [
     {
@@ -134,11 +184,10 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
               label="Professional"
               rules={[{ required: true }]}
             >
-              <Select placeholder="Select your medical professional">
-                <Option value="male">Doctor1</Option>
-                <Option value="female">Doctor2</Option>
-                <Option value="other">Doctor3</Option>
-              </Select>
+              <Select
+                placeholder="Select your medical professional"
+                options={professionalOption}
+              />
             </Form.Item>
           )}
 

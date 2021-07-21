@@ -6,9 +6,12 @@ import AppointmentsControl from "./AppointmentsControl";
 import {
   getPatientAppointments,
   getPatientUpcomingAppointments,
+  getProfessionalAppointments,
+  getProfessionalUpcomingAppointments,
 } from "../../api/Appointment";
 
 const patientId = "gengen@gengen.com";
+const professionalId = "hayoonchul@gmail.com";
 const user = "PATIENT"; // PATIENT or DOCTOR
 
 export function sameDay(d1, d2) {
@@ -50,20 +53,36 @@ export function formatDate(date) {
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
   useEffect(() => {
-    getPatientAppointments(patientId)
-      .then((result) => {
-        setAppointments(result.data);
-      })
-      .catch((error) => console.log(error));
+    if (user === "PATIENT") {
+      getPatientAppointments(patientId)
+        .then((result) => {
+          setAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    } else if (user === "DOCTOR") {
+      getProfessionalAppointments(professionalId)
+        .then((result) => {
+          setAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    }
   }, []);
 
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   useEffect(() => {
-    getPatientUpcomingAppointments(patientId)
-      .then((result) => {
-        setUpcomingAppointments(result.data);
-      })
-      .catch((error) => console.log(error));
+    if (user === "PATIENT") {
+      getPatientUpcomingAppointments(patientId)
+        .then((result) => {
+          setUpcomingAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    } else if (user === "DOCTOR") {
+      getProfessionalUpcomingAppointments(professionalId)
+        .then((result) => {
+          setUpcomingAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    }
   }, []);
 
   // Sort appointments by decreasing date
