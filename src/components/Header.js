@@ -9,17 +9,16 @@ const loggedIn = true; // To be replaced
 var logoUrl =
   loggedIn === false
     ? "/"
-    : "/overview";
+    : "/appointments";
 
 export default function Header() {
   const { Header } = Layout;
   let location = useLocation();
   const mappings = {
-    "/overview": "1",
+    "/appointments": "1",
     "/meet": "2",
     "/records": "3",
-    "/appointments": "4",
-    "/profile": "5"
+    "/profile": "4"
   };
 
   return (
@@ -39,8 +38,8 @@ export default function Header() {
               defaultSelectedKeys={mappings[location.pathname]}
             >
               <Menu.Item key="1">
-                Overview
-                <Link to="/overview" />
+                Appointments
+                <Link to="/appointments" />
               </Menu.Item>
               <Menu.Item key="2">
                 Meet
@@ -50,10 +49,7 @@ export default function Header() {
                 Records
                 <Link to="/records" />
               </Menu.Item>
-              <Menu.Item key="4">
-                Appointments
-                <Link to="/appointments" />
-              </Menu.Item>
+              
               <SubMenu
                 key="SubMenu"
                 icon={
@@ -70,7 +66,7 @@ export default function Header() {
                   />
                 }
               >
-                <Menu.Item key="5">
+                <Menu.Item key="4">
                   Profile
                   <Link to="/profile" />
                 </Menu.Item>
