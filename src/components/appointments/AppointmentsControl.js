@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import {
   Space,
   Button,
   Form,
   Input,
   Modal,
-  Cascader,
   Select,
   Radio,
+  DatePicker,
 } from "antd";
 import {
   ReadOutlined,
   EditOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
-import { formatDate } from "../utils";
 import {
   getAppointment,
   updateAppointment,
   deleteAppointment,
   getDoctors,
   getNurses,
+  getProfessionalAvailability,
 } from "../../api/Appointment";
 import AppointmentCard from "./AppointmentCard";
+import { formatDate, formatTime } from "../utils";
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -34,6 +36,8 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
   const [isRescheduleModalVisible, setIsRescheduleModalVisible] =
     useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [selectedProfessional, setSelectedProfessional] = useState();
+  const [selectedDate, setSelectedDate] = useState();
   const [selectedPurpose, setSelectedPurpose] = useState();
   const [form] = Form.useForm();
 
@@ -103,39 +107,45 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
   // TODO: Load options for patients
   var patientOption = [];
 
-  // TODO: Fetch available appointments
+  // Load available appointments
+  const [newAppointmentsOption, setNewAppointmentsOption] = useState([]);
+  function updateNewAppointmentsOption(appointmentSlots) {
+    var newAppointmentsOption = [];
+    for (let i = 0; i < appointmentSlots.length; i++) {
+      var appointmentTime = moment(appointmentSlots[i]);
+      if (appointmentTime.isAfter()) {
+        newAppointmentsOption.push({
+          value: appointmentSlots[i],
+          label: formatTime(appointmentSlots[i]),
+        });
+      }
+    }
+    setNewAppointmentsOption(newAppointmentsOption);
+  }
 
-  // TODO: Load options for available appointments
-  var newAppointmentsOption = [
-    {
-      value: "2021-08-30",
-      label: "2021-08-30",
-      children: [
-        {
-          value: "1700",
-          label: "5:00PM",
-        },
-        {
-          value: "1730",
-          label: "5:30PM",
-        },
-      ],
-    },
-    {
-      value: "2021-07-29",
-      label: "2021-07-29",
-      children: [
-        {
-          value: "0800",
-          label: "8:00AM",
-        },
-        {
-          value: "1230",
-          label: "12:30PM",
-        },
-      ],
-    },
-  ];
+  // Conditionally fetch available appointments
+  function updateAppointmentSlots(professionalId, date) {
+    if (professionalId) {
+      setSelectedProfessional(professionalId);
+      if (selectedDate != null) {
+        getProfessionalAvailability(professionalId, selectedDate).then(
+          (result) => {
+            updateNewAppointmentsOption(result.data);
+          }
+        );
+      }
+    }
+    if (date) {
+      setSelectedDate(date);
+      if (selectedProfessional != null) {
+        getProfessionalAvailability(selectedProfessional, date).then(
+          (result) => {
+            updateNewAppointmentsOption(result.data);
+          }
+        );
+      }
+    }
+  }
 
   const bookModal = () => {
     return (
@@ -146,6 +156,9 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
         onCancel={() => {
           setIsBookModalVisible(false);
           setSelectedPurpose();
+          setSelectedProfessional();
+          setSelectedDate();
+          setNewAppointmentsOption();
           form.resetFields();
         }}
         visible={isBookModalVisible}
@@ -155,6 +168,9 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
             onClick={() => {
               setIsBookModalVisible(false);
               setSelectedPurpose();
+              setSelectedProfessional();
+              setSelectedDate();
+              setNewAppointmentsOption();
               form.resetFields();
             }}
           >
@@ -206,27 +222,51 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
               ]}
             >
               <Select
-                placeholder="Select your medical professional"
+                placeholder="Select medical professional"
                 options={professionalOption}
+                onChange={(professionalId) => {
+                  updateAppointmentSlots(professionalId, null);
+                }}
               />
             </Form.Item>
           )}
 
           <Form.Item
-            name={["dateTime"]}
-            label="Date Time"
+            name={["date"]}
+            label="Date"
             rules={[
               {
                 required: true,
-                message: "Please select an appointment slot!",
+                message: "Please select an appointment date!",
               },
             ]}
           >
-            <Cascader
-              options={newAppointmentsOption}
-              expandTrigger="hover"
-              placeholder="Select your appointment slot"
+            <DatePicker
+              format={"ddd, D MMM YYYY"}
+              allowClear={false}
+              disabledDate={(current) => {
+                return current < moment().startOf("day");
+              }}
+              onChange={(date) => {
+                updateAppointmentSlots(
+                  null,
+                  date !== null ? date.format("YYYY-MM-DD") : null
+                );
+              }}
             />
+          </Form.Item>
+
+          <Form.Item
+            name={["time"]}
+            label="Time"
+            rules={[
+              {
+                required: true,
+                message: "Please select an appointment time!",
+              },
+            ]}
+          >
+            <Select placeholder="Select time" options={newAppointmentsOption} />
           </Form.Item>
 
           <Form.Item
@@ -255,7 +295,7 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
                 <Radio name={"Others"} value={"Others"}>
                   Others
                   {selectedPurpose === "Others" ? (
-                    <Input style={{ width: 100, marginLeft: 10 }} />
+                    <Input style={{ width: "5em", marginLeft: 10 }} />
                   ) : null}
                 </Radio>
               </Space>
@@ -316,6 +356,7 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
         onCancel={() => {
           setIsRescheduleModalVisible(false);
           setSelectedAppointment();
+          setNewAppointmentsOption();
           form.resetFields();
         }}
         visible={isRescheduleModalVisible}
@@ -325,6 +366,7 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
             onClick={() => {
               setIsRescheduleModalVisible(false);
               setSelectedAppointment();
+              setNewAppointmentsOption();
               form.resetFields();
             }}
           >
@@ -364,15 +406,41 @@ export default function AppointmentsControl({ upcomingAppointments, user }) {
           </Form.Item>
 
           <Form.Item
-            name={["dateTime"]}
-            label="Date Time"
-            rules={[{ required: true }]}
+            name={["date"]}
+            label="New Date"
+            rules={[
+              {
+                required: true,
+                message: "Please select an appointment date!",
+              },
+            ]}
           >
-            <Cascader
-              options={newAppointmentsOption}
-              expandTrigger="hover"
-              placeholder="Select your appointment slot"
+            <DatePicker
+              format={"ddd, D MMM YYYY"}
+              allowClear={false}
+              disabledDate={(current) => {
+                return current && current < moment().endOf("day");
+              }}
+              onChange={(date) => {
+                updateAppointmentSlots(
+                  null,
+                  date !== null ? date.format("YYYY-MM-DD") : null
+                );
+              }}
             />
+          </Form.Item>
+
+          <Form.Item
+            name={["time"]}
+            label="New Time"
+            rules={[
+              {
+                required: true,
+                message: "Please select an appointment time!",
+              },
+            ]}
+          >
+            <Select placeholder="Select time" options={newAppointmentsOption} />
           </Form.Item>
 
           <AppointmentCard appointment={selectedAppointment} user={user} />

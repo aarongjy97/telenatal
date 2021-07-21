@@ -168,7 +168,7 @@ export default function PatientProfile({ profile }) {
           },
         ]}
       >
-        <DatePicker defaultValue={defaultDob} format={"YYYY-MM-DD"} />
+        <DatePicker defaultValue={defaultDob} format={"D MMM YYYY"} />
       </Form.Item>
 
       <Form.Item
@@ -268,7 +268,7 @@ export default function PatientProfile({ profile }) {
           },
         ]}
       >
-        <DatePicker defaultValue={defaultDueDate} format={"YYYY-MM-DD"} />
+        <DatePicker defaultValue={defaultDueDate} format={"D MMM YYYY"} />
       </Form.Item>
 
       <Form.Item {...tailFormItemLayout}>
