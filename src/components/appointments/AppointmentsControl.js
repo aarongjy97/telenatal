@@ -24,8 +24,6 @@ import {
 } from "../../api/Appointment";
 import AppointmentCard from "./AppointmentCard";
 
-const { Option } = Select;
-
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 },
