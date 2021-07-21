@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Row, Col } from "antd";
-import AppointmentsList from "./AppointmentsList";
-import AppointmentsCalendar from "./AppointmentsCalendar";
-import AppointmentsControl from "./AppointmentsControl";
+import AppointmentList from "./AppointmentList";
+import AppointmentCalendar from "./AppointmentCalendar";
+import AppointmentControl from "./AppointmentControl";
 import {
   getPatientAppointments,
   getPatientUpcomingAppointments,
@@ -15,6 +15,7 @@ const professionalId = "hayoonchul@gmail.com";
 const user = "PATIENT"; // PATIENT or DOCTOR
 
 export default function Appointments() {
+  // Fetch appointment data
   const [appointments, setAppointments] = useState([]);
   useEffect(() => {
     if (user === "PATIENT") {
@@ -32,6 +33,7 @@ export default function Appointments() {
     }
   }, []);
 
+  // Fetch upcoming appointment data
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   useEffect(() => {
     if (user === "PATIENT") {
@@ -49,7 +51,7 @@ export default function Appointments() {
     }
   }, []);
 
-  // Sort appointments by decreasing date
+  // Sort appointments by decreasing date //TODO: Fix this
   upcomingAppointments.sort(function (a, b) {
     var dateA = new Date(a.datetime);
     var dateB = new Date(b.datetime);
@@ -61,18 +63,18 @@ export default function Appointments() {
       <Row style={{ height: "100%" }}>
         <Col className="left" span={16}>
           <div className="calendar">
-            <AppointmentsCalendar appointments={appointments} />
+            <AppointmentCalendar appointments={appointments} />
           </div>
         </Col>
         <Col className="right" span={8}>
           <Row className="control">
-            <AppointmentsControl
+            <AppointmentControl
               upcomingAppointments={upcomingAppointments}
               user={user}
             />
           </Row>
           <Row className="list">
-            <AppointmentsList
+            <AppointmentList
               upcomingAppointments={upcomingAppointments}
               user={user}
             />

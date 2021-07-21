@@ -2,7 +2,7 @@ import React from "react";
 import { Calendar, Badge } from "antd";
 import { sameDay, sameMonth, formatTime } from "../utils";
 
-export default function AppointmentsCalendar({ appointments }) {
+export default function AppointmentCalendar({ appointments }) {
   function monthCellRender(value) {
     var calendarDate = value.toDate();
     var appointmentList = {};

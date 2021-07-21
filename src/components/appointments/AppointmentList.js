@@ -1,10 +1,10 @@
 import React from "react";
-import { Row, List } from "antd";
+import { Layout, Row, List } from "antd";
 import AppointmentCard from "./AppointmentCard";
 
-export default function AppointmentsList({ upcomingAppointments, user }) {
+export default function AppointmentList({ upcomingAppointments, user }) {
   return (
-    <>
+    <Layout id="appointmentList">
       <Row className="title">Upcoming Appointments</Row>
       <Row className="content">
         <List
@@ -18,6 +18,6 @@ export default function AppointmentsList({ upcomingAppointments, user }) {
           )}
         />
       </Row>
-    </>
+    </Layout>
   );
 }
