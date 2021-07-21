@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Layout, Button, Row, Col, Input, Form, Switch } from "antd";
 import { LoginOutlined } from "@ant-design/icons";
-import { loginPatient } from "../../api/Auth";
+import { loginPatient, loginProfessional } from "../../api/Auth";
 
 const formItemLayout = {
   labelCol: {
@@ -41,6 +41,13 @@ export default function Login() {
   const onFinish = (values) => {
     if (showPatient === true) {
       loginPatient(values.email, values.password)
+        .then((result) => {
+          console.log(result);
+          window.location.replace("/appointments");
+        })
+        .catch((error) => console.log(error));
+    } else if (showPatient === false) {
+      loginProfessional(values.email, values.password)
         .then((result) => {
           console.log(result);
           window.location.replace("/appointments");

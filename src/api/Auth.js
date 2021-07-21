@@ -5,6 +5,12 @@ dotenv.config();
 
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 
+/**
+ * {
+ * 	name: string,
+ *  password: string
+ * }
+ */
 export async function loginPatient(email, password) {
   return await axios.post(`${API_ENDPOINT}/auth/patient/login`, {
       email: email,
@@ -32,5 +38,43 @@ export async function registerPatient(name, password, email, phone, dob, address
     dob: dob,
     address: address, 
     postalCode: postalCode
+  });
+}
+
+/**
+ * {
+ * 	name: string,
+ *  password: string
+ * }
+ */
+export async function loginProfessional(email, password) {
+  return await axios.post(`${API_ENDPOINT}/auth/professional/login`, {
+      email: email,
+      password: password,
+  });
+}
+
+/**
+ * {
+ * 	name: string,
+ *  password: string,
+ *  email: string,
+ *  phone: string,
+ *  type: "doctor" | "nurse",
+ *  education: string,
+ *  medicalLicenseNo: string,
+ *  clinicId: string
+ * }
+ */
+export async function registerProfessional(name, password, email, phone, type, education, medicalLicenseNo, clinicId) {
+	return await axios.post(`${API_ENDPOINT}/auth/professional/register`, {
+    name: name,
+    password: password,
+    email: email,
+    phone: phone,
+    type: type,
+    education: education, 
+    medicalLicenseNo: medicalLicenseNo,
+    clinicId: clinicId
   });
 }

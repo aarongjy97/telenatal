@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Form, Input, Select, Radio } from "antd";
+import { Button, Form, Input, Select, Radio, InputNumber } from "antd";
+import { registerProfessional } from "../../api/Auth";
 
 const { Option } = Select;
 
@@ -41,9 +42,24 @@ export default function ProfessionalProfile({ profile }) {
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
     if (typeof profile === 'undefined') {
-      // make POST request to create profile
+      registerProfessional(
+        values.name,
+        values.password,
+        values.email,
+        values.phone,
+        values.type,
+        values.education,
+        values.medicalLicenseNo,
+        "12345" // TODO: clinicId
+      )
+        .then((result) => {
+          console.log(result);
+          window.location.replace("/login");
+
+        })
+        .catch((error) => console.log(error));
     } else {
-      // make POST request to update profile
+      // TODO: make POST request to update profile
     }
   };
 
@@ -66,7 +82,7 @@ export default function ProfessionalProfile({ profile }) {
       clinicName: profile.clinicName,
       clinicAddress: profile.clinicAddress,
       clinicPostalCode: profile.clinicPostalCode,
-      medicalLicense: profile.medicalLicenseNo,
+      medicalLicenseNo: profile.medicalLicenseNo,
       education: profile.education
     }
   }
@@ -85,7 +101,6 @@ export default function ProfessionalProfile({ profile }) {
         label="Practitioner Name"
         rules={[
           {
-            type: "array",
             required: true,
             message: "Please input your full name!",
           },
@@ -131,7 +146,6 @@ export default function ProfessionalProfile({ profile }) {
         label="Address"
         rules={[
           {
-            type: "array",
             required: true,
             message: "Please input your place of residence!",
           },
@@ -162,13 +176,12 @@ export default function ProfessionalProfile({ profile }) {
         label="Postal Code"
         rules={[
           {
-            type: "array",
             required: true,
             message: "Please input your postal code!",
           },
         ]}
       >
-        <Input />
+        <InputNumber min={100000} max={999999} />
       </Form.Item>
 
       <Form.Item
@@ -194,7 +207,6 @@ export default function ProfessionalProfile({ profile }) {
         label="Clinic Name"
         rules={[
           {
-            type: "array",
             required: true,
             message: "Please input your clinic name!",
           },
@@ -208,7 +220,6 @@ export default function ProfessionalProfile({ profile }) {
         label="Clinic Address"
         rules={[
           {
-            type: "array",
             required: true,
             message: "Please input your clinic address!",
           },
@@ -222,28 +233,13 @@ export default function ProfessionalProfile({ profile }) {
         label="Clinic Postal Code"
         rules={[
           {
-            type: "array",
             required: true,
             message: "Please input your clinic postal code!",
           },
         ]}
       >
-        <Input />
+        <InputNumber min={100000} max={999999} />
       </Form.Item>
-
-      <Form.Item
-        name="type"
-        label="Practitioner Type"
-        rules={[
-          {
-            type: "array",
-            required: true,
-            message: "Please input your clinic postal code!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>  
 
       <Form.Item
         name="type"
@@ -256,17 +252,16 @@ export default function ProfessionalProfile({ profile }) {
         ]}
       >
         <Radio.Group>
-          <Radio value={1}>Doctor</Radio>
-          <Radio value={2}>Nurse</Radio>
+          <Radio value={"doctor"}>Doctor</Radio>
+          <Radio value={"nurse"}>Nurse</Radio>
         </Radio.Group>
       </Form.Item>  
 
       <Form.Item
-        name="medicalLicense"
+        name="medicalLicenseNo"
         label="Medical License No."
         rules={[
           {
-            type: "array",
             required: true,
             message: "Please input your medical license!",
           },
@@ -277,12 +272,11 @@ export default function ProfessionalProfile({ profile }) {
 
       <Form.Item
         name="education"
-        label="Education"
+        label="Highest Education"
         rules={[
           {
-            type: "array",
             required: true,
-            message: "Please input your education!",
+            message: "Please input your highest education!",
           },
         ]}
       >
