@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Layout, Button, Row, Col, Input, Form, Switch } from "antd";
 import { LoginOutlined } from "@ant-design/icons";
+import { loginPatient } from "../../api/Auth";
 
 const formItemLayout = {
   labelCol: {
@@ -38,11 +39,18 @@ export default function Login() {
   const [showPatient, setShowPatient] = useState(true);
 
   const onFinish = (values) => {
-    console.log('Success:', values);
+    if (showPatient === true) {
+      loginPatient(values.email, values.password)
+        .then((result) => {
+          console.log(result);
+          window.location.replace("/appointments");
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -51,12 +59,14 @@ export default function Login() {
         <Col className="col" span={10}>
           <Row className="top">
             <div className="title">
-              <LoginOutlined />&nbsp;Login {showPatient ? "Patient" : "Medical Professional"}
+              <LoginOutlined />
+              &nbsp;Login {showPatient ? "Patient" : "Medical Professional"}
             </div>
             <div className="toggle">
               <Switch
                 onClick={() => setShowPatient(!showPatient)}
-                defaultChecked />
+                defaultChecked
+              />
             </div>
           </Row>
           <Row className="bottom">
@@ -72,7 +82,7 @@ export default function Login() {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your E-mail!',
+                    message: "Please input your E-mail!",
                   },
                 ]}
               >
@@ -85,7 +95,7 @@ export default function Login() {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your password!',
+                    message: "Please input your password!",
                   },
                 ]}
               >
