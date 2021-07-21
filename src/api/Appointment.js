@@ -80,3 +80,12 @@ export async function getDoctors() {
 export async function getNurses() {
   return await axios.get(`${API_ENDPOINT}/professional/nurses`);
 }
+
+export async function getProfessionalAvailability(professionalId, date) {
+  return await axios.get(`${API_ENDPOINT}/professional/availability`, {
+    params: {
+      date: date,
+      professionalId: professionalId,
+    },
+  });
+}
