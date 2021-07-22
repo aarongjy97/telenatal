@@ -9,36 +9,74 @@ import Profile from "./components/profile/Profile";
 import Meet from "./components/meet/Meet";
 import RecordsMain from "./components/records/RecordsMain";
 import Appointments from "./components/appointments/Appointments";
+import { userContext } from "./userContext";
 
-export default function App() {
-  return (
-    <Router>
-      <div id="root">
-        <Header />
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route exact path="/register">
-            <Register />
-          </Route>
-          <Route exact path="/meet">
-            <Meet />
-          </Route>
-          <Route exact path="/records">
-            <RecordsMain />
-          </Route>
-          <Route exact path="/profile">
-            <Profile />
-          </Route>
-          <Route exact path="/appointments">
-            <Appointments />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {},
+      userType: null,
+      loggedIn: false,
+    };
+
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
+  }
+
+  login(user) {
+    console.log("Login Success");
+    const userType = "medicalLicenseNo" in user ? "professional" : "patient";
+    this.setState({ user: user, userType: userType, loggedIn: true });
+  }
+
+  logout() {
+    console.log("Logout Success");
+    this.setState({ user: {}, userType: null, loggedIn: false });
+  }
+
+  render() {
+    const value = {
+      user: this.state.user,
+      userType: this.state.user,
+      loggedIn: this.state.loggedIn,
+      loginUser: this.login,
+      logoutUser: this.logout,
+    };
+
+    return (
+      <userContext.Provider value={value}>
+        <Router>
+          <div id="root">
+            <Header />
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+              <Route exact path="/register">
+                <Register />
+              </Route>
+              <Route exact path="/meet">
+                <Meet />
+              </Route>
+              <Route exact path="/records">
+                <RecordsMain />
+              </Route>
+              <Route exact path="/profile">
+                <Profile />
+              </Route>
+              <Route exact path="/appointments">
+                <Appointments />
+              </Route>
+            </Switch>
+          </div>
+        </Router>
+      </userContext.Provider>
+    );
+  }
 }
+
+export default App;
