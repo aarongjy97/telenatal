@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Layout, Button, Row, Col, Input, Form, Switch } from "antd";
-import { LoginOutlined } from "@ant-design/icons";
+import { LoginOutlined, WarningOutlined } from "@ant-design/icons";
 import { loginPatient, loginProfessional } from "../../api/Auth";
+import { userContext } from "../../userContext";
 
 const formItemLayout = {
   labelCol: {
@@ -36,28 +37,39 @@ const tailFormItemLayout = {
 };
 
 export default function Login() {
-  const [showPatient, setShowPatient] = useState(true);
+  // Get user context
+  const context = useContext(userContext);
+  const loginUser = context.loginUser;
 
+  // Set states
+  const [showPatient, setShowPatient] = useState(true);
+  const [errorMessage, setErrorMessage] = useState();
+
+  console.log(errorMessage);
+
+  // Login for professional/patient
   const onFinish = (values) => {
     if (showPatient === true) {
       loginPatient(values.email, values.password)
         .then((result) => {
-          console.log(result);
+          loginUser(result.data);
+          setErrorMessage();
           window.location.replace("/appointments");
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          setErrorMessage(error.response.data);
+        });
     } else if (showPatient === false) {
       loginProfessional(values.email, values.password)
         .then((result) => {
-          console.log(result);
+          loginUser(result.data);
+          setErrorMessage();
           window.location.replace("/appointments");
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          setErrorMessage(error.response.data);
+        });
     }
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -77,12 +89,7 @@ export default function Login() {
             </div>
           </Row>
           <Row className="bottom">
-            <Form
-              {...formItemLayout}
-              name="loginForm"
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-            >
+            <Form {...formItemLayout} name="loginForm" onFinish={onFinish}>
               <Form.Item
                 label="E-mail"
                 name="email"
@@ -108,6 +115,13 @@ export default function Login() {
               >
                 <Input.Password />
               </Form.Item>
+
+              {typeof errorMessage != "undefined" && 
+                <p className="errorMessage">
+                  <WarningOutlined />
+                  &nbsp;{errorMessage}
+                </p>
+              }
 
               <Form.Item {...tailFormItemLayout}>
                 <Button type="primary" htmlType="submit">
