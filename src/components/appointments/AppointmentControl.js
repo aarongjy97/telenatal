@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import moment from "moment";
 import {
   Space,
@@ -23,17 +23,26 @@ import {
   getDoctors,
   getNurses,
   getProfessionalAvailability,
+  createAppointment,
 } from "./../../api/Appointment";
+import { getPatient, getProfessional } from "./../../api/User";
 import AppointmentCard from "./AppointmentCard";
 import { formatDate, formatTime } from "./../utils";
+import { userContext } from "./../../userContext";
 
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 },
 };
 
-export default function AppointmentControl({ upcomingAppointments, userType }) {
+export default function AppointmentControl({ upcomingAppointments }) {
+  // Get user context
+  const context = useContext(userContext);
+  const user = context.user;
+  const userType = "medicalLicenseNo" in user ? "professional" : "patient";
+
   const [form] = Form.useForm();
+  const { Option } = Select;
 
   const [isBookModalVisible, setIsBookModalVisible] = useState(false);
   const [isRescheduleModalVisible, setIsRescheduleModalVisible] =
@@ -47,9 +56,81 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
   const [selectedAppointment, setSelectedAppointment] = useState();
   const [selectedDate, setSelectedDate] = useState();
   const [selectedPurpose, setSelectedPurpose] = useState();
+  const [newAppointmentsOption, setNewAppointmentsOption] = useState([]);
 
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+  function clearSelection() {
+    setSelectedProfessional();
+    setSelectedAppointment();
+    setSelectedDate();
+    setSelectedPurpose();
+  }
+
+  const onBook = (values) => {
+    let date = new Date(values.time).valueOf();
+    let location = "";
+    let postalCode = "";
+    let patientId = "";
+    let professionalId = "";
+
+    // Set Professional and Patient Entity
+    if (userType === "patient") {
+      patientId = user.email;
+      professionalId = values.professionalId;
+    } else if (userType === "professional") {
+      patientId = values.patientId;
+      professionalId = user.email;
+    }
+
+    // Get Appointment Location
+    if (values.location === "video") {
+      location = "Video Conference";
+      postalCode = 0;
+    } else if (values.location === "patient") {
+      if (userType === "patient") {
+        // Load patient details
+        location = user.address;
+        postalCode = user.postalCode;
+      } else if (userType === "professional") {
+        // Fetch patient details
+        let patient = getPatient(values.patientId);
+        location = patient.address;
+        postalCode = patient.postalCode;
+      }
+    } else if (values.location === "professional") {
+      if (userType === "patient") {
+        // Fetch professional details
+        let professional = getProfessional(values.professionalId);
+        location = professional.clinicName + ", " + professional.clinicAddress;
+        postalCode = professional.clinicPostalCode;
+      } else if (userType === "professional") {
+        // Load professional detail
+        location = user.clinicName + ", " + user.clinicAddress;
+        postalCode = user.clinicPostalCode;
+      }
+    }
+
+    createAppointment(
+      values.purpose,
+      date,
+      location,
+      postalCode,
+      patientId,
+      professionalId,
+      values.remarks
+    )
+      .then((result) => {
+        clearSelection();
+        setIsBookModalVisible(false);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const onReschedule = (values) => {
+    console.log("reschedule: ", values);
+  };
+
+  const onCancel = (values) => {
+    console.log("cancel: ", values);
   };
 
   // Load options for appointment selection
@@ -110,7 +191,7 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
       label: nurses[i]["name"],
     };
   }
-  var professionalOption = [doctorOption, nurseOption];
+  const professionalOption = [doctorOption, nurseOption];
 
   // Load options for patients
   var patientOption = [];
@@ -123,7 +204,6 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
 
   // Load available appointments
   // TODO: load for medical professional view also
-  const [newAppointmentsOption, setNewAppointmentsOption] = useState([]);
   function updateNewAppointmentsOption(appointmentSlots) {
     var newAppointmentsOption = [];
     for (let i = 0; i < appointmentSlots.length; i++) {
@@ -138,11 +218,8 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
     setNewAppointmentsOption(newAppointmentsOption);
   }
 
-  // Load appointment locations
-  const [locationOption, setLocationOption] = useState([]);
-
   // Conditionally fetch available appointments
-  function updateAppointmentSlots(professionalId, date) {
+  function getAppointmentSlots(professionalId, date) {
     if (professionalId) {
       setSelectedProfessional(professionalId);
       if (selectedDate != null) {
@@ -208,15 +285,15 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
           {...formItemLayout}
           form={form}
           name="bookAppointment"
-          onFinish={onFinish}
+          onFinish={onBook}
         >
           {userType === "professional" && (
             <Form.Item
-              name="patient"
+              name="patientId"
               label="Patient"
               rules={[
                 {
-                  required: true,
+                  required: userType === "professional",
                   message: "Please select a patient!",
                 },
               ]}
@@ -230,11 +307,11 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
 
           {userType === "patient" && (
             <Form.Item
-              name="professional"
+              name="professionalId"
               label="Professional"
               rules={[
                 {
-                  required: true,
+                  required: userType === "patient",
                   message: "Please select a medical professional!",
                 },
               ]}
@@ -243,7 +320,7 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
                 placeholder="Select medical professional"
                 options={professionalOption}
                 onChange={(professionalId) => {
-                  updateAppointmentSlots(professionalId, null);
+                  getAppointmentSlots(professionalId, null);
                 }}
               />
             </Form.Item>
@@ -266,7 +343,7 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
                 return current < moment().startOf("day");
               }}
               onChange={(date) => {
-                updateAppointmentSlots(
+                getAppointmentSlots(
                   null,
                   date !== null ? date.format("YYYY-MM-DD") : null
                 );
@@ -330,16 +407,18 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
               },
             ]}
           >
-            <Select placeholder="Select location" options={locationOption} />
+            <Select placeholder="Select location">
+              <Option value="video">Video Conference</Option>
+              <Option value="patient">Patient's Residence</Option>
+              <Option value="professional">Professional's Clinic</Option>
+            </Select>
           </Form.Item>
 
-          <Form.Item
-            name={["remarks"]}
-            label="Remarks"
-            rules={[{ required: false }]}
-          >
+          <Form.Item name={["remarks"]} label="Remarks">
             <Input.TextArea />
           </Form.Item>
+
+          <AppointmentCard />
         </Form>
       </Modal>
     );
@@ -427,7 +506,7 @@ export default function AppointmentControl({ upcomingAppointments, userType }) {
                 return current < moment().startOf("day");
               }}
               onChange={(date) => {
-                updateAppointmentSlots(
+                getAppointmentSlots(
                   null,
                   date !== null ? date.format("YYYY-MM-DD") : null
                 );

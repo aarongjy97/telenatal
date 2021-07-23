@@ -58,18 +58,22 @@ export async function deleteAppointment(appointmentId) {
 }
 
 export async function createAppointment(
+  purpose,
   date,
   location,
   postalCode,
   patientId,
-  professionalId
+  professionalId,
+  remarks
 ) {
   return await axios.post(`${API_ENDPOINT}/appointment`, {
+    purpose: purpose,
     date: date,
     location: location,
     postalCode: postalCode,
     patientId: patientId,
     professionalId: professionalId,
+    remarks: remarks,
   });
 }
 

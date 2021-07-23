@@ -23,3 +23,12 @@ export function formatDate(inputDate) {
   var date = new Date(inputDate);
   return moment(date).format("ddd, D MMM YYYY, h:mmA");
 }
+
+export function sortAppointments(appointments) {
+  appointments.sort(function (a, b) {
+    var dateA = new Date(a.date);
+    var dateB = new Date(b.date);
+    return dateA > dateB ? 1 : -1;
+  });
+  return appointments;
+}

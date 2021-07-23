@@ -11,6 +11,7 @@ import {
   getProfessionalAppointments,
   getProfessionalUpcomingAppointments,
 } from "./../../api/Appointment";
+import { sortAppointments } from "./../utils";
 import { userContext } from "./../../userContext";
 
 export default function Appointments() {
@@ -44,13 +45,13 @@ export default function Appointments() {
     if (userType === "patient") {
       getPatientUpcomingAppointments(user.email)
         .then((result) => {
-          setUpcomingAppointments(result.data);
+          setUpcomingAppointments(sortAppointments(result.data));
         })
         .catch((error) => console.log(error));
     } else if (userType === "professional") {
       getProfessionalUpcomingAppointments(user.email)
         .then((result) => {
-          setUpcomingAppointments(result.data);
+          setUpcomingAppointments(sortAppointments(result.data));
         })
         .catch((error) => console.log(error));
     }
@@ -71,10 +72,7 @@ export default function Appointments() {
           </Col>
           <Col className="right" span={8}>
             <Row className="control">
-              <AppointmentControl
-                upcomingAppointments={upcomingAppointments}
-                userType={userType}
-              />
+              <AppointmentControl upcomingAppointments={upcomingAppointments} />
             </Row>
             <Fade right>
               <Row className="list">
