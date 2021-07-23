@@ -32,15 +32,21 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 };
 
-export default function AppointmentControl({ upcomingAppointments, user }) {
+export default function AppointmentControl({ upcomingAppointments, userType }) {
+  const [form] = Form.useForm();
+
   const [isBookModalVisible, setIsBookModalVisible] = useState(false);
   const [isRescheduleModalVisible, setIsRescheduleModalVisible] =
     useState(false);
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+
+  const [doctors, setDoctors] = useState([]);
+  const [nurses, setNurses] = useState([]);
+  const [patients, setPatients] = useState([]);
   const [selectedProfessional, setSelectedProfessional] = useState();
+  const [selectedAppointment, setSelectedAppointment] = useState();
   const [selectedDate, setSelectedDate] = useState();
   const [selectedPurpose, setSelectedPurpose] = useState();
-  const [form] = Form.useForm();
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
@@ -56,7 +62,6 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
   }
 
   // Render change for appointment selection
-  const [selectedAppointment, setSelectedAppointment] = useState();
   var upcomingAppointmentsChange = (appointmentId) => {
     getAppointment(appointmentId)
       .then((result) => {
@@ -65,28 +70,30 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
       .catch((error) => console.log(error));
   };
 
-  // Fetch all doctors
-  const [doctors, setDoctors] = useState([]);
   useEffect(() => {
-    getDoctors()
-      .then((result) => {
-        setDoctors(result.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+    if (userType === "patient") {
+      // Fetch all doctors
+      getDoctors()
+        .then((result) => {
+          setDoctors(result.data);
+        })
+        .catch((error) => console.log(error));
 
-  // Fetch all nurses
-  const [nurses, setNurses] = useState([]);
-  useEffect(() => {
-    getNurses()
-      .then((result) => {
-        setNurses(result.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
-  // TODO: Fetch all patients
-  const [patients, setPatients] = useState([]);
+      // Fetch all nurses
+      getNurses()
+        .then((result) => {
+          setNurses(result.data);
+        })
+        .catch((error) => console.log(error));
+    } else if (userType === "professional") {
+      // TODO: Fetch all patients
+      getNurses()
+        .then((result) => {
+          setPatients(result.data);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [userType]);
 
   // Load options for medical professionals
   var doctorOption = { value: "doctor", label: "Doctor", options: [] };
@@ -105,10 +112,17 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
   }
   var professionalOption = [doctorOption, nurseOption];
 
-  // TODO: Load options for patients
+  // Load options for patients
   var patientOption = [];
+  for (let i = 0; i < patients.length; i++) {
+    patientOption[i] = {
+      value: patients[i]["email"],
+      label: patients[i]["name"],
+    };
+  }
 
   // Load available appointments
+  // TODO: load for medical professional view also
   const [newAppointmentsOption, setNewAppointmentsOption] = useState([]);
   function updateNewAppointmentsOption(appointmentSlots) {
     var newAppointmentsOption = [];
@@ -123,6 +137,9 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
     }
     setNewAppointmentsOption(newAppointmentsOption);
   }
+
+  // Load appointment locations
+  const [locationOption, setLocationOption] = useState([]);
 
   // Conditionally fetch available appointments
   function updateAppointmentSlots(professionalId, date) {
@@ -193,7 +210,7 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
           name="bookAppointment"
           onFinish={onFinish}
         >
-          {user === "DOCTOR" && (
+          {userType === "professional" && (
             <Form.Item
               name="patient"
               label="Patient"
@@ -211,7 +228,7 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
             </Form.Item>
           )}
 
-          {user === "PATIENT" && (
+          {userType === "patient" && (
             <Form.Item
               name="professional"
               label="Professional"
@@ -313,20 +330,7 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
               },
             ]}
           >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            name={["postalCode"]}
-            label="Postal Code"
-            rules={[
-              {
-                required: true,
-                message: "Please input the appointment postal code!",
-              },
-            ]}
-          >
-            <Input />
+            <Select placeholder="Select location" options={locationOption} />
           </Form.Item>
 
           <Form.Item
@@ -420,7 +424,7 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
               format={"ddd, D MMM YYYY"}
               allowClear={false}
               disabledDate={(current) => {
-                return current && current < moment().endOf("day");
+                return current < moment().startOf("day");
               }}
               onChange={(date) => {
                 updateAppointmentSlots(
@@ -444,7 +448,10 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
             <Select placeholder="Select time" options={newAppointmentsOption} />
           </Form.Item>
 
-          <AppointmentCard appointment={selectedAppointment} user={user} />
+          <AppointmentCard
+            appointment={selectedAppointment}
+            userType={userType}
+          />
         </Form>
       </Modal>
     );
@@ -508,7 +515,10 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
             />
           </Form.Item>
         </Form>
-        <AppointmentCard appointment={selectedAppointment} user={user} />
+        <AppointmentCard
+          appointment={selectedAppointment}
+          userType={userType}
+        />
       </Modal>
     );
   };
