@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Redirect } from "react-router-dom";
 import { Avatar, Layout, Row, Col } from "antd";
+import Fade from "react-reveal";
 import { userContext } from "./../../userContext";
 
 export default function Home() {
@@ -16,25 +17,29 @@ export default function Home() {
       <Layout id="home">
         <Row className="centerRow">
           <Col className="centerCol">
-            <Avatar
-              size={{
-                xs: 180,
-                sm: 220,
-                md: 280,
-                lg: 320,
-                xl: 400,
-                xxl: 480,
-              }}
-              src="mother.svg"
-              shape="square"
-              alt="Motherhood from FlatIcon"
-            />
+            <Fade left>
+              <Avatar
+                size={{
+                  xs: 180,
+                  sm: 220,
+                  md: 280,
+                  lg: 320,
+                  xl: 400,
+                  xxl: 480,
+                }}
+                src="mother.svg"
+                shape="square"
+                alt="Motherhood from FlatIcon"
+              />
+            </Fade>
           </Col>
           <Col className="centerCol">
-            <p>
-              The care that <br />
-              <span>every mother deserves</span>
-            </p>
+            <Fade right>
+              <p>
+                The care that <br />
+                <span>every mother deserves</span>
+              </p>
+            </Fade>
           </Col>
         </Row>
       </Layout>

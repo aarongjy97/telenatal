@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import { Layout, Row, Col, Switch } from "antd";
 import { FormOutlined } from "@ant-design/icons";
+import Fade from "react-reveal";
 import PatientRegister from "./PatientRegister";
 import ProfessionalRegister from "./ProfessionalRegister";
 import { userContext } from "./../../userContext";
@@ -21,6 +22,7 @@ export default function Profile() {
       <Layout id="profile">
         <Row className="row" style={{ height: "100%" }}>
           <Col className="left">
+            <Fade bottom>
             <Row className="top">
               <div className="title">
                 <FormOutlined />
@@ -40,6 +42,7 @@ export default function Profile() {
                 <ProfessionalRegister />
               )}
             </Row>
+            </Fade>
           </Col>
         </Row>
       </Layout>
