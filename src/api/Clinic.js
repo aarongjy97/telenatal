@@ -24,3 +24,15 @@ export async function getProfessionalsByClinic(clinicId) {
     },
   });
 }
+
+export async function createClinic(
+  clinicName,
+  clinicAddress,
+  clinicPostalCode
+) {
+  return await axios.post(`${API_ENDPOINT}/clinic`, {
+    clinicName: clinicName,
+    clinicAddress: clinicAddress,
+    clinicPostalCode: clinicPostalCode,
+  });
+}

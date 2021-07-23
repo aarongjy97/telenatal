@@ -11,16 +11,15 @@ export default function Header() {
     "/appointments": "1",
     "/meet": "2",
     "/records": "3",
-    "/profile": "4",
   };
 
   // Get user context
   const context = useContext(userContext);
-  // const user = context.user;
-  const loggedIn = context.loggedIn;
+  const user = context.user;
   const logoutUser = context.logoutUser;
-
-  var logoUrl = loggedIn === false ? "/" : "/appointments";
+  const loggedIn = Object.keys(user).length === 0 ? false : true;
+  const userType = "medicalLicenseNo" in user ? "professional" : "patient";
+  const logoUrl = loggedIn === false ? "/" : "/appointments";
 
   return (
     <Header id="header">
@@ -28,7 +27,11 @@ export default function Header() {
         <Col className="logo">
           <a href={logoUrl}>
             <img src="logo.svg" alt="TeleNatal Logo" height="40px" />
-            TeleNatal
+            TeleNatal&nbsp;
+            {loggedIn && userType === "patient" && <span>Patient</span>}
+            {loggedIn && userType === "professional" && (
+              <span>Medical Professional</span>
+            )}
           </a>
         </Col>
         <Col className="buttons">
@@ -36,7 +39,7 @@ export default function Header() {
             <Menu
               theme="light"
               mode="horizontal"
-              defaultSelectedKeys={mappings[location.pathname]}
+              selectedKeys={mappings[location.pathname]}
             >
               <Menu.Item key="1">
                 Appointments
@@ -53,25 +56,24 @@ export default function Header() {
               <SubMenu
                 key="SubMenu"
                 icon={
-                  <Avatar
-                    size="medium"
-                    icon={
-                      <img
-                        src="avatar.jpg" // TODO: change to user profile pic
-                        alt="Profile"
-                        height="30px"
-                        style={{ borderRadius: "50%" }}
-                      />
-                    }
-                  />
+                  <>
+                    <Avatar
+                      style={{
+                        color: "#fff0f6",
+                        backgroundColor: "#780650",
+                      }}
+                    >
+                      {user.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </Avatar>
+                  </>
                 }
               >
-                <Menu.Item key="4">
-                  Profile
-                  <Link to="/profile" />
-                </Menu.Item>
-                <Menu.Item key="5" onClick={logoutUser}>
+                <Menu.Item key="4" onClick={logoutUser}>
                   Logout
+                  <Link to="/" />
                 </Menu.Item>
               </SubMenu>
             </Menu>

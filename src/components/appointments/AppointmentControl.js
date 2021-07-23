@@ -15,6 +15,7 @@ import {
   EditOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
+import Fade from "react-reveal";
 import {
   getAppointment,
   updateAppointment,
@@ -22,9 +23,9 @@ import {
   getDoctors,
   getNurses,
   getProfessionalAvailability,
-} from "../../api/Appointment";
+} from "./../../api/Appointment";
 import AppointmentCard from "./AppointmentCard";
-import { formatDate, formatTime } from "../utils";
+import { formatDate, formatTime } from "./../utils";
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -515,33 +516,39 @@ export default function AppointmentControl({ upcomingAppointments, user }) {
   return (
     <>
       <Space className="buttons" direction="vertical">
-        <Button
-          block
-          type="primary"
-          icon={<ReadOutlined />}
-          onClick={() => setIsBookModalVisible(true)}
-          style={{ background: "#c41d7f" }}
-        >
-          Book Appointment
-        </Button>
-        <Button
-          block
-          type="primary"
-          icon={<EditOutlined />}
-          onClick={() => setIsRescheduleModalVisible(true)}
-          style={{ background: "#f759ab" }}
-        >
-          Reschedule Appointment
-        </Button>
-        <Button
-          block
-          type="primary"
-          icon={<CloseCircleOutlined />}
-          onClick={() => setIsCancelModalVisible(true)}
-          style={{ background: "#8c8c8c" }}
-        >
-          Cancel Appointment
-        </Button>
+        <Fade right>
+          <Button
+            block
+            type="primary"
+            icon={<ReadOutlined />}
+            onClick={() => setIsBookModalVisible(true)}
+            style={{ background: "#c41d7f" }}
+          >
+            Book Appointment
+          </Button>
+        </Fade>
+        <Fade right>
+          <Button
+            block
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => setIsRescheduleModalVisible(true)}
+            style={{ background: "#f759ab" }}
+          >
+            Reschedule Appointment
+          </Button>
+        </Fade>
+        <Fade right>
+          <Button
+            block
+            type="primary"
+            icon={<CloseCircleOutlined />}
+            onClick={() => setIsCancelModalVisible(true)}
+            style={{ background: "#8c8c8c" }}
+          >
+            Cancel Appointment
+          </Button>
+        </Fade>
       </Space>
       {bookModal()}
       {rescheduleModal()}

@@ -2,7 +2,7 @@ import React from "react";
 import { Layout, Row, List } from "antd";
 import AppointmentCard from "./AppointmentCard";
 
-export default function AppointmentList({ upcomingAppointments, user }) {
+export default function AppointmentList({ upcomingAppointments, userType }) {
   return (
     <Layout id="appointmentList">
       <Row className="title">Upcoming Appointments</Row>
@@ -13,7 +13,7 @@ export default function AppointmentList({ upcomingAppointments, user }) {
           itemLayout="vertical"
           renderItem={(appointment) => (
             <List.Item>
-              <AppointmentCard appointment={appointment} user={user} />
+              <AppointmentCard appointment={appointment} userType={userType} />
             </List.Item>
           )}
         />
