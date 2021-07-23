@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { Layout, Button, Row, Col, Input, Form, Switch } from "antd";
 import { LoginOutlined, WarningOutlined } from "@ant-design/icons";
 import { loginPatient, loginProfessional } from "../../api/Auth";
@@ -37,7 +38,8 @@ const tailFormItemLayout = {
 };
 
 export default function Login() {
-  // Get user context
+  // Get user context and history
+  const history = useHistory();
   const context = useContext(userContext);
   const loginUser = context.loginUser;
 
@@ -52,7 +54,7 @@ export default function Login() {
         .then((result) => {
           loginUser(result.data);
           setErrorMessage();
-          window.location.replace("/appointments");
+          history.push("/appointments");
         })
         .catch((error) => setErrorMessage(error.response.data));
     } else if (showPatient === false) {
@@ -60,7 +62,7 @@ export default function Login() {
         .then((result) => {
           loginUser(result.data);
           setErrorMessage();
-          window.location.replace("/appointments");
+          history.push("/appointments");
         })
         .catch((error) => setErrorMessage(error.response.data));
     }
@@ -110,12 +112,12 @@ export default function Login() {
                 <Input.Password />
               </Form.Item>
 
-              {typeof errorMessage != "undefined" && 
+              {typeof errorMessage != "undefined" && (
                 <p className="errorMessage">
                   <WarningOutlined />
                   &nbsp;{errorMessage}
                 </p>
-              }
+              )}
 
               <Form.Item {...tailFormItemLayout}>
                 <Button type="primary" htmlType="submit">

@@ -5,7 +5,6 @@ import Home from "./components/home/Home";
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
 import Header from "./components/Header";
-import Profile from "./components/profile/Profile";
 import Meet from "./components/meet/Meet";
 import RecordsMain from "./components/records/RecordsMain";
 import Appointments from "./components/appointments/Appointments";
@@ -16,8 +15,6 @@ class App extends React.Component {
     super(props);
     this.state = {
       user: {},
-      userType: null,
-      loggedIn: false,
     };
 
     this.login = this.login.bind(this);
@@ -26,20 +23,17 @@ class App extends React.Component {
 
   login(user) {
     console.log("Login Success");
-    const userType = "medicalLicenseNo" in user ? "professional" : "patient";
-    this.setState({ user: user, userType: userType, loggedIn: true });
+    this.setState({ user: user });
   }
 
   logout() {
     console.log("Logout Success");
-    this.setState({ user: {}, userType: null, loggedIn: false });
+    this.setState({ user: {} });
   }
 
   render() {
     const value = {
       user: this.state.user,
-      userType: this.state.user,
-      loggedIn: this.state.loggedIn,
       loginUser: this.login,
       logoutUser: this.logout,
     };
@@ -64,9 +58,6 @@ class App extends React.Component {
               </Route>
               <Route exact path="/records">
                 <RecordsMain />
-              </Route>
-              <Route exact path="/profile">
-                <Profile />
               </Route>
               <Route exact path="/appointments">
                 <Appointments />

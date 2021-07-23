@@ -3,7 +3,6 @@ import { Layout, Row, Col, Switch } from "antd";
 import { FormOutlined } from "@ant-design/icons";
 import PatientRegister from "./PatientRegister";
 import ProfessionalRegister from "./ProfessionalRegister";
-import ProfileImage from "../profile/ProfileImage";
 
 export default function Profile() {
   const [showPatient, setShowPatient] = useState(true);
@@ -31,9 +30,6 @@ export default function Profile() {
               <ProfessionalRegister />
             )}
           </Row>
-        </Col>
-        <Col className="right">
-          <ProfileImage />
         </Col>
       </Row>
     </Layout>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import moment from "moment";
 import { WarningOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Select, DatePicker, InputNumber } from "antd";
@@ -14,6 +15,7 @@ const { Option } = Select;
 
 export default function PatientRegister() {
   const [form] = Form.useForm();
+  const history = useHistory();
   const [errorMessage, setErrorMessage] = useState();
 
   const onRegistration = (values) => {
@@ -30,7 +32,7 @@ export default function PatientRegister() {
       .then((result) => {
         console.log(result);
         setErrorMessage();
-        window.location.replace("/login");
+        history.push("/login");
       })
       .catch((error) => setErrorMessage(error.response.data));
   };

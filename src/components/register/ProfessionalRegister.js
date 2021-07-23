@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { Button, Form, Input, Select, Radio, InputNumber } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
 import { registerProfessional } from "../../api/Auth";
@@ -8,6 +9,9 @@ import { educationList, formItemLayout, tailFormItemLayout } from "./constants";
 export default function ProfessionalRegister() {
   const [form] = Form.useForm();
   const { Option } = Select;
+
+  // Get history
+  const history = useHistory();
 
   const [clinics, setClinics] = useState([]);
   const [clinicsOption, setClinicsOption] = useState([]);
@@ -54,7 +58,7 @@ export default function ProfessionalRegister() {
           });
           clinicId = result.data.clinicId;
           setErrorMessage();
-          window.location.replace("/login");
+          history.push("/login");
         })
         .catch((error) => setErrorMessage(error.response.data));
     } else {
@@ -74,7 +78,7 @@ export default function ProfessionalRegister() {
       .then((result) => {
         console.log("Professional Registered");
         console.log(result);
-        // window.location.replace("/login");
+        // history.push("/login");
       })
       .catch((error) => console.log(error));
   };
