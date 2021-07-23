@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "antd";
 import {
   ClockCircleOutlined,
@@ -6,10 +6,29 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { formatDate } from "../utils";
+import { getProfessional } from "../../api/User";
+import Fade from "react-reveal";
 
-export default function AppointmentCard({ appointment, user }) {
+export default function AppointmentCard({ appointment, userType }) {
+  
+  // Fetch professional title data
+  const [professionalTitle, setProfessionalTitle] = useState();
+  useEffect(() => {
+    if (userType === "patient") {
+      getProfessional(appointment.professionalId)
+        .then((result) => {
+          if (result.data.type === "doctor") {
+            setProfessionalTitle("Dr.");
+          } else if (result.data.type === "nurse") {
+            setProfessionalTitle("Nurse");
+          }
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [userType]);
+
   return (
-    <>
+    <Fade>
       {typeof appointment !== "undefined" && (
         <Card id="appointmentCard">
           <p>
@@ -19,16 +38,17 @@ export default function AppointmentCard({ appointment, user }) {
             <ClockCircleOutlined />
             &nbsp;{formatDate(appointment.date)}
           </p>
-          {user === "DOCTOR" && (
+          {userType === "professional" && (
             <p>
               <UserOutlined />
-              &nbsp;{appointment.patientName}
+              &nbsp;
+              {appointment.patientName}
             </p>
           )}
-          {user === "PATIENT" && (
+          {userType === "patient" && (
             <p>
               <UserOutlined />
-              &nbsp;{appointment.professionalName}
+              &nbsp;{professionalTitle} {appointment.professionalName}
             </p>
           )}
           <p>
@@ -37,6 +57,6 @@ export default function AppointmentCard({ appointment, user }) {
           </p>
         </Card>
       )}
-    </>
+    </Fade>
   );
 }

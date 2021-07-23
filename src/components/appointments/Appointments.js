@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import { Layout, Row, Col } from "antd";
+import Fade from "react-reveal";
 import AppointmentList from "./AppointmentList";
 import AppointmentCalendar from "./AppointmentCalendar";
 import AppointmentControl from "./AppointmentControl";
@@ -62,23 +63,27 @@ export default function Appointments() {
       <Layout id="appointments">
         <Row style={{ height: "100%" }}>
           <Col className="left" span={16}>
-            <div className="calendar">
-              <AppointmentCalendar appointments={appointments} />
-            </div>
+            <Fade left>
+              <div className="calendar">
+                <AppointmentCalendar appointments={appointments} />
+              </div>
+            </Fade>
           </Col>
           <Col className="right" span={8}>
             <Row className="control">
               <AppointmentControl
                 upcomingAppointments={upcomingAppointments}
-                user={userType}
+                userType={userType}
               />
             </Row>
-            <Row className="list">
-              <AppointmentList
-                upcomingAppointments={upcomingAppointments}
-                user={userType}
-              />
-            </Row>
+            <Fade right>
+              <Row className="list">
+                <AppointmentList
+                  upcomingAppointments={upcomingAppointments}
+                  userType={userType}
+                />
+              </Row>
+            </Fade>
           </Col>
         </Row>
       </Layout>
