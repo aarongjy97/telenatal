@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import moment from "moment";
 import { WarningOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Select, DatePicker, InputNumber } from "antd";
-import { registerPatient } from "../../api/Auth";
+import { registerPatient } from "./../../api/Auth";
 import {
   healthConditionsList,
   drugAllergiesList,

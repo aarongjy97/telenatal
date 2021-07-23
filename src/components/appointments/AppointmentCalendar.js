@@ -1,7 +1,7 @@
 import React from "react";
 import { Calendar, Badge } from "antd";
 import Fade from "react-reveal";
-import { sameDay, sameMonth, formatTime } from "../utils";
+import { sameDay, sameMonth, formatTime } from "./../utils";
 
 export default function AppointmentCalendar({ appointments }) {
   function monthCellRender(value) {

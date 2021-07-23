@@ -10,7 +10,7 @@ import {
   getPatientUpcomingAppointments,
   getProfessionalAppointments,
   getProfessionalUpcomingAppointments,
-} from "../../api/Appointment";
+} from "./../../api/Appointment";
 import { userContext } from "./../../userContext";
 
 export default function Appointments() {

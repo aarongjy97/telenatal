@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button, Form, Input, Select, Radio, InputNumber } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
-import { registerProfessional } from "../../api/Auth";
-import { getClinics, createClinic } from "../../api/Clinic";
+import { registerProfessional } from "./../../api/Auth";
+import { getClinics, createClinic } from "./../../api/Clinic";
 import { educationList, formItemLayout, tailFormItemLayout } from "./constants";
 
 export default function ProfessionalRegister() {

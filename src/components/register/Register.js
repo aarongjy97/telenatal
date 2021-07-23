@@ -23,25 +23,26 @@ export default function Profile() {
         <Row className="row" style={{ height: "100%" }}>
           <Col className="left">
             <Fade bottom>
-            <Row className="top">
-              <div className="title">
-                <FormOutlined />
-                &nbsp;Register {showPatient ? "Patient" : "Medical Professional"}
-              </div>
-              <div className="toggle">
-                <Switch
-                  onClick={() => setShowPatient(!showPatient)}
-                  defaultChecked
-                />
-              </div>
-            </Row>
-            <Row className="bottom">
-              {showPatient === true ? (
-                <PatientRegister />
-              ) : (
-                <ProfessionalRegister />
-              )}
-            </Row>
+              <Row className="top">
+                <div className="title">
+                  <FormOutlined />
+                  &nbsp;Register{" "}
+                  {showPatient ? "Patient" : "Medical Professional"}
+                </div>
+                <div className="toggle">
+                  <Switch
+                    onClick={() => setShowPatient(!showPatient)}
+                    defaultChecked
+                  />
+                </div>
+              </Row>
+              <Row className="bottom">
+                {showPatient === true ? (
+                  <PatientRegister />
+                ) : (
+                  <ProfessionalRegister />
+                )}
+              </Row>
             </Fade>
           </Col>
         </Row>

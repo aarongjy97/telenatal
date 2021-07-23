@@ -5,12 +5,11 @@ import {
   PushpinOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { formatDate } from "../utils";
-import { getProfessional } from "../../api/User";
+import { formatDate } from "./../utils";
+import { getProfessional } from "./../../api/User";
 import Fade from "react-reveal";
 
 export default function AppointmentCard({ appointment, userType }) {
-  
   // Fetch professional title data
   const [professionalTitle, setProfessionalTitle] = useState();
   useEffect(() => {

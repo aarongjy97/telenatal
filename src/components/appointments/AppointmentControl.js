@@ -23,9 +23,9 @@ import {
   getDoctors,
   getNurses,
   getProfessionalAvailability,
-} from "../../api/Appointment";
+} from "./../../api/Appointment";
 import AppointmentCard from "./AppointmentCard";
-import { formatDate, formatTime } from "../utils";
+import { formatDate, formatTime } from "./../utils";
 
 const formItemLayout = {
   labelCol: { span: 8 },
