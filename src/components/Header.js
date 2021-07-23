@@ -17,7 +17,6 @@ export default function Header() {
   const context = useContext(userContext);
   const user = context.user;
   const logoutUser = context.logoutUser;
-
   const loggedIn = Object.keys(user).length === 0 ? false : true;
   const userType = "medicalLicenseNo" in user ? "professional" : "patient";
   const logoUrl = loggedIn === false ? "/" : "/appointments";
