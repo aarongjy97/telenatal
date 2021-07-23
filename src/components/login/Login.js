@@ -45,8 +45,6 @@ export default function Login() {
   const [showPatient, setShowPatient] = useState(true);
   const [errorMessage, setErrorMessage] = useState();
 
-  console.log(errorMessage);
-
   // Login for professional/patient
   const onFinish = (values) => {
     if (showPatient === true) {
@@ -56,9 +54,7 @@ export default function Login() {
           setErrorMessage();
           window.location.replace("/appointments");
         })
-        .catch((error) => {
-          setErrorMessage(error.response.data);
-        });
+        .catch((error) => setErrorMessage(error.response.data));
     } else if (showPatient === false) {
       loginProfessional(values.email, values.password)
         .then((result) => {
@@ -66,9 +62,7 @@ export default function Login() {
           setErrorMessage();
           window.location.replace("/appointments");
         })
-        .catch((error) => {
-          setErrorMessage(error.response.data);
-        });
+        .catch((error) => setErrorMessage(error.response.data));
     }
   };
 

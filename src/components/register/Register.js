@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Layout, Row, Col, Switch } from "antd";
 import { FormOutlined } from "@ant-design/icons";
-import PatientProfile from "../profile/PatientProfile";
-import ProfessionalProfile from "../profile/ProfessionalProfile";
+import PatientRegister from "./PatientRegister";
+import ProfessionalRegister from "./ProfessionalRegister";
 import ProfileImage from "../profile/ProfileImage";
 
 export default function Profile() {
@@ -14,19 +14,22 @@ export default function Profile() {
         <Col className="left">
           <Row className="top">
             <div className="title">
-              <FormOutlined />&nbsp;Register {showPatient ? "Patient" : "Medical Professional"}
+              <FormOutlined />
+              &nbsp;Register {showPatient ? "Patient" : "Medical Professional"}
             </div>
             <div className="toggle">
               <Switch
                 onClick={() => setShowPatient(!showPatient)}
-                defaultChecked />
+                defaultChecked
+              />
             </div>
           </Row>
           <Row className="bottom">
-            {showPatient === true
-              ? <PatientProfile />
-              : <ProfessionalProfile />
-            }
+            {showPatient === true ? (
+              <PatientRegister />
+            ) : (
+              <ProfessionalRegister />
+            )}
           </Row>
         </Col>
         <Col className="right">
