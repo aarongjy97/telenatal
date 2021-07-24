@@ -24,16 +24,22 @@ class App extends React.Component {
   login(user) {
     console.log("Login Success");
     this.setState({ user: user });
+    localStorage.setItem("user", JSON.stringify(user));
   }
 
   logout() {
     console.log("Logout Success");
     this.setState({ user: {} });
+    localStorage.removeItem("user");
   }
 
   render() {
+    const user =
+      localStorage.getItem("user") != null
+        ? JSON.parse(localStorage.getItem("user"))
+        : this.state.user;
     const value = {
-      user: this.state.user,
+      user: user,
       loginUser: this.login,
       logoutUser: this.logout,
     };
