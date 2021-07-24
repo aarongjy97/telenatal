@@ -25,7 +25,7 @@ const { Search } = Input;
 export default function RecordsMain() {
   const context = useContext(userContext);
   const user = context.user;
-  const userType = "medicalLicenseNo" in user ? "professional" : "patient";
+  const userType = user.userType;
   const onSearch = (value) => console.log(value);
 
   const [patientRecords, setPatientRecords] = useState();

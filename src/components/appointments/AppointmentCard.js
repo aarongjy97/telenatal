@@ -8,12 +8,13 @@ import {
 import { formatDate } from "./../utils";
 import { getProfessional } from "./../../api/User";
 import Fade from "react-reveal";
+import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 
 export default function AppointmentCard({ appointment, userType }) {
   // Fetch professional title data
   const [professionalTitle, setProfessionalTitle] = useState();
   useEffect(() => {
-    if (userType === "patient") {
+    if (userType === PROFESSIONAL) {
       getProfessional(appointment.professionalId)
         .then((result) => {
           if (result.data.type === "doctor") {
@@ -37,14 +38,14 @@ export default function AppointmentCard({ appointment, userType }) {
             <ClockCircleOutlined />
             &nbsp;{formatDate(appointment.date)}
           </p>
-          {userType === "professional" && (
+          {userType === PROFESSIONAL && (
             <p>
               <UserOutlined />
               &nbsp;
               {appointment.patientName}
             </p>
           )}
-          {userType === "patient" && (
+          {userType === PATIENT && (
             <p>
               <UserOutlined />
               &nbsp;{professionalTitle} {appointment.professionalName}

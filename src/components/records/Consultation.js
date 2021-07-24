@@ -13,8 +13,9 @@ import {
 } from "antd";
 import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
+import { PATIENT, PROFESSIONAL } from "../../constants/constants";
 import { updateAppointment } from "./../../api/Appointment";
-import {formatDate} from '../utils';
+import { formatDate } from "../utils";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -203,7 +204,7 @@ export default function Consultation({
 
   return (
     <>
-      {userType === "professional" && (
+      {userType === PROFESSIONAL && (
         <Row justify="end" style={{ paddingBottom: "20px" }}>
           <Button
             type="secondary"
@@ -214,7 +215,7 @@ export default function Consultation({
         </Row>
       )}
 
-      {userType === "professional" &&
+      {userType === PROFESSIONAL &&
         consultationRecords &&
         consultationRecords?.length > 0 && (
           <Collapse defaultActiveKey={["0"]} style={{ marginTop: 0 }}>
@@ -224,10 +225,7 @@ export default function Consultation({
               })
               .map((appt, index) => {
                 return (
-                  <Panel
-                    header={formatDate(appt?.date)}
-                    key={index}
-                  >
+                  <Panel header={formatDate(appt?.date)} key={index}>
                     <Row style={{ paddingBottom: "20px" }}>
                       <Col span={8}>
                         <Row>
@@ -246,7 +244,7 @@ export default function Consultation({
                         </Row>
                       </Col>
 
-                      {userType === "professional" && (
+                      {userType === PROFESSIONAL && (
                         <Col justify="end">
                           <Row justify="end" style={{ paddingBottom: "20px" }}>
                             <Button
@@ -275,7 +273,7 @@ export default function Consultation({
           </Collapse>
         )}
 
-      {userType === "patient" &&
+      {userType === PATIENT &&
         consultationRecords &&
         consultationRecords?.length > 0 && (
           <Collapse defaultActiveKey={["0"]} style={{ marginTop: 20 }}>
@@ -317,8 +315,8 @@ export default function Consultation({
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
 
-      {userType === "professional" && createModal()}
-      {userType === "professional" && editModal()}
+      {userType === PROFESSIONAL && createModal()}
+      {userType === PROFESSIONAL && editModal()}
     </>
   );
 }

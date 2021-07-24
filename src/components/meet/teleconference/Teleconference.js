@@ -5,7 +5,7 @@ import {
   MeetingStatus,
   useMeetingStatus,
 } from "amazon-chime-sdk-component-library-react";
-import { constants } from "../constants";
+import { teleConstants } from "../constants";
 import BeforeCallView from "./BeforeCallView";
 import PlaceholderView from "./PlaceholderView";
 import AfterCallView from "./AfterCallView";
@@ -29,7 +29,7 @@ export default function Teleconference(props) {
 
   const onJoinCall = async () => {
     // call connector method to create joinInfo
-    const meetingId = "a625fd75-5e8e-4202-a62d-7aea5d9b0706";
+    const meetingId = "1a1eaba8-5202-4f8f-923c-2c4debf10706";
     // take the meetingId from the appointment object
     console.log(meetingId);
     var joinInfo = await joinCall(meetingId);
@@ -47,18 +47,18 @@ export default function Teleconference(props) {
 
   // render
   switch (props.view) {
-    case constants.MEETING_VIEW:
+    case teleConstants.MEETING_VIEW:
       return (
         <MeetingView onEndCall={onEndCall} appointment={props.appointment} />
       );
-    case constants.BEFORE_CALL_VIEW:
+    case teleConstants.BEFORE_CALL_VIEW:
       return (
         <BeforeCallView
           onJoinCall={onJoinCall}
           appointment={props.appointment}
         />
       );
-    case constants.AFTER_CALL_VIEW:
+    case teleConstants.AFTER_CALL_VIEW:
       return <AfterCallView />;
     default:
       return <PlaceholderView />;

@@ -1,4 +1,4 @@
-export const constants = {
+export const teleConstants = {
   DOCTOR: "DOCTOR",
   PATIENT: "PATIENT",
 

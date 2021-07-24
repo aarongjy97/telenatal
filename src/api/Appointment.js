@@ -68,8 +68,12 @@ export async function createAppointment(
   professionalId,
   remarks
 ) {
-  const joinInfo = await createMeeting();
-  const meetingId = joinInfo.Meeting.Meeting.MeetingId;
+  var meetingId;
+  if (postalCode == 0) {
+    const joinInfo = await createMeeting();
+    meetingId = joinInfo.Meeting.Meeting.MeetingId;
+  }
+
   return await axios.post(`${API_ENDPOINT}/appointment`, {
     purpose: purpose,
     date: date,

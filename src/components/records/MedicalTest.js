@@ -13,8 +13,9 @@ import {
   Typography,
 } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { updateAppointment } from "../../api/Appointment";
-import {formatDate} from '../utils';
+import { formatDate } from "../utils";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -184,7 +185,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
 
   return (
     <>
-      {userType === "professional" && (
+      {userType === PROFESSIONAL && (
         <Row justify="end" style={{ paddingBottom: "20px" }}>
           <Button
             type="secondary"
@@ -195,7 +196,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
         </Row>
       )}
 
-      {userType === "professional" && testRecords && testRecords?.length > 0 && (
+      {userType === PROFESSIONAL && testRecords && testRecords?.length > 0 && (
         <Collapse defaultActiveKey={["1"]} style={{ marginTop: 0 }}>
           {patientRecords
             .filter((appt) => appt?.testRecord != null)
@@ -206,7 +207,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
                     <Col flex="auto">
                       <Divider orientation="left">Test</Divider>
                     </Col>
-                    {userType === "professional" && (
+                    {userType === PROFESSIONAL && (
                       <Col justify="end" style={{ paddingLeft: "15px" }}>
                         <Button
                           type="secondary"
@@ -234,7 +235,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
         </Collapse>
       )}
 
-      {userType === "patient" && testRecords && testRecords?.length > 0 && (
+      {userType === PATIENT && testRecords && testRecords?.length > 0 && (
         <Collapse defaultActiveKey={["1"]} style={{ marginTop: 20 }}>
           {testRecords.map((record, index) => {
             return (
@@ -243,7 +244,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
                   <Col flex="auto">
                     <Divider orientation="left">Test</Divider>
                   </Col>
-                  {userType === "professional" && (
+                  {userType === PROFESSIONAL && (
                     <Col justify="end" style={{ paddingLeft: "15px" }}>
                       <Button
                         type="secondary"
@@ -272,8 +273,8 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
 
-      {userType === "professional" && createModal()}
-      {userType === "professional" && editModal()}
+      {userType === PROFESSIONAL && createModal()}
+      {userType === PROFESSIONAL && editModal()}
     </>
   );
 }
