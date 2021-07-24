@@ -68,7 +68,7 @@ export default function HealthRecord({
           name="health-record-create"
           onFinish={onFinish}
         >
-          {userType === "DOCTOR" && (
+          {userType === "professional" && (
             <Form.Item
               name="appointment"
               label="Appointment"
@@ -88,7 +88,7 @@ export default function HealthRecord({
               </Select>
             </Form.Item>
           )}
-          {userType === "PATIENT" && (
+          {userType === "patient" && (
             <Form.Item name="date" label="Date" rules={[{ required: true }]}>
               <DatePicker />
             </Form.Item>

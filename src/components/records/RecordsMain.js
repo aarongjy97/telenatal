@@ -15,15 +15,17 @@ import {
   getPatientAppointments,
   getProfessionalAppointments,
 } from "./../../api/Appointment";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { userContext } from "./../../userContext";
 
 const { TabPane } = Tabs;
 const { Content, Sider } = Layout;
 const { Search } = Input;
-const userType = ["DOCTOR", "PATIENT"];
 
 export default function RecordsMain() {
-  const user = userType[0];
+  const context = useContext(userContext);
+  const user = context.user;
+  const userType = "medicalLicenseNo" in user ? "professional" : "patient";
   const onSearch = (value) => console.log(value);
 
   const [patientRecords, setPatientRecords] = useState();
@@ -53,7 +55,7 @@ export default function RecordsMain() {
 
   return (
     <Layout id="records">
-      {user === "DOCTOR" && (
+      {userType === "professional" && (
         <Sider className="patientSider" width={250}>
           <Search
             className="patientSearch"
@@ -97,7 +99,7 @@ export default function RecordsMain() {
             key="1"
           >
             <Consultation
-              userType={user}
+              userType={userType}
               patientRecords={patientRecords}
               consultationRecords={patientRecords?.flatMap((appt, _) => {
                 if (appt?.consultationRecord == null) {
@@ -121,7 +123,7 @@ export default function RecordsMain() {
             key="2"
           >
             <HealthRecord
-              userType={user}
+              userType={userType}
               patientRecords={patientRecords}
               healthRecords={patientRecords?.flatMap((appt) => {
                 if (appt?.healthRecord == null) {
@@ -144,7 +146,7 @@ export default function RecordsMain() {
             }
             key="3"
           >
-            <Ultrasound userType={user} />
+            <Ultrasound userType={userType} />
           </TabPane>
           <TabPane
             tab={
@@ -155,7 +157,7 @@ export default function RecordsMain() {
             }
             key="4"
           >
-            <MedicalTest userType={user} />
+            <MedicalTest userType={userType} />
           </TabPane>
         </Tabs>
       </Content>
