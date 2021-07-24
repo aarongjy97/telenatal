@@ -14,7 +14,6 @@ import {
   Form,
   Select,
   Input,
-  DatePicker,
   Empty,
 } from "antd";
 import {
@@ -24,6 +23,7 @@ import {
   ForkOutlined,
   EditOutlined,
 } from "@ant-design/icons";
+import { updateAppointment } from "./../../api/Appointment";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -40,10 +40,37 @@ export default function HealthRecord({
 }) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [editAppt, setEditAppt] = useState();
+  const [createAppt, setCreateAppt] = useState();
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    console.log(values);
+  const onFinishCreate = (values) => {
+    const appointment = patientRecords?.find(
+      (record) => record.id === values.appointmentId
+    );
+    const payload = {
+      appointmentId: values.appointment,
+      healthRecord: {
+        weight: Number(values.weight),
+        waistMeasurement: Number(values.waistMeasurement),
+        heartRate: Number(values.heartRate),
+        bloodPressure: Number(values.bloodPressure),
+        notes: values.notes ?? "NIL",
+        dateTime: appointment.date
+      },
+      date: appointment.date,
+      location: appointment.location,
+      postalCode: appointment.postalCode,
+      patientId: appointment.patientId,
+      professionalId: appointment.professionalId,
+    };
+    console.log(payload);
+    updateAppointment(payload)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => console.log(error.message));
+    setIsCreateModalVisible(false);
   };
 
   const createModal = () => {
@@ -66,7 +93,7 @@ export default function HealthRecord({
           {...formItemLayout}
           form={form}
           name="health-record-create"
-          onFinish={onFinish}
+          onFinish={onFinishCreate}
         >
           {userType === "professional" && (
             <Form.Item
@@ -74,23 +101,28 @@ export default function HealthRecord({
               label="Appointment"
               rules={[{ required: true }]}
             >
-              <Select placeholder="Select an appointment to save this record under.">
+              <Select
+                placeholder="Select an appointment to save this record under."
+                onChange={(apptId) => {
+                  setCreateAppt(
+                    patientRecords?.find((appt) => appt.appointmentId === apptId)
+                  );
+                }}
+              >
                 {patientRecords?.flatMap((record, _) => {
                   if (record["healthRecord"] != null) {
                     return [];
                   }
                   return [
-                    <Option value={record.date} key={record.appointmentId}>
+                    <Option
+                      value={record.appointmentId}
+                      key={record.appointmentId}
+                    >
                       {new Date(record.date).toUTCString()}
                     </Option>,
                   ];
                 })}
               </Select>
-            </Form.Item>
-          )}
-          {userType === "patient" && (
-            <Form.Item name="date" label="Date" rules={[{ required: true }]}>
-              <DatePicker />
             </Form.Item>
           )}
           <Form.Item
@@ -101,21 +133,21 @@ export default function HealthRecord({
             <Input />
           </Form.Item>
           <Form.Item
-            name={["waist-measurement"]}
+            name={["waistMeasurement"]}
             label="Waist Measurement (cm)"
             rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["heart-rate"]}
+            name={["heartRate"]}
             label="Heart Rate"
             rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name={["blood-pressure"]}
+            name={["bloodPressure"]}
             label="Blood Pressure"
             rules={[{ required: true }]}
           >
@@ -160,7 +192,147 @@ export default function HealthRecord({
         </Button>
       </Row>
 
-      {healthRecords && healthRecords.length > 0 ? (
+      {userType === "professional" &&
+      healthRecords &&
+      healthRecords.length > 0 ? (
+        <Collapse defaultActiveKey={["0"]}>
+          {patientRecords
+            .filter((appt, _) => {
+              return appt.healthRecord != null;
+            })
+            .map((appt, index) => {
+              return (
+                <Panel header={new Date(appt?.date).toUTCString()} key={index}>
+                  <Row style={{ paddingBottom: "20px" }}>
+                    <Col flex="auto">
+                      <Divider orientation="left">Health Readings</Divider>
+                    </Col>
+                    <Col justify="end" style={{ paddingLeft: "15px" }}>
+                      <Button
+                        type="secondary"
+                        onClick={() => setIsEditModalVisible(true)}
+                        icon={<EditOutlined />}
+                      >
+                        <Text>Edit</Text>
+                      </Button>
+                    </Col>
+                  </Row>
+                  <Row style={{ paddingBottom: "20px" }} gutter={24}>
+                    <Col span={6}>
+                      <Row>
+                        <Layout
+                          className="layout"
+                          style={{ minHeight: "10vh" }}
+                        >
+                          <Tooltip
+                            title="Your weight is entering the abnormal range. Please consult your doctor during your subsequent appointment."
+                            color="#b86f1b"
+                            key="bp"
+                          >
+                            <Card>
+                              <Statistic
+                                title="Weight"
+                                value={appt.healthRecord.weight}
+                                precision={0}
+                                prefix={<DashboardOutlined />}
+                                valueStyle={{ color: "#b86f1b" }}
+                                suffix="kg"
+                              />
+                            </Card>
+                          </Tooltip>
+                        </Layout>
+                      </Row>
+                    </Col>
+                    <Col span={6}>
+                      <Row>
+                        <Layout
+                          className="layout"
+                          style={{ minHeight: "10vh" }}
+                        >
+                          <Tooltip
+                            title="Your waist measurement is in the normal range!"
+                            color="#1d8a25"
+                            key="bp"
+                          >
+                            <Card>
+                              <Statistic
+                                title="Waist Measurement"
+                                value={appt.healthRecord.waistMeasurement}
+                                precision={0}
+                                prefix={<ColumnWidthOutlined />}
+                                valueStyle={{ color: "#1d8a25" }}
+                                suffix="inches"
+                              />
+                            </Card>
+                          </Tooltip>
+                        </Layout>
+                      </Row>
+                    </Col>
+                    <Col span={6}>
+                      <Row>
+                        <Layout
+                          className="layout"
+                          style={{ minHeight: "10vh" }}
+                        >
+                          <Tooltip
+                            title="Your heart rate is in the normal range!"
+                            color="#1d8a25"
+                            key="bp"
+                          >
+                            <Card>
+                              <Statistic
+                                title="Resting Heart Rate"
+                                value={appt.healthRecord.heartRate}
+                                precision={0}
+                                prefix={<HeartOutlined />}
+                                valueStyle={{ color: "#1d8a25" }}
+                                suffix="bpm"
+                              />
+                            </Card>
+                          </Tooltip>
+                        </Layout>
+                      </Row>
+                    </Col>
+                    <Col span={6}>
+                      <Row>
+                        <Layout
+                          className="layout"
+                          style={{ minHeight: "10vh" }}
+                        >
+                          <Tooltip
+                            title="Your blood pressure is in the abnormal range. Please consult your doctor during your subsequent appointment."
+                            color="#ad0e2d"
+                            key="bp"
+                          >
+                            <Card>
+                              <Statistic
+                                title="Blood Pressure"
+                                value={appt.healthRecord.bloodPressure}
+                                precision={0}
+                                prefix={<ForkOutlined />}
+                                valueStyle={{ color: "#ad0e2d" }}
+                                suffix="mm Hg"
+                              />
+                            </Card>
+                          </Tooltip>
+                        </Layout>
+                      </Row>
+                    </Col>
+                  </Row>
+
+                  <Divider orientation="left">Notes</Divider>
+                  <Row>
+                    <Text>{appt.healthRecord.notes}</Text>
+                  </Row>
+                </Panel>
+              );
+            })}
+        </Collapse>
+      ) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      )}
+
+      {userType === "patient" && healthRecords && healthRecords.length > 0 ? (
         <Collapse defaultActiveKey={["0"]}>
           {healthRecords.map((record, index) => {
             return (
@@ -168,15 +340,6 @@ export default function HealthRecord({
                 <Row style={{ paddingBottom: "20px" }}>
                   <Col flex="auto">
                     <Divider orientation="left">Health Readings</Divider>
-                  </Col>
-                  <Col justify="end" style={{ paddingLeft: "15px" }}>
-                    <Button
-                      type="secondary"
-                      onClick={() => setIsEditModalVisible(true)}
-                      icon={<EditOutlined />}
-                    >
-                      <Text>Edit</Text>
-                    </Button>
                   </Col>
                 </Row>
                 <Row style={{ paddingBottom: "20px" }} gutter={24}>

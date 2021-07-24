@@ -150,6 +150,7 @@ export default function Consultation({
         console.log(result);
       })
       .catch((error) => console.log(error));
+    setEditAppt(null);
     setIsEditModalVisible(false);
   };
 
