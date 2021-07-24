@@ -23,21 +23,16 @@ export default function Teleconference(props) {
     if (meetingId) {
       await meetingManager.leave();
       // call connector method to delete meeting from chime
-      await deleteMeeting(meetingId);
+      await deleteMeeting("80f775eb-d2b8-40f0-9bab-8f18d4270706");
     }
 
     // inform parent
     props.onEndCall();
   };
 
-  const fetchMeetingDetails = () => {
-    return props.appointment; // for now until we get a better understanding of what appointment is stored at
-  };
-
   const onJoinCall = async () => {
     // call connector method to create joinInfo
-    const meetingId = meetingManager.meetingId;
-    var joinInfo = await joinCall(meetingId);
+    var joinInfo = await joinCall("80f775eb-d2b8-40f0-9bab-8f18d4270706");
 
     // use meeting manager to join call
     await meetingManager.join({
@@ -45,8 +40,7 @@ export default function Teleconference(props) {
       attendeeInfo: joinInfo.Attendee,
     });
 
-    // localStorage.setItem(joinInfo.Meeting.MeetingId);
-
+    await meetingManager.start();
     // tell parent component that user chose to join call
     props.onJoinCall();
   };

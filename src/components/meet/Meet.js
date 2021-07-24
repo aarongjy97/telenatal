@@ -173,7 +173,7 @@ export default function Meet(props) {
                 <Teleconference
                   view={teleconView}
                   onJoinCall={onJoinCall}
-                  onEndcall={onEndCall}
+                  onEndCall={onEndCall}
                   appointment={appointment}
                 />
               </MeetingProvider>
