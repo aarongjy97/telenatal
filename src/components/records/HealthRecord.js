@@ -56,7 +56,7 @@ export default function HealthRecord({
         heartRate: Number(values.heartRate),
         bloodPressure: Number(values.bloodPressure),
         notes: values.notes ?? "NIL",
-        dateTime: appointment.date
+        dateTime: appointment.date,
       },
       date: appointment.date,
       location: appointment.location,
@@ -105,7 +105,9 @@ export default function HealthRecord({
                 placeholder="Select an appointment to save this record under."
                 onChange={(apptId) => {
                   setCreateAppt(
-                    patientRecords?.find((appt) => appt.appointmentId === apptId)
+                    patientRecords?.find(
+                      (appt) => appt.appointmentId === apptId
+                    )
                   );
                 }}
               >
@@ -161,6 +163,35 @@ export default function HealthRecord({
     );
   };
 
+  const onFinishEdit = (values) => {
+    const appointment = patientRecords?.find(
+      (record) => record.appointmentId === editAppt.appointmentId
+    );
+    const payload = {
+      appointmentId: editAppt.appointmentId,
+      healthRecord: {
+        weight: Number(values.weight),
+        waistMeasurement: Number(values.waistMeasurement),
+        heartRate: Number(values.heartRate),
+        bloodPressure: Number(values.bloodPressure),
+        notes: values.notes ?? "NIL",
+        dateTime: appointment.date,
+      },
+      date: appointment.date,
+      location: appointment.location,
+      postalCode: appointment.postalCode,
+      patientId: appointment.patientId,
+      professionalId: appointment.professionalId,
+    };
+    updateAppointment(payload)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => console.log(error));
+    setEditAppt(null);
+    setIsEditModalVisible(false);
+  };
+
   const editModal = () => {
     return (
       <Modal
@@ -171,11 +202,43 @@ export default function HealthRecord({
         okText="Submit"
         onCancel={() => setIsEditModalVisible(false)}
       >
-        <Form form={form} name="health-record-edit" onFinish={() => {}}>
+        <Form form={form} name="health-record-edit" onFinish={onFinishEdit}>
           <Form.Item
-            name={["description"]}
-            label="Description"
+            name={["weight"]}
+            label="Weight"
             rules={[{ required: true }]}
+            initialValue={editAppt?.healthRecord?.weight}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["waistMeasurement"]}
+            label="Waist Measurement (cm)"
+            rules={[{ required: true }]}
+            initialValue={editAppt?.healthRecord?.waistMeasurement}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["heartRate"]}
+            label="Heart Rate"
+            rules={[{ required: true }]}
+            initialValue={editAppt?.healthRecord?.heartRate}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["bloodPressure"]}
+            label="Blood Pressure"
+            rules={[{ required: true }]}
+            initialValue={editAppt?.healthRecord?.bloodPressure}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["notes"]}
+            label="Notes"
+            initialValue={editAppt?.healthRecord?.notes}
           >
             <Input.TextArea />
           </Form.Item>
@@ -210,7 +273,10 @@ export default function HealthRecord({
                     <Col justify="end" style={{ paddingLeft: "15px" }}>
                       <Button
                         type="secondary"
-                        onClick={() => setIsEditModalVisible(true)}
+                        onClick={() => {
+                          setIsEditModalVisible(true);
+                          setEditAppt(appt);
+                        }}
                         icon={<EditOutlined />}
                       >
                         <Text>Edit</Text>
