@@ -43,7 +43,11 @@ const formItemLayout = {
   wrapperCol: { span: 14 },
 };
 
-export default function Ultrasound({ userType }) {
+export default function Ultrasound({
+  userType,
+  ultrasoundRecords,
+  patientRecords,
+}) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();

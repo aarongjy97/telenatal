@@ -153,7 +153,7 @@ export default function RecordsMain() {
             }
             key="3"
           >
-            <Ultrasound userType={userType} />
+            <Ultrasound userType={userType} patientRecords={patientRecords} />
           </TabPane>
           <TabPane
             tab={
@@ -164,7 +164,20 @@ export default function RecordsMain() {
             }
             key="4"
           >
-            <MedicalTest userType={userType} />
+            <MedicalTest
+              userType={userType}
+              testRecords={patientRecords?.flatMap((appt) => {
+                if (appt?.testRecord == null) {
+                  return [];
+                }
+                const testRecord = { ...appt?.testRecord };
+                testRecord["date"] = appt?.date
+                  ? new Date(appt?.date).toUTCString()
+                  : null;
+                return [testRecord];
+              })}
+              patientRecords={patientRecords}
+            />
           </TabPane>
         </Tabs>
       </Content>

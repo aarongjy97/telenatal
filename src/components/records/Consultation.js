@@ -216,10 +216,7 @@ export default function Consultation({
       {userType === "professional" &&
         consultationRecords &&
         consultationRecords?.length > 0 && (
-          <Collapse
-            defaultActiveKey={["0"]}
-            style={{ marginTop: userType === "professional" ? 0 : 20 }}
-          >
+          <Collapse defaultActiveKey={["0"]} style={{ marginTop: 0 }}>
             {patientRecords
               .filter((appt, _) => {
                 return appt.consultationRecord != null;
@@ -280,10 +277,7 @@ export default function Consultation({
       {userType === "patient" &&
         consultationRecords &&
         consultationRecords?.length > 0 && (
-          <Collapse
-            defaultActiveKey={["0"]}
-            style={{ marginTop: userType === "professional" ? 0 : 20 }}
-          >
+          <Collapse defaultActiveKey={["0"]} style={{ marginTop: 20 }}>
             {consultationRecords.map((record, index) => {
               return (
                 <Panel header={record.date} key={index}>
@@ -317,7 +311,8 @@ export default function Consultation({
           </Collapse>
         )}
 
-      {userType && consultationRecords == null && patientRecords == null && (
+      {(consultationRecords?.length == null ||
+        consultationRecords?.length === 0) && (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
 
