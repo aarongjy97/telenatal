@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Layout, Menu, Row, Col, Avatar, Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import { userContext } from "../userContext";
-
+import { PATIENT, PROFESSIONAL } from "../constants/constants";
 export default function Header() {
   const { SubMenu } = Menu;
   const { Header } = Layout;
@@ -18,7 +18,7 @@ export default function Header() {
   const user = context.user;
   const logoutUser = context.logoutUser;
   const loggedIn = Object.keys(user).length === 0 ? false : true;
-  const userType = "medicalLicenseNo" in user ? "professional" : "patient";
+  const userType = user.userType;
   const logoUrl = loggedIn === false ? "/" : "/appointments";
 
   return (
@@ -28,8 +28,8 @@ export default function Header() {
           <a href={logoUrl}>
             <img src="logo.svg" alt="TeleNatal Logo" height="40px" />
             TeleNatal&nbsp;
-            {loggedIn && userType === "patient" && <span>Patient</span>}
-            {loggedIn && userType === "professional" && (
+            {loggedIn && userType === PATIENT && <span>Patient</span>}
+            {loggedIn && userType === PROFESSIONAL && (
               <span>Medical Professional</span>
             )}
           </a>

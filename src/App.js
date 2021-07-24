@@ -23,6 +23,7 @@ class App extends React.Component {
 
   login(user) {
     console.log("Login Success");
+    user.userType = "medicalLicenseNo" in user ? "professional" : "patient";
     this.setState({ user: user });
     localStorage.setItem("user", JSON.stringify(user));
   }

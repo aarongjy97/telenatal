@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
+import { PATIENT, PROFESSIONAL } from "../../constants/constants";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -126,7 +127,7 @@ export default function Consultation({
 
   return (
     <>
-      {userType === "DOCTOR" && (
+      {userType === PROFESSIONAL && (
         <Row justify="end" style={{ paddingBottom: "20px" }}>
           <Button
             type="secondary"
@@ -140,7 +141,7 @@ export default function Consultation({
       {consultationRecords && consultationRecords?.length > 0 ? (
         <Collapse
           defaultActiveKey={["0"]}
-          style={{ marginTop: userType === "DOCTOR" ? 0 : 20 }}
+          style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}
         >
           {consultationRecords.map((record, index) => {
             return (
@@ -163,7 +164,7 @@ export default function Consultation({
                     </Row>
                   </Col>
 
-                  {userType === "DOCTOR" && (
+                  {userType === PROFESSIONAL && (
                     <Col justify="end">
                       <Row justify="end" style={{ paddingBottom: "20px" }}>
                         <Button
@@ -190,8 +191,8 @@ export default function Consultation({
       ) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
-      {userType === "DOCTOR" && createModal()}
-      {userType === "DOCTOR" && editModal()}
+      {userType === PROFESSIONAL && createModal()}
+      {userType === PROFESSIONAL && editModal()}
     </>
   );
 }

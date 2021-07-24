@@ -12,6 +12,7 @@ import {
   Typography,
 } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -120,7 +121,7 @@ export default function MedicalTest({ userType }) {
 
   return (
     <>
-      {userType === "DOCTOR" && (
+      {userType === PROFESSIONAL && (
         <Row justify="end" style={{ paddingBottom: "20px" }}>
           <Button
             type="secondary"
@@ -133,7 +134,7 @@ export default function MedicalTest({ userType }) {
 
       <Collapse
         defaultActiveKey={["1"]}
-        style={{ marginTop: userType === "DOCTOR" ? 0 : 20 }}
+        style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}
       >
         {records.map((record, index) => {
           return (
@@ -142,7 +143,7 @@ export default function MedicalTest({ userType }) {
                 <Col flex="auto">
                   <Divider orientation="left">Test</Divider>
                 </Col>
-                {userType === "DOCTOR" && (
+                {userType === PROFESSIONAL && (
                   <Col justify="end" style={{ paddingLeft: "15px" }}>
                     <Button
                       type="secondary"
@@ -165,8 +166,8 @@ export default function MedicalTest({ userType }) {
           );
         })}
       </Collapse>
-      {userType === "DOCTOR" && createModal()}
-      {userType === "DOCTOR" && editModal()}
+      {userType === PROFESSIONAL && createModal()}
+      {userType === PROFESSIONAL && editModal()}
     </>
   );
 }

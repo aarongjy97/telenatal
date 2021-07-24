@@ -13,24 +13,25 @@ import {
 } from "./../../api/Appointment";
 import { sortAppointments } from "./../utils";
 import { userContext } from "./../../userContext";
+import { PATIENT, PROFESSIONAL } from "../../constants/constants";
 
 export default function Appointments() {
   // Get user context
   const context = useContext(userContext);
   const user = context.user;
-  const userType = "medicalLicenseNo" in user ? "professional" : "patient";
+  const userType = user.userType;
   const loggedIn = Object.keys(user).length === 0 ? false : true;
 
   // Fetch appointment data
   const [appointments, setAppointments] = useState([]);
   useEffect(() => {
-    if (userType === "patient") {
+    if (userType === PATIENT) {
       getPatientAppointments(user.email)
         .then((result) => {
           setAppointments(result.data);
         })
         .catch((error) => console.log(error));
-    } else if (userType === "professional") {
+    } else if (userType === PROFESSIONAL) {
       getProfessionalAppointments(user.email)
         .then((result) => {
           setAppointments(result.data);
@@ -42,13 +43,13 @@ export default function Appointments() {
   // Fetch upcoming appointment data
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   useEffect(() => {
-    if (userType === "patient") {
+    if (userType === PATIENT) {
       getPatientUpcomingAppointments(user.email)
         .then((result) => {
           setUpcomingAppointments(sortAppointments(result.data));
         })
         .catch((error) => console.log(error));
-    } else if (userType === "professional") {
+    } else if (userType === PROFESSIONAL) {
       getProfessionalUpcomingAppointments(user.email)
         .then((result) => {
           setUpcomingAppointments(sortAppointments(result.data));

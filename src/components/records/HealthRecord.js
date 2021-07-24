@@ -24,6 +24,7 @@ import {
   ForkOutlined,
   EditOutlined,
 } from "@ant-design/icons";
+import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -68,7 +69,7 @@ export default function HealthRecord({
           name="health-record-create"
           onFinish={onFinish}
         >
-          {userType === "DOCTOR" && (
+          {userType === PROFESSIONAL && (
             <Form.Item
               name="appointment"
               label="Appointment"
@@ -88,7 +89,7 @@ export default function HealthRecord({
               </Select>
             </Form.Item>
           )}
-          {userType === "PATIENT" && (
+          {userType === PATIENT && (
             <Form.Item name="date" label="Date" rules={[{ required: true }]}>
               <DatePicker />
             </Form.Item>

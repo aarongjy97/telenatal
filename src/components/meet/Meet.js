@@ -8,13 +8,13 @@ import {
 import { ThemeProvider } from "styled-components";
 import Records from "./records/Records";
 import AppointmentsList from "./appointments/AppointmentList";
-import { constants } from "./constants";
+import { teleConstants } from "./constants";
 import {
   getPatientUpcomingAppointments,
   getProfessionalUpcomingAppointments,
 } from "../../api/Appointment";
 import { userContext } from "./../../userContext";
-import { DOCTOR, PATIENT } from "../../constants/constants";
+import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 
 const patientList = [];
 const professionalList = [];
@@ -39,12 +39,13 @@ const patientDummy = {
 export default function Meet(props) {
   const context = useContext(userContext);
   const user = context.user;
-  const userType = user.type;
+  const userType = user.userType;
 
+  // TODO
   const patientId = "gengen@gengen.com"; // switch with context later
   const professionalId = "doctor1@aws.com"; // switch with context later
   const [teleconView, setTeleconView] = React.useState(
-    constants.PLACEHOLDER_VIEW
+    teleConstants.PLACEHOLDER_VIEW
   );
   const [appointment, setAppointment] = React.useState({});
   const [patient, setPatient] = React.useState({});
@@ -54,8 +55,8 @@ export default function Meet(props) {
 
   React.useEffect(() => {
     setTimeout(() => {
-      // NOTE: may also need to fetch patients for each appointment for the list view (for DOCTOR) and professionals for each appointment (for PATIENT)
-      if (userType === DOCTOR) {
+      // NOTE: may also need to fetch patients for each appointment for the list view (for PROFESSIONAL) and professionals for each appointment (for PATIENT)
+      if (userType === PROFESSIONAL) {
         setPatientList(patientList);
       } else {
         setProfessionalList(professionalList);
@@ -67,12 +68,14 @@ export default function Meet(props) {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   useEffect(() => {
     if (userType === PATIENT) {
+      console.log("getting patient's appointments");
       getPatientUpcomingAppointments(patientId)
         .then((result) => {
           setUpcomingAppointments(result.data);
         })
         .catch((error) => console.log(error));
-    } else if (userType === DOCTOR) {
+    } else if (userType === PROFESSIONAL) {
+      console.log("getting professional's appointments");
       getProfessionalUpcomingAppointments(professionalId)
         .then((result) => {
           setUpcomingAppointments(result.data);
@@ -85,9 +88,9 @@ export default function Meet(props) {
     // change the view on the child
     // get the appointment deets
     setAppointment(appointment);
-    setTeleconView(constants.BEFORE_CALL_VIEW);
+    setTeleconView(teleConstants.BEFORE_CALL_VIEW);
 
-    if (userType === DOCTOR) {
+    if (userType === PROFESSIONAL) {
       // assign the patient from the patientList
       // for now use dummy ;P
       console.log("user is doctor, setting selected patient");
@@ -96,14 +99,14 @@ export default function Meet(props) {
   };
 
   const onJoinCall = () => {
-    setTeleconView(constants.MEETING_VIEW);
-    if (userType === "DOCTOR") {
+    setTeleconView(teleConstants.MEETING_VIEW);
+    if (userType === PROFESSIONAL) {
       setShowRecordsPanel(true);
     }
   };
 
   const onEndCall = () => {
-    setTeleconView(constants.AFTER_CALL_VIEW);
+    setTeleconView(teleConstants.AFTER_CALL_VIEW);
   };
 
   const onRecordsSubmit = () => {

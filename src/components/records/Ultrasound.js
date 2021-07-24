@@ -13,6 +13,7 @@ import {
   Upload,
 } from "antd";
 import { UploadOutlined, EditOutlined } from "@ant-design/icons";
+import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -130,7 +131,7 @@ export default function Ultrasound({ userType }) {
 
   return (
     <>
-      {userType === "DOCTOR" && (
+      {userType === PROFESSIONAL && (
         <Row justify="end" style={{ paddingBottom: "20px" }}>
           <Button
             type="secondary"
@@ -143,7 +144,7 @@ export default function Ultrasound({ userType }) {
 
       <Collapse
         defaultActiveKey={["1"]}
-        style={{ marginTop: userType === "DOCTOR" ? 0 : 20 }}
+        style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}
       >
         {records.map((record, index) => {
           return (
@@ -183,7 +184,7 @@ export default function Ultrasound({ userType }) {
                   </Row>
                 </Col>
               </Row>
-              {userType === "DOCTOR" && (
+              {userType === PROFESSIONAL && (
                 <Row justify="end" style={{ paddingBottom: "20px" }}>
                   <Button
                     type="secondary"
@@ -198,8 +199,8 @@ export default function Ultrasound({ userType }) {
           );
         })}
       </Collapse>
-      {userType === "DOCTOR" && createModal()}
-      {userType === "DOCTOR" && editModal()}
+      {userType === PROFESSIONAL && createModal()}
+      {userType === PROFESSIONAL && editModal()}
     </>
   );
 }

@@ -29,6 +29,7 @@ import { getPatient, getProfessional } from "./../../api/User";
 import AppointmentCard from "./AppointmentCard";
 import { formatDate, formatTime } from "./../utils";
 import { userContext } from "./../../userContext";
+import { PATIENT, PROFESSIONAL } from "../../constants/constants";
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -39,7 +40,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
   // Get user context
   const context = useContext(userContext);
   const user = context.user;
-  const userType = "medicalLicenseNo" in user ? "professional" : "patient";
+  const userType = user.userType;
 
   const [form] = Form.useForm();
   const { Option } = Select;
@@ -73,10 +74,10 @@ export default function AppointmentControl({ upcomingAppointments }) {
     let professionalId = "";
 
     // Set Professional and Patient Entity
-    if (userType === "patient") {
+    if (userType === PATIENT) {
       patientId = user.email;
       professionalId = values.professionalId;
-    } else if (userType === "professional") {
+    } else if (userType === PROFESSIONAL) {
       patientId = values.patientId;
       professionalId = user.email;
     }
@@ -86,23 +87,23 @@ export default function AppointmentControl({ upcomingAppointments }) {
       location = "Video Conference";
       postalCode = 0;
     } else if (values.location === "patient") {
-      if (userType === "patient") {
+      if (userType === PATIENT) {
         // Load patient details
         location = user.address;
         postalCode = user.postalCode;
-      } else if (userType === "professional") {
+      } else if (userType === PROFESSIONAL) {
         // Fetch patient details
         let patient = getPatient(values.patientId);
         location = patient.address;
         postalCode = patient.postalCode;
       }
     } else if (values.location === "professional") {
-      if (userType === "patient") {
+      if (userType === PATIENT) {
         // Fetch professional details
         let professional = getProfessional(values.professionalId);
         location = professional.clinicName + ", " + professional.clinicAddress;
         postalCode = professional.clinicPostalCode;
-      } else if (userType === "professional") {
+      } else if (userType === PROFESSIONAL) {
         // Load professional detail
         location = user.clinicName + ", " + user.clinicAddress;
         postalCode = user.clinicPostalCode;
@@ -152,7 +153,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
   };
 
   useEffect(() => {
-    if (userType === "patient") {
+    if (userType === PATIENT) {
       // Fetch all doctors
       getDoctors()
         .then((result) => {
@@ -166,7 +167,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
           setNurses(result.data);
         })
         .catch((error) => console.log(error));
-    } else if (userType === "professional") {
+    } else if (userType === PROFESSIONAL) {
       // TODO: Fetch all patients
       getNurses()
         .then((result) => {
@@ -287,13 +288,13 @@ export default function AppointmentControl({ upcomingAppointments }) {
           name="bookAppointment"
           onFinish={onBook}
         >
-          {userType === "professional" && (
+          {userType === PROFESSIONAL && (
             <Form.Item
               name="patientId"
               label="Patient"
               rules={[
                 {
-                  required: userType === "professional",
+                  required: userType === PROFESSIONAL,
                   message: "Please select a patient!",
                 },
               ]}
@@ -311,7 +312,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
               label="Professional"
               rules={[
                 {
-                  required: userType === "patient",
+                  required: userType === PATIENT,
                   message: "Please select a medical professional!",
                 },
               ]}
