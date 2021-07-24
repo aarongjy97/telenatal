@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Layout, Row, Col } from "antd";
 import Teleconference from "./teleconference/Teleconference";
 import {
@@ -13,6 +13,8 @@ import {
   getPatientUpcomingAppointments,
   getProfessionalUpcomingAppointments,
 } from "../../api/Appointment";
+import { userContext } from "./../../userContext";
+import { DOCTOR, PATIENT } from "../../constants/constants";
 
 const patientList = [];
 const professionalList = [];
@@ -35,7 +37,10 @@ const patientDummy = {
 };
 
 export default function Meet(props) {
-  const user = "DOCTOR"; // switch with context later
+  const context = useContext(userContext);
+  const user = context.user;
+  const userType = user.type;
+
   const patientId = "gengen@gengen.com"; // switch with context later
   const professionalId = "doctor1@aws.com"; // switch with context later
   const [teleconView, setTeleconView] = React.useState(
@@ -50,7 +55,7 @@ export default function Meet(props) {
   React.useEffect(() => {
     setTimeout(() => {
       // NOTE: may also need to fetch patients for each appointment for the list view (for DOCTOR) and professionals for each appointment (for PATIENT)
-      if (user === "DOCTOR") {
+      if (userType === DOCTOR) {
         setPatientList(patientList);
       } else {
         setProfessionalList(professionalList);
@@ -61,13 +66,13 @@ export default function Meet(props) {
   // Fetch upcoming appointment data
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   useEffect(() => {
-    if (user === "PATIENT") {
+    if (userType === PATIENT) {
       getPatientUpcomingAppointments(patientId)
         .then((result) => {
           setUpcomingAppointments(result.data);
         })
         .catch((error) => console.log(error));
-    } else if (user === "DOCTOR") {
+    } else if (userType === DOCTOR) {
       getProfessionalUpcomingAppointments(professionalId)
         .then((result) => {
           setUpcomingAppointments(result.data);
@@ -82,7 +87,7 @@ export default function Meet(props) {
     setAppointment(appointment);
     setTeleconView(constants.BEFORE_CALL_VIEW);
 
-    if (user === "DOCTOR") {
+    if (userType === DOCTOR) {
       // assign the patient from the patientList
       // for now use dummy ;P
       console.log("user is doctor, setting selected patient");
@@ -92,7 +97,7 @@ export default function Meet(props) {
 
   const onJoinCall = () => {
     setTeleconView(constants.MEETING_VIEW);
-    if (user === "DOCTOR") {
+    if (userType === "DOCTOR") {
       setShowRecordsPanel(true);
     }
   };
@@ -125,37 +130,25 @@ export default function Meet(props) {
                   <Teleconference
                     view={teleconView}
                     onJoinCall={onJoinCall}
-                    onEndcall={onEndCall}
+                    onEndCall={onEndCall}
                     appointment={appointment}
                   />
                 </MeetingProvider>
               </ThemeProvider>
             </Row>
             <Row className="infoPanel">
-              <Col flex="auto">
-                {/* <Button onClick={onAppointmentTileClick}>
-                  Click to load dummy patient and appointment
-                </Button> */}
-                <Records
-                  onRecordsSubmit={onRecordsSubmit}
-                  appointment={appointment}
-                  patient={patient}
-                />
-              </Col>
+              {showRecordsPanel && (
+                <Col flex="auto">
+                  <Records
+                    onRecordsSubmit={onRecordsSubmit}
+                    appointment={appointment}
+                    patient={patient}
+                  />
+                </Col>
+              )}
             </Row>
           </Col>
         </Row>
-        {/* {showRecordsPanel && (
-          <Row>
-            <Col flex="auto">
-              <Records
-              onRecordsSubmit={onRecordsSubmit}
-              appointment={appointment}
-              patient={patient}
-            />
-            </Col>
-          </Row>
-        ) */}
       </Layout>
     </>
   );
