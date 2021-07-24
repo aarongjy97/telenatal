@@ -30,28 +30,35 @@ export default function RecordsMain() {
 
   const [patientRecords, setPatientRecords] = useState();
 
-  // TODO: Replace with doctorId from context
-  const doctorId = "carolinetan@nuhs.sg";
+  const email = user.email;
   const [allPatients, setAllPatients] = useState();
   useEffect(() => {
-    getProfessionalAppointments(doctorId)
-      .then((result) => {
-        const allPatientsData = {};
-        result.data.forEach((appt) => {
-          if (allPatientsData?.[appt.patientId] != null) {
-            allPatientsData[appt.patientId] = [
-              ...allPatientsData[appt.patientId],
-              appt,
-            ];
-          } else {
-            allPatientsData[appt.patientId] = [appt];
-          }
-        });
-        setAllPatients(allPatientsData);
-        setPatientRecords(allPatientsData[Object.keys(allPatientsData)?.[0]]);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+    if (userType === "professional") {
+      getProfessionalAppointments(email)
+        .then((result) => {
+          const allPatientsData = {};
+          result.data.forEach((appt) => {
+            if (allPatientsData?.[appt.patientId] != null) {
+              allPatientsData[appt.patientId] = [
+                ...allPatientsData[appt.patientId],
+                appt,
+              ];
+            } else {
+              allPatientsData[appt.patientId] = [appt];
+            }
+          });
+          setAllPatients(allPatientsData);
+          setPatientRecords(allPatientsData[Object.keys(allPatientsData)?.[0]]);
+        })
+        .catch((error) => console.log(error));
+    } else if (userType === "patient") {
+      getPatientAppointments(email)
+        .then((result) => {
+          setPatientRecords(result.data);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [userType, email]);
 
   return (
     <Layout id="records">

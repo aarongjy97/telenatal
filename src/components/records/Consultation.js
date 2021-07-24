@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
+import { updateAppointment } from "./../../api/Appointment";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -32,7 +33,28 @@ export default function Consultation({
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+    const appointment = patientRecords?.find(
+      (record) => record.id === values.appointmentId
+    );
+    const payload = {
+      appointmentId: values.appointment,
+      consultationRecord: {
+        diagnosis: values.diagnosis,
+        medication: values.medication,
+        notes: values.notes,
+      },
+      date: appointment.date,
+      location: appointment.location,
+      postalCode: appointment.postalCode,
+      patientId: appointment.patientId,
+      professionalId: appointment.professionalId,
+    };
+    updateAppointment(payload)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => console.log(error));
+    setIsCreateModalVisible(false);
   };
 
   const createModal = () => {
@@ -68,7 +90,10 @@ export default function Consultation({
                   return [];
                 }
                 return [
-                  <Option value={record.date} key={record.appointmentId}>
+                  <Option
+                    value={record.appointmentId}
+                    key={record.appointmentId}
+                  >
                     {new Date(record.date).toUTCString()}
                   </Option>,
                 ];
