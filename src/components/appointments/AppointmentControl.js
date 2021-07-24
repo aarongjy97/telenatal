@@ -539,7 +539,8 @@ export default function AppointmentControl({ upcomingAppointments }) {
   const cancelModal = () => {
     const onFinish = (values) => {
       const appointmentId = values.appointment;
-      deleteAppointment(appointmentId);
+      const meetingId = selectedAppointment.meetingId;
+      deleteAppointment(appointmentId, meetingId);
       setIsCancelModalVisible(false);
       window.location.replace("/appointments");
     };

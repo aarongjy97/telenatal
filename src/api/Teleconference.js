@@ -42,11 +42,13 @@ const deleteMeeting = async (meetingId) => {
   console.log(API_ENDPOINT + DELETE);
   var res = await axios.delete(
     API_ENDPOINT + DELETE,
-    JSON.stringify({
-      meetingId: meetingId,
-      accessKeyId: accessKeyId,
-      secretAccessKey: secretAccessKey,
-    }),
+    {
+      data: JSON.stringify({
+        meetingId: meetingId,
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey,
+      }),
+    },
     {
       headers: {
         "Content-Type": "application/json",
