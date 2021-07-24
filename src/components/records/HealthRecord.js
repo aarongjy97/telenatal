@@ -24,6 +24,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { updateAppointment } from "./../../api/Appointment";
+import {formatDate} from '../utils';
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -109,7 +110,7 @@ export default function HealthRecord({
                       value={record.appointmentId}
                       key={record.appointmentId}
                     >
-                      {new Date(record.date).toUTCString()}
+                      {formatDate(record.date)}
                     </Option>,
                   ];
                 })}
@@ -261,7 +262,7 @@ export default function HealthRecord({
               .map((appt, index) => {
                 return (
                   <Panel
-                    header={new Date(appt?.date).toUTCString()}
+                    header={formatDate(appt?.date)}
                     key={index}
                   >
                     <Row style={{ paddingBottom: "20px" }}>

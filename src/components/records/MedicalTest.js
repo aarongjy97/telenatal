@@ -14,6 +14,7 @@ import {
 } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { updateAppointment } from "../../api/Appointment";
+import {formatDate} from '../utils';
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -92,7 +93,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
                     value={record.appointmentId}
                     key={record.appointmentId}
                   >
-                    {new Date(record.date).toUTCString()}
+                    {formatDate(record.date)}
                   </Option>,
                 ];
               })}
@@ -200,7 +201,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
             .filter((appt) => appt?.testRecord != null)
             .map((appt, index) => {
               return (
-                <Panel header={new Date(appt?.date).toUTCString()} key={index}>
+                <Panel header={formatDate(appt?.date)} key={index}>
                   <Row>
                     <Col flex="auto">
                       <Divider orientation="left">Test</Divider>

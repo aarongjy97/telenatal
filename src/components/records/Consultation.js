@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
 import { updateAppointment } from "./../../api/Appointment";
+import {formatDate} from '../utils';
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -96,7 +97,7 @@ export default function Consultation({
                     value={record.appointmentId}
                     key={record.appointmentId}
                   >
-                    {new Date(record.date).toUTCString()}
+                    {formatDate(record.date)}
                   </Option>,
                 ];
               })}
@@ -224,7 +225,7 @@ export default function Consultation({
               .map((appt, index) => {
                 return (
                   <Panel
-                    header={new Date(appt?.date).toUTCString()}
+                    header={formatDate(appt?.date)}
                     key={index}
                   >
                     <Row style={{ paddingBottom: "20px" }}>
