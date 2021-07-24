@@ -15,45 +15,54 @@ import {
   getPatientAppointments,
   getProfessionalAppointments,
 } from "./../../api/Appointment";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { userContext } from "./../../userContext";
 
 const { TabPane } = Tabs;
 const { Content, Sider } = Layout;
 const { Search } = Input;
-const userType = ["DOCTOR", "PATIENT"];
 
 export default function RecordsMain() {
-  const user = userType[0];
+  const context = useContext(userContext);
+  const user = context.user;
+  const userType = user.userType;
   const onSearch = (value) => console.log(value);
 
   const [patientRecords, setPatientRecords] = useState();
 
-  // TODO: Replace with doctorId from context
-  const doctorId = "carolinetan@nuhs.sg";
+  const email = user.email;
   const [allPatients, setAllPatients] = useState();
   useEffect(() => {
-    getProfessionalAppointments(doctorId)
-      .then((result) => {
-        const allPatientsData = {};
-        result.data.forEach((appt) => {
-          if (allPatientsData?.[appt.patientId] != null) {
-            allPatientsData[appt.patientId] = [
-              ...allPatientsData[appt.patientId],
-              appt,
-            ];
-          } else {
-            allPatientsData[appt.patientId] = [appt];
-          }
-        });
-        setAllPatients(allPatientsData);
-        setPatientRecords(allPatientsData[Object.keys(allPatientsData)?.[0]]);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+    if (userType === "professional") {
+      getProfessionalAppointments(email)
+        .then((result) => {
+          const allPatientsData = {};
+          result.data.forEach((appt) => {
+            if (allPatientsData?.[appt.patientId] != null) {
+              allPatientsData[appt.patientId] = [
+                ...allPatientsData[appt.patientId],
+                appt,
+              ];
+            } else {
+              allPatientsData[appt.patientId] = [appt];
+            }
+          });
+          setAllPatients(allPatientsData);
+          setPatientRecords(allPatientsData[Object.keys(allPatientsData)?.[0]]);
+        })
+        .catch((error) => console.log(error));
+    } else if (userType === "patient") {
+      getPatientAppointments(email)
+        .then((result) => {
+          setPatientRecords(result.data);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [userType, email]);
 
   return (
     <Layout id="records">
-      {user === "DOCTOR" && (
+      {userType === "professional" && (
         <Sider className="patientSider" width={250}>
           <Search
             className="patientSearch"
@@ -97,7 +106,7 @@ export default function RecordsMain() {
             key="1"
           >
             <Consultation
-              userType={user}
+              userType={userType}
               patientRecords={patientRecords}
               consultationRecords={patientRecords?.flatMap((appt, _) => {
                 if (appt?.consultationRecord == null) {
@@ -121,7 +130,7 @@ export default function RecordsMain() {
             key="2"
           >
             <HealthRecord
-              userType={user}
+              userType={userType}
               patientRecords={patientRecords}
               healthRecords={patientRecords?.flatMap((appt) => {
                 if (appt?.healthRecord == null) {
@@ -144,7 +153,7 @@ export default function RecordsMain() {
             }
             key="3"
           >
-            <Ultrasound userType={user} />
+            <Ultrasound userType={userType} patientRecords={patientRecords} />
           </TabPane>
           <TabPane
             tab={
@@ -155,7 +164,20 @@ export default function RecordsMain() {
             }
             key="4"
           >
-            <MedicalTest userType={user} />
+            <MedicalTest
+              userType={userType}
+              testRecords={patientRecords?.flatMap((appt) => {
+                if (appt?.testRecord == null) {
+                  return [];
+                }
+                const testRecord = { ...appt?.testRecord };
+                testRecord["date"] = appt?.date
+                  ? new Date(appt?.date).toUTCString()
+                  : null;
+                return [testRecord];
+              })}
+              patientRecords={patientRecords}
+            />
           </TabPane>
         </Tabs>
       </Content>

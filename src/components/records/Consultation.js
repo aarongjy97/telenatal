@@ -14,6 +14,8 @@ import {
 import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
 import { PATIENT, PROFESSIONAL } from "../../constants/constants";
+import { updateAppointment } from "./../../api/Appointment";
+import { formatDate } from "../utils";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -31,9 +33,32 @@ export default function Consultation({
 }) {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [editAppt, setEditAppt] = useState();
   const [form] = Form.useForm();
-  const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+
+  const onFinishCreate = (values) => {
+    const appointment = patientRecords?.find(
+      (record) => record.id === values.appointmentId
+    );
+    const payload = {
+      appointmentId: values.appointment,
+      consultationRecord: {
+        diagnosis: values.diagnosis,
+        medication: values.medication,
+        notes: values.notes,
+      },
+      date: appointment.date,
+      location: appointment.location,
+      postalCode: appointment.postalCode,
+      patientId: appointment.patientId,
+      professionalId: appointment.professionalId,
+    };
+    updateAppointment(payload)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => console.log(error));
+    setIsCreateModalVisible(false);
   };
 
   const createModal = () => {
@@ -56,7 +81,7 @@ export default function Consultation({
           {...formItemLayout}
           form={form}
           name="consultation-create"
-          onFinish={onFinish}
+          onFinish={onFinishCreate}
         >
           <Form.Item
             name="appointment"
@@ -69,8 +94,11 @@ export default function Consultation({
                   return [];
                 }
                 return [
-                  <Option value={record.date} key={record.appointmentId}>
-                    {new Date(record.date).toUTCString()}
+                  <Option
+                    value={record.appointmentId}
+                    key={record.appointmentId}
+                  >
+                    {formatDate(record.date)}
                   </Option>,
                 ];
               })}
@@ -102,21 +130,70 @@ export default function Consultation({
     );
   };
 
+  const onFinishEdit = (values) => {
+    const appointment = patientRecords?.find(
+      (record) => record.appointmentId === editAppt.appointmentId
+    );
+    const payload = {
+      appointmentId: editAppt.appointmentId,
+      consultationRecord: {
+        diagnosis: values.diagnosis,
+        medication: values.medication,
+        notes: values.notes,
+      },
+      date: appointment.date,
+      location: appointment.location,
+      postalCode: appointment.postalCode,
+      patientId: appointment.patientId,
+      professionalId: appointment.professionalId,
+    };
+    updateAppointment(payload)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => console.log(error));
+    setEditAppt(null);
+    setIsEditModalVisible(false);
+  };
+
   const editModal = () => {
     return (
       <Modal
         title="Edit Consultation"
         centered
         visible={isEditModalVisible}
-        onOk={() => setIsEditModalVisible(false)}
-        okText="Submit"
         onCancel={() => setIsEditModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsEditModalVisible(false)}>
+            Cancel
+          </Button>,
+          <Button form="consultation-edit" key="submit" htmlType="submit">
+            Submit
+          </Button>,
+        ]}
       >
-        <Form form={form} name="consultation-edit" onFinish={() => {}}>
+        <Form form={form} name="consultation-edit" onFinish={onFinishEdit}>
+          <Form.Item
+            name={["diagnosis"]}
+            label="Diagnosis"
+            rules={[{ required: true }]}
+            initialValue={editAppt?.consultationRecord?.diagnosis}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            name={["medication"]}
+            label="Medication"
+            rules={[{ required: true }]}
+            initialValue={editAppt?.consultationRecord?.medication}
+          >
+            <Input.TextArea />
+          </Form.Item>
           <Form.Item
             name={["notes"]}
             label="Notes"
             rules={[{ required: true }]}
+            initialValue={editAppt?.consultationRecord?.notes}
           >
             <Input.TextArea />
           </Form.Item>
@@ -138,59 +215,106 @@ export default function Consultation({
         </Row>
       )}
 
-      {consultationRecords && consultationRecords?.length > 0 ? (
-        <Collapse
-          defaultActiveKey={["0"]}
-          style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}
-        >
-          {consultationRecords.map((record, index) => {
-            return (
-              <Panel header={record.date} key={index}>
-                <Row style={{ paddingBottom: "20px" }}>
-                  <Col span={8}>
-                    <Row>
-                      <Title level={5}>Diagnosis</Title>
-                    </Row>
-                    <Row>
-                      <Text>{record.diagnosis}</Text>
-                    </Row>
-                  </Col>
-                  <Col flex="auto">
-                    <Row>
-                      <Title level={5}>Medication/Prescription</Title>
-                    </Row>
-                    <Row>
-                      <Text>{record.medication}</Text>
-                    </Row>
-                  </Col>
+      {userType === PROFESSIONAL &&
+        consultationRecords &&
+        consultationRecords?.length > 0 && (
+          <Collapse defaultActiveKey={["0"]} style={{ marginTop: 0 }}>
+            {patientRecords
+              .filter((appt, _) => {
+                return appt.consultationRecord != null;
+              })
+              .map((appt, index) => {
+                return (
+                  <Panel header={formatDate(appt?.date)} key={index}>
+                    <Row style={{ paddingBottom: "20px" }}>
+                      <Col span={8}>
+                        <Row>
+                          <Title level={5}>Diagnosis</Title>
+                        </Row>
+                        <Row>
+                          <Text>{appt.consultationRecord.diagnosis}</Text>
+                        </Row>
+                      </Col>
+                      <Col flex="auto">
+                        <Row>
+                          <Title level={5}>Medication/Prescription</Title>
+                        </Row>
+                        <Row>
+                          <Text>{appt.consultationRecord.medication}</Text>
+                        </Row>
+                      </Col>
 
-                  {userType === PROFESSIONAL && (
-                    <Col justify="end">
-                      <Row justify="end" style={{ paddingBottom: "20px" }}>
-                        <Button
-                          type="secondary"
-                          icon={<EditOutlined />}
-                          onClick={() => setIsEditModalVisible(true)}
-                        >
-                          <Text>Edit</Text>
-                        </Button>
+                      {userType === PROFESSIONAL && (
+                        <Col justify="end">
+                          <Row justify="end" style={{ paddingBottom: "20px" }}>
+                            <Button
+                              type="secondary"
+                              icon={<EditOutlined />}
+                              onClick={() => {
+                                setIsEditModalVisible(true);
+                                setEditAppt(appt);
+                              }}
+                            >
+                              <Text>Edit</Text>
+                            </Button>
+                          </Row>
+                        </Col>
+                      )}
+                    </Row>
+                    <Row>
+                      <Title level={5}>Notes</Title>
+                    </Row>
+                    <Row>
+                      <Text>{appt.consultationRecord.notes}</Text>
+                    </Row>
+                  </Panel>
+                );
+              })}
+          </Collapse>
+        )}
+
+      {userType === PATIENT &&
+        consultationRecords &&
+        consultationRecords?.length > 0 && (
+          <Collapse defaultActiveKey={["0"]} style={{ marginTop: 20 }}>
+            {consultationRecords.map((record, index) => {
+              return (
+                <Panel header={record.date} key={index}>
+                  <Row style={{ paddingBottom: "20px" }}>
+                    <Col span={8}>
+                      <Row>
+                        <Title level={5}>Diagnosis</Title>
+                      </Row>
+                      <Row>
+                        <Text>{record.diagnosis}</Text>
                       </Row>
                     </Col>
-                  )}
-                </Row>
-                <Row>
-                  <Title level={5}>Notes</Title>
-                </Row>
-                <Row>
-                  <Text>{record.notes}</Text>
-                </Row>
-              </Panel>
-            );
-          })}
-        </Collapse>
-      ) : (
+                    <Col flex="auto">
+                      <Row>
+                        <Title level={5}>Medication/Prescription</Title>
+                      </Row>
+                      <Row>
+                        <Text>{record.medication}</Text>
+                      </Row>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Title level={5}>Notes</Title>
+                  </Row>
+                  <Row>
+                    <Text>{record.notes}</Text>
+                  </Row>
+                </Panel>
+              );
+            })}
+          </Collapse>
+        )}
+
+      {(consultationRecords?.length == null ||
+        consultationRecords?.length === 0) && (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
+
       {userType === PROFESSIONAL && createModal()}
       {userType === PROFESSIONAL && editModal()}
     </>
