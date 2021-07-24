@@ -1,30 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Layout, Row, Col } from "antd";
 import Teleconference from "./teleconference/Teleconference";
-import Records from "./records/Records";
-import Appointments from "./appointments/Appointments";
-import { constants } from "./constants";
-import { Layout, Row, Button, Col, Divider } from "antd";
 import {
   MeetingProvider,
   darkTheme,
 } from "amazon-chime-sdk-component-library-react";
 import { ThemeProvider } from "styled-components";
+import Records from "./records/Records";
+import AppointmentsList from "./appointments/AppointmentList";
+import { constants } from "./constants";
+import {
+  getPatientUpcomingAppointments,
+  getProfessionalUpcomingAppointments,
+} from "../../api/Appointment";
 
 const patientList = [];
 const professionalList = [];
-const appointmentDummy = {
-  appointmentId: "A0002",
-  datetime: "9 Jul 2021 10:45:00 AM",
-  location: "Home",
-  purpose: "Checkup",
-  remarks: "Not feeling well",
-  patientId: "PA0001",
-  professionalId: "PR0001",
-  consultationRecordId: null,
-  healthRecordId: null,
-  ultrasoundId: null,
-  testRecordId: null,
-};
 
 const patientDummy = {
   patientId: "PA0001",
@@ -43,79 +34,21 @@ const patientDummy = {
   professionalId: "PR0001",
 };
 
-var dummyAppointments = [
-  {
-    appointmentId: "A0001",
-    datetime: "27 Aug 2021 08:45:00 AM",
-    location: "Changi General Hospital Consultation Room 45",
-    purpose: "Checkup",
-    remarks: "Not feeling well",
-    patientId: "PA0001",
-    professionalId: "PR0001",
-    consultationRecordId: null,
-    healthRecordId: null,
-    ultrasoundId: null,
-    testRecordId: null,
-  },
-  {
-    appointmentId: "A0002",
-    datetime: "9 Jul 2021 10:45:00 AM",
-    location: "Home",
-    purpose: "Checkup",
-    remarks: "Not feeling well",
-    patientId: "PA0001",
-    professionalId: "PR0001",
-    consultationRecordId: null,
-    healthRecordId: null,
-    ultrasoundId: null,
-    testRecordId: null,
-  },
-  {
-    appointmentId: "A0003",
-    datetime: "13 Dec 2020 10:45:00 AM",
-    location: "Changi General Hospital Consultation Room 45",
-    purpose: "Checkup",
-    remarks: "Not feeling well",
-    patientId: "PA0001",
-    professionalId: "PR0001",
-    consultationRecordId: null,
-    healthRecordId: null,
-    ultrasoundId: null,
-    testRecordId: null,
-  },
-  {
-    appointmentId: "A0011",
-    datetime: "27 Aug 2021 12:30:00 AM",
-    location: "Changi General Hospital Consultation Room 45",
-    purpose: "Consultation",
-    remarks: "Not feeling well",
-    patientId: "PA0001",
-    professionalId: "PR0001",
-    consultationRecordId: null,
-    healthRecordId: null,
-    ultrasoundId: null,
-    testRecordId: null,
-  },
-];
-
 export default function Meet(props) {
   const user = "DOCTOR"; // switch with context later
+  const patientId = "gengen@gengen.com"; // switch with context later
+  const professionalId = "doctor1@aws.com"; // switch with context later
   const [teleconView, setTeleconView] = React.useState(
     constants.PLACEHOLDER_VIEW
   );
   const [appointment, setAppointment] = React.useState({});
-  const [appointmentList, setAppointmentList] = React.useState([]);
   const [patient, setPatient] = React.useState({});
   const [showRecordsPanel, setShowRecordsPanel] = React.useState(false);
   const [patientList, setPatientList] = React.useState([]);
   const [professionalList, setProfessionalList] = React.useState([]);
 
-  // load all appointments
   React.useEffect(() => {
-    // make call to fetch list of user's appointments
-
     setTimeout(() => {
-      setAppointmentList(dummyAppointments);
       // NOTE: may also need to fetch patients for each appointment for the list view (for DOCTOR) and professionals for each appointment (for PATIENT)
       if (user === "DOCTOR") {
         setPatientList(patientList);
@@ -125,11 +58,28 @@ export default function Meet(props) {
     }, 2000);
   }, []);
 
-  const onAppointmentTileClick = (index) => {
+  // Fetch upcoming appointment data
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  useEffect(() => {
+    if (user === "PATIENT") {
+      getPatientUpcomingAppointments(patientId)
+        .then((result) => {
+          setUpcomingAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    } else if (user === "DOCTOR") {
+      getProfessionalUpcomingAppointments(professionalId)
+        .then((result) => {
+          setUpcomingAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, []);
+
+  const onAppointmentTileClick = (appointment) => {
     // change the view on the child
     // get the appointment deets
-    console.log(JSON.stringify(appointmentList[index]));
-    setAppointment(appointmentList[index]);
+    setAppointment(appointment);
     setTeleconView(constants.BEFORE_CALL_VIEW);
 
     if (user === "DOCTOR") {
@@ -159,25 +109,40 @@ export default function Meet(props) {
   // the one that pieces together all the components (appointment list, records input, teleconference)
   return (
     <>
-      <Layout style={{ height: "100vh" }}>
-        <Row align="middle">
-          <Col flex={2}>
-            <Appointments
-              appointments={appointmentList}
+      <Layout id="meet">
+        <Row style={{ height: "100%" }}>
+          <Col className="appointmentList" span={6}>
+            <AppointmentsList
+              upcomingAppointments={upcomingAppointments}
+              user={user}
               onAppointmentTileClick={onAppointmentTileClick}
             />
           </Col>
-          <Col flex={6}>
-            <ThemeProvider theme={darkTheme}>
-              <MeetingProvider>
-                <Teleconference
-                  view={teleconView}
-                  onJoinCall={onJoinCall}
-                  onEndCall={onEndCall}
+          <Col className="appointmentDetails" span={14}>
+            <Row className="videoConference">
+              <ThemeProvider theme={darkTheme}>
+                <MeetingProvider>
+                  <Teleconference
+                    view={teleconView}
+                    onJoinCall={onJoinCall}
+                    onEndcall={onEndCall}
+                    appointment={appointment}
+                  />
+                </MeetingProvider>
+              </ThemeProvider>
+            </Row>
+            <Row className="infoPanel">
+              <Col flex="auto">
+                {/* <Button onClick={onAppointmentTileClick}>
+                  Click to load dummy patient and appointment
+                </Button> */}
+                <Records
+                  onRecordsSubmit={onRecordsSubmit}
                   appointment={appointment}
+                  patient={patient}
                 />
-              </MeetingProvider>
-            </ThemeProvider>
+              </Col>
+            </Row>
           </Col>
         </Row>
         {/* {showRecordsPanel && (
@@ -191,18 +156,6 @@ export default function Meet(props) {
             </Col>
           </Row>
         ) */}
-        <Row>
-          <Col flex="auto">
-            {/* <Button onClick={onAppointmentTileClick}>
-              Click to load dummy patient and appointment
-            </Button> */}
-            <Records
-              onRecordsSubmit={onRecordsSubmit}
-              appointment={appointment}
-              patient={patient}
-            />
-          </Col>
-        </Row>
       </Layout>
     </>
   );

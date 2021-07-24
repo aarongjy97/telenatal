@@ -58,18 +58,22 @@ export async function deleteAppointment(appointmentId) {
 }
 
 export async function createAppointment(
+  purpose,
   date,
   location,
   postalCode,
   patientId,
-  professionalId
+  professionalId,
+  remarks
 ) {
   return await axios.post(`${API_ENDPOINT}/appointment`, {
+    purpose: purpose,
     date: date,
     location: location,
     postalCode: postalCode,
     patientId: patientId,
     professionalId: professionalId,
+    remarks: remarks,
   });
 }
 
@@ -79,4 +83,13 @@ export async function getDoctors() {
 
 export async function getNurses() {
   return await axios.get(`${API_ENDPOINT}/professional/nurses`);
+}
+
+export async function getProfessionalAvailability(professionalId, date) {
+  return await axios.get(`${API_ENDPOINT}/professional/availability`, {
+    params: {
+      date: date,
+      professionalId: professionalId,
+    },
+  });
 }

@@ -1,101 +1,90 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Redirect } from "react-router-dom";
 import { Layout, Row, Col } from "antd";
-import AppointmentsList from "./AppointmentsList";
-import AppointmentsCalendar from "./AppointmentsCalendar";
-import AppointmentsControl from "./AppointmentsControl";
+import Fade from "react-reveal";
+import AppointmentList from "./AppointmentList";
+import AppointmentCalendar from "./AppointmentCalendar";
+import AppointmentControl from "./AppointmentControl";
 import {
   getPatientAppointments,
   getPatientUpcomingAppointments,
-} from "../../api/Appointment";
-
-const patientId = "gengen@gengen.com";
-const user = "PATIENT"; // PATIENT or DOCTOR
-
-export function sameDay(d1, d2) {
-  return (
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDate() === d2.getDate()
-  );
-}
-
-export function sameMonth(d1, d2) {
-  return (
-    d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth()
-  );
-}
-
-export function formatAMPM(date) {
-  var date = new Date(date);
-  var hours = date.getHours();
-  var minutes = date.getMinutes();
-  var ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? "0" + minutes : minutes;
-  var strTime = hours + ":" + minutes + ampm;
-  return strTime;
-}
-
-export function formatDate(date) {
-  var date = new Date(date);
-  var year = date.getFullYear();
-  var month = date.getMonth() + 1;
-  var date = date.getDate();
-  var strTime = formatAMPM(date);
-  var strDate = year + "-" + month + "-" + date + " " + strTime;
-  return strDate;
-}
+  getProfessionalAppointments,
+  getProfessionalUpcomingAppointments,
+} from "./../../api/Appointment";
+import { sortAppointments } from "./../utils";
+import { userContext } from "./../../userContext";
 
 export default function Appointments() {
+  // Get user context
+  const context = useContext(userContext);
+  const user = context.user;
+  const userType = "medicalLicenseNo" in user ? "professional" : "patient";
+  const loggedIn = Object.keys(user).length === 0 ? false : true;
+
+  // Fetch appointment data
   const [appointments, setAppointments] = useState([]);
   useEffect(() => {
-    getPatientAppointments(patientId)
-      .then((result) => {
-        setAppointments(result.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+    if (userType === "patient") {
+      getPatientAppointments(user.email)
+        .then((result) => {
+          setAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    } else if (userType === "professional") {
+      getProfessionalAppointments(user.email)
+        .then((result) => {
+          setAppointments(result.data);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [user, userType]);
 
+  // Fetch upcoming appointment data
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   useEffect(() => {
-    getPatientUpcomingAppointments(patientId)
-      .then((result) => {
-        setUpcomingAppointments(result.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+    if (userType === "patient") {
+      getPatientUpcomingAppointments(user.email)
+        .then((result) => {
+          setUpcomingAppointments(sortAppointments(result.data));
+        })
+        .catch((error) => console.log(error));
+    } else if (userType === "professional") {
+      getProfessionalUpcomingAppointments(user.email)
+        .then((result) => {
+          setUpcomingAppointments(sortAppointments(result.data));
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [user, userType]);
 
-  // Sort appointments by decreasing date
-  upcomingAppointments.sort(function (a, b) {
-    var dateA = new Date(a.datetime);
-    var dateB = new Date(b.datetime);
-    return dateA < dateB ? 1 : -1;
-  });
-
-  return (
-    <Layout id="appointments">
-      <Row style={{ height: "100%" }}>
-        <Col className="left" span={16}>
-          <div className="calendar">
-            <AppointmentsCalendar appointments={appointments} />
-          </div>
-        </Col>
-        <Col className="right" span={8}>
-          <Row className="control">
-            <AppointmentsControl
-              upcomingAppointments={upcomingAppointments}
-              user={user}
-            />
-          </Row>
-          <Row className="list">
-            <AppointmentsList
-              upcomingAppointments={upcomingAppointments}
-              user={user}
-            />
-          </Row>
-        </Col>
-      </Row>
-    </Layout>
-  );
+  if (!loggedIn) {
+    return <Redirect to="/" />;
+  } else {
+    return (
+      <Layout id="appointments">
+        <Row style={{ height: "100%" }}>
+          <Col className="left" span={16}>
+            <Fade left>
+              <div className="calendar">
+                <AppointmentCalendar appointments={appointments} />
+              </div>
+            </Fade>
+          </Col>
+          <Col className="right" span={8}>
+            <Row className="control">
+              <AppointmentControl upcomingAppointments={upcomingAppointments} />
+            </Row>
+            <Fade right>
+              <Row className="list">
+                <AppointmentList
+                  upcomingAppointments={upcomingAppointments}
+                  userType={userType}
+                />
+              </Row>
+            </Fade>
+          </Col>
+        </Row>
+      </Layout>
+    );
+  }
 }

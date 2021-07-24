@@ -11,7 +11,7 @@ export const constants = {
   // messages
   AFTER_CALL: {
     PATIENT:
-      "Thank you for attending your appointment.\nYour doctor will be uploading your appointment details soon, which you can view in the health records tab.",
+      "Thank you for attending your appointment.\nYour doctor will be uploading your appointment details soon, which you can view in the records tab.",
     DOCTOR:
       "Appointment has ended. Please complete and save the patient's consultation notes.",
   },

@@ -8,7 +8,7 @@ import {
   VideoInputControl,
   VideoTileGrid,
 } from "amazon-chime-sdk-component-library-react";
-import { Row, Col } from "antd";
+import { Row } from "antd";
 
 export default function MeetingView(props) {
   return (

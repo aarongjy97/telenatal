@@ -1,41 +1,45 @@
+import React, { useContext } from "react";
 import { Layout, Menu, Row, Col, Avatar, Button } from "antd";
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
-
-const { SubMenu } = Menu;
-
-const loggedIn = true; // To be replaced
-
-var logoUrl =
-  loggedIn === false
-    ? "/"
-    : "/appointments";
+import { userContext } from "../userContext";
 
 export default function Header() {
+  const { SubMenu } = Menu;
   const { Header } = Layout;
   let location = useLocation();
   const mappings = {
     "/appointments": "1",
     "/meet": "2",
     "/records": "3",
-    "/profile": "4"
   };
+
+  // Get user context
+  const context = useContext(userContext);
+  const user = context.user;
+  const logoutUser = context.logoutUser;
+  const loggedIn = Object.keys(user).length === 0 ? false : true;
+  const userType = "medicalLicenseNo" in user ? "professional" : "patient";
+  const logoUrl = loggedIn === false ? "/" : "/appointments";
 
   return (
     <Header id="header">
       <Row className="navbar">
         <Col className="logo">
           <a href={logoUrl}>
-            <img src="logo.svg" alt="TeleNatal Logo" height="40px"/>
-            TeleNatal
+            <img src="logo.svg" alt="TeleNatal Logo" height="40px" />
+            TeleNatal&nbsp;
+            {loggedIn && userType === "patient" && <span>Patient</span>}
+            {loggedIn && userType === "professional" && (
+              <span>Medical Professional</span>
+            )}
           </a>
         </Col>
         <Col className="buttons">
-          {loggedIn === true &&
+          {loggedIn === true && (
             <Menu
               theme="light"
               mode="horizontal"
-              defaultSelectedKeys={mappings[location.pathname]}
+              selectedKeys={mappings[location.pathname]}
             >
               <Menu.Item key="1">
                 Appointments
@@ -49,32 +53,32 @@ export default function Header() {
                 Records
                 <Link to="/records" />
               </Menu.Item>
-              
               <SubMenu
                 key="SubMenu"
                 icon={
-                  <Avatar
-                    size="medium"
-                    icon={
-                      <img
-                        src="avatar.jpg"
-                        alt="Profile"
-                        height="30px"
-                        style={{ borderRadius: "50%" }}
-                      />
-                    }
-                  />
+                  <>
+                    <Avatar
+                      style={{
+                        color: "#fff0f6",
+                        backgroundColor: "#780650",
+                      }}
+                    >
+                      {user.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </Avatar>
+                  </>
                 }
               >
-                <Menu.Item key="4">
-                  Profile
-                  <Link to="/profile" />
+                <Menu.Item key="4" onClick={logoutUser}>
+                  Logout
+                  <Link to="/" />
                 </Menu.Item>
-                <Menu.Item key="">Logout</Menu.Item>
               </SubMenu>
             </Menu>
-          }
-          {loggedIn === false &&
+          )}
+          {loggedIn === false && (
             <>
               <Button type="primary" href="/login">
                 Login
@@ -84,7 +88,7 @@ export default function Header() {
                 Register
               </Button>
             </>
-          }
+          )}
         </Col>
       </Row>
     </Header>

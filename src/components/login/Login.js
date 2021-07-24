@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useHistory, Redirect } from "react-router-dom";
 import { Layout, Button, Row, Col, Input, Form, Switch } from "antd";
-import { LoginOutlined } from "@ant-design/icons";
-import { loginPatient, loginProfessional } from "../../api/Auth";
+import { LoginOutlined, WarningOutlined } from "@ant-design/icons";
+import Fade from "react-reveal";
+import { loginPatient, loginProfessional } from "./../../api/Auth";
+import { userContext } from "./../../userContext";
 
 const formItemLayout = {
   labelCol: {
@@ -36,95 +39,111 @@ const tailFormItemLayout = {
 };
 
 export default function Login() {
-  const [showPatient, setShowPatient] = useState(true);
+  // Get user context and history
+  const history = useHistory();
+  const context = useContext(userContext);
+  const user = context.user;
+  const loginUser = context.loginUser;
+  const loggedIn = Object.keys(user).length === 0 ? false : true;
 
+  // Set states
+  const [showPatient, setShowPatient] = useState(true);
+  const [errorMessage, setErrorMessage] = useState();
+
+  // Login for professional/patient
   const onFinish = (values) => {
     if (showPatient === true) {
       loginPatient(values.email, values.password)
         .then((result) => {
-          console.log(result);
-          window.location.replace("/appointments");
+          loginUser(result.data);
+          setErrorMessage();
+          history.push("/appointments");
         })
-        .catch((error) => console.log(error));
+        .catch((error) => setErrorMessage(error.response.data));
     } else if (showPatient === false) {
       loginProfessional(values.email, values.password)
         .then((result) => {
-          console.log(result);
-          window.location.replace("/appointments");
+          loginUser(result.data);
+          setErrorMessage();
+          history.push("/appointments");
         })
-        .catch((error) => console.log(error));
+        .catch((error) => setErrorMessage(error.response.data));
     }
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+  if (loggedIn) {
+    return <Redirect to="/appointments" />;
+  } else {
+    return (
+      <Layout id="login">
+        <Row className="row">
+          <Col className="col" span={10}>
+            <Fade bottom>
+              <Row className="top">
+                <div className="title">
+                  <LoginOutlined />
+                  &nbsp;Login {showPatient ? "Patient" : "Medical Professional"}
+                </div>
+                <div className="toggle">
+                  <Switch
+                    onClick={() => setShowPatient(!showPatient)}
+                    defaultChecked
+                  />
+                </div>
+              </Row>
+              <Row className="bottom">
+                <Form {...formItemLayout} name="loginForm" onFinish={onFinish}>
+                  <Form.Item
+                    label="E-mail"
+                    name="email"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your E-mail!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
 
-  return (
-    <Layout id="login">
-      <Row className="row">
-        <Col className="col" span={10}>
-          <Row className="top">
-            <div className="title">
-              <LoginOutlined />
-              &nbsp;Login {showPatient ? "Patient" : "Medical Professional"}
-            </div>
-            <div className="toggle">
-              <Switch
-                onClick={() => setShowPatient(!showPatient)}
-                defaultChecked
-              />
-            </div>
-          </Row>
-          <Row className="bottom">
-            <Form
-              {...formItemLayout}
-              name="loginForm"
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-            >
-              <Form.Item
-                label="E-mail"
-                name="email"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your E-mail!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your password!",
+                      },
+                    ]}
+                  >
+                    <Input.Password />
+                  </Form.Item>
 
-              <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your password!",
-                  },
-                ]}
-              >
-                <Input.Password />
-              </Form.Item>
+                  {typeof errorMessage != "undefined" && (
+                    <p className="errorMessage">
+                      <WarningOutlined />
+                      &nbsp;{errorMessage}
+                    </p>
+                  )}
 
-              <Form.Item {...tailFormItemLayout}>
-                <Button type="primary" htmlType="submit">
-                  Login
-                </Button>
-                &nbsp;&nbsp;&nbsp;
-                <Button type="default" href="/">
-                  Back to Home
-                </Button>
-                <Button type="link" href="/register">
-                  New here? Register
-                </Button>
-              </Form.Item>
-            </Form>
-          </Row>
-        </Col>
-      </Row>
-    </Layout>
-  );
+                  <Form.Item {...tailFormItemLayout}>
+                    <Button type="primary" htmlType="submit">
+                      Login
+                    </Button>
+                    &nbsp;&nbsp;&nbsp;
+                    <Button type="default" href="/">
+                      Back to Home
+                    </Button>
+                    <Button type="link" href="/register">
+                      New here? Register
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Row>
+            </Fade>
+          </Col>
+        </Row>
+      </Layout>
+    );
+  }
 }
