@@ -213,28 +213,87 @@ export default function Consultation({
         </Row>
       )}
 
-      {userType &&
-      userType === "professional" &&
-      consultationRecords &&
-      consultationRecords?.length > 0 ? (
-        <Collapse
-          defaultActiveKey={["0"]}
-          style={{ marginTop: userType === "professional" ? 0 : 20 }}
-        >
-          {patientRecords
-            .filter((appt, _) => {
-              return appt.consultationRecord != null;
-            })
-            .map((appt, index) => {
+      {userType === "professional" &&
+        consultationRecords &&
+        consultationRecords?.length > 0 && (
+          <Collapse
+            defaultActiveKey={["0"]}
+            style={{ marginTop: userType === "professional" ? 0 : 20 }}
+          >
+            {patientRecords
+              .filter((appt, _) => {
+                return appt.consultationRecord != null;
+              })
+              .map((appt, index) => {
+                return (
+                  <Panel
+                    header={new Date(appt?.date).toUTCString()}
+                    key={index}
+                  >
+                    <Row style={{ paddingBottom: "20px" }}>
+                      <Col span={8}>
+                        <Row>
+                          <Title level={5}>Diagnosis</Title>
+                        </Row>
+                        <Row>
+                          <Text>{appt.consultationRecord.diagnosis}</Text>
+                        </Row>
+                      </Col>
+                      <Col flex="auto">
+                        <Row>
+                          <Title level={5}>Medication/Prescription</Title>
+                        </Row>
+                        <Row>
+                          <Text>{appt.consultationRecord.medication}</Text>
+                        </Row>
+                      </Col>
+
+                      {userType === "professional" && (
+                        <Col justify="end">
+                          <Row justify="end" style={{ paddingBottom: "20px" }}>
+                            <Button
+                              type="secondary"
+                              icon={<EditOutlined />}
+                              onClick={() => {
+                                setIsEditModalVisible(true);
+                                setEditAppt(appt);
+                              }}
+                            >
+                              <Text>Edit</Text>
+                            </Button>
+                          </Row>
+                        </Col>
+                      )}
+                    </Row>
+                    <Row>
+                      <Title level={5}>Notes</Title>
+                    </Row>
+                    <Row>
+                      <Text>{appt.consultationRecord.notes}</Text>
+                    </Row>
+                  </Panel>
+                );
+              })}
+          </Collapse>
+        )}
+
+      {userType === "patient" &&
+        consultationRecords &&
+        consultationRecords?.length > 0 && (
+          <Collapse
+            defaultActiveKey={["0"]}
+            style={{ marginTop: userType === "professional" ? 0 : 20 }}
+          >
+            {consultationRecords.map((record, index) => {
               return (
-                <Panel header={new Date(appt?.date).toUTCString()} key={index}>
+                <Panel header={record.date} key={index}>
                   <Row style={{ paddingBottom: "20px" }}>
                     <Col span={8}>
                       <Row>
                         <Title level={5}>Diagnosis</Title>
                       </Row>
                       <Row>
-                        <Text>{appt.consultationRecord.diagnosis}</Text>
+                        <Text>{record.diagnosis}</Text>
                       </Row>
                     </Col>
                     <Col flex="auto">
@@ -242,81 +301,23 @@ export default function Consultation({
                         <Title level={5}>Medication/Prescription</Title>
                       </Row>
                       <Row>
-                        <Text>{appt.consultationRecord.medication}</Text>
+                        <Text>{record.medication}</Text>
                       </Row>
                     </Col>
-
-                    {userType === "professional" && (
-                      <Col justify="end">
-                        <Row justify="end" style={{ paddingBottom: "20px" }}>
-                          <Button
-                            type="secondary"
-                            icon={<EditOutlined />}
-                            onClick={() => {
-                              setIsEditModalVisible(true);
-                              setEditAppt(appt);
-                            }}
-                          >
-                            <Text>Edit</Text>
-                          </Button>
-                        </Row>
-                      </Col>
-                    )}
                   </Row>
                   <Row>
                     <Title level={5}>Notes</Title>
                   </Row>
                   <Row>
-                    <Text>{appt.consultationRecord.notes}</Text>
+                    <Text>{record.notes}</Text>
                   </Row>
                 </Panel>
               );
             })}
-        </Collapse>
-      ) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      )}
+          </Collapse>
+        )}
 
-      {userType &&
-      userType === "patient" &&
-      consultationRecords &&
-      consultationRecords?.length > 0 ? (
-        <Collapse
-          defaultActiveKey={["0"]}
-          style={{ marginTop: userType === "professional" ? 0 : 20 }}
-        >
-          {consultationRecords.map((record, index) => {
-            return (
-              <Panel header={record.date} key={index}>
-                <Row style={{ paddingBottom: "20px" }}>
-                  <Col span={8}>
-                    <Row>
-                      <Title level={5}>Diagnosis</Title>
-                    </Row>
-                    <Row>
-                      <Text>{record.diagnosis}</Text>
-                    </Row>
-                  </Col>
-                  <Col flex="auto">
-                    <Row>
-                      <Title level={5}>Medication/Prescription</Title>
-                    </Row>
-                    <Row>
-                      <Text>{record.medication}</Text>
-                    </Row>
-                  </Col>
-                </Row>
-                <Row>
-                  <Title level={5}>Notes</Title>
-                </Row>
-                <Row>
-                  <Text>{record.notes}</Text>
-                </Row>
-              </Panel>
-            );
-          })}
-        </Collapse>
-      ) : (
+      {userType && consultationRecords == null && patientRecords == null && (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
 

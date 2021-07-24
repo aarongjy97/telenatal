@@ -41,12 +41,11 @@ export default function HealthRecord({
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editAppt, setEditAppt] = useState();
-  const [createAppt, setCreateAppt] = useState();
   const [form] = Form.useForm();
 
   const onFinishCreate = (values) => {
     const appointment = patientRecords?.find(
-      (record) => record.id === values.appointmentId
+      (record) => record.appointmentId === values.appointment
     );
     const payload = {
       appointmentId: values.appointment,
@@ -56,7 +55,7 @@ export default function HealthRecord({
         heartRate: Number(values.heartRate),
         bloodPressure: Number(values.bloodPressure),
         notes: values.notes ?? "NIL",
-        dateTime: appointment.date,
+        dateTime: new Date(appointment.date).getTime(),
       },
       date: appointment.date,
       location: appointment.location,
@@ -64,7 +63,6 @@ export default function HealthRecord({
       patientId: appointment.patientId,
       professionalId: appointment.professionalId,
     };
-    console.log(payload);
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
@@ -103,13 +101,6 @@ export default function HealthRecord({
             >
               <Select
                 placeholder="Select an appointment to save this record under."
-                onChange={(apptId) => {
-                  setCreateAppt(
-                    patientRecords?.find(
-                      (appt) => appt.appointmentId === apptId
-                    )
-                  );
-                }}
               >
                 {patientRecords?.flatMap((record, _) => {
                   if (record["healthRecord"] != null) {
@@ -175,7 +166,7 @@ export default function HealthRecord({
         heartRate: Number(values.heartRate),
         bloodPressure: Number(values.bloodPressure),
         notes: values.notes ?? "NIL",
-        dateTime: appointment.date,
+        dateTime: new Date(appointment.date).getTime(),
       },
       date: appointment.date,
       location: appointment.location,
@@ -198,9 +189,15 @@ export default function HealthRecord({
         title="Edit Health Record"
         centered
         visible={isEditModalVisible}
-        onOk={() => setIsEditModalVisible(false)}
-        okText="Submit"
         onCancel={() => setIsEditModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsEditModalVisible(false)}>
+            Cancel
+          </Button>,
+          <Button form="health-record-edit" key="submit" htmlType="submit">
+            Submit
+          </Button>,
+        ]}
       >
         <Form form={form} name="health-record-edit" onFinish={onFinishEdit}>
           <Form.Item
@@ -257,7 +254,7 @@ export default function HealthRecord({
 
       {userType === "professional" &&
       healthRecords &&
-      healthRecords.length > 0 ? (
+      healthRecords.length > 0 && (
         <Collapse defaultActiveKey={["0"]}>
           {patientRecords
             .filter((appt, _) => {
@@ -394,11 +391,9 @@ export default function HealthRecord({
               );
             })}
         </Collapse>
-      ) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
 
-      {userType === "patient" && healthRecords && healthRecords.length > 0 ? (
+      {userType === "patient" && healthRecords && healthRecords.length > 0 && (
         <Collapse defaultActiveKey={["0"]}>
           {healthRecords.map((record, index) => {
             return (
@@ -507,9 +502,12 @@ export default function HealthRecord({
             );
           })}
         </Collapse>
-      ) : (
+      )}
+
+      {userType && healthRecords == null && patientRecords == null && (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
+
       {createModal()}
       {editModal()}
     </>
