@@ -23,12 +23,9 @@ import {
   ForkOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-<<<<<<< HEAD
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
-=======
 import { updateAppointment } from "./../../api/Appointment";
-import {formatDate} from '../utils';
->>>>>>> master
+import { formatDate } from "../utils";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -98,11 +95,7 @@ export default function HealthRecord({
           name="health-record-create"
           onFinish={onFinishCreate}
         >
-<<<<<<< HEAD
           {userType === PROFESSIONAL && (
-=======
-          {userType === "professional" && (
->>>>>>> master
             <Form.Item
               name="appointment"
               label="Appointment"
@@ -125,14 +118,6 @@ export default function HealthRecord({
               </Select>
             </Form.Item>
           )}
-<<<<<<< HEAD
-          {userType === PATIENT && (
-            <Form.Item name="date" label="Date" rules={[{ required: true }]}>
-              <DatePicker />
-            </Form.Item>
-          )}
-=======
->>>>>>> master
           <Form.Item
             name={["weight"]}
             label="Weight"
@@ -277,10 +262,7 @@ export default function HealthRecord({
               })
               .map((appt, index) => {
                 return (
-                  <Panel
-                    header={formatDate(appt?.date)}
-                    key={index}
-                  >
+                  <Panel header={formatDate(appt?.date)} key={index}>
                     <Row style={{ paddingBottom: "20px" }}>
                       <Col flex="auto">
                         <Divider orientation="left">Health Readings</Divider>
