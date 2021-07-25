@@ -71,6 +71,21 @@ export default function Header() {
                   </>
                 }
               >
+                <div style={{margin: "2em 0 0 1em", color: "#eb2f96"}}>
+                  <p
+                    style={{
+                      fontWeight: "600",
+                      fontSize: "large",
+                    }}
+                  >
+                    {user.name}
+                  </p>
+                  <p>
+                    {userType == PATIENT && "Patient"}
+                    {userType == PROFESSIONAL && user.type === "doctor" && "Doctor"}
+                    {userType == PROFESSIONAL && user.type === "nurse" && "Nurse"}
+                  </p>
+                </div>
                 <Menu.Item key="4" onClick={logoutUser}>
                   Logout
                   <Link to="/" />
