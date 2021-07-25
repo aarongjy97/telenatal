@@ -16,6 +16,7 @@ import {
   getProfessionalAppointments,
 } from "./../../api/Appointment";
 import { useState, useEffect, useContext } from "react";
+import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { userContext } from "./../../userContext";
 
 const { TabPane } = Tabs;
@@ -25,7 +26,7 @@ const { Search } = Input;
 export default function RecordsMain() {
   const context = useContext(userContext);
   const user = context.user;
-  const userType = user.userType;
+  const userType = user.medicalLicenseNo ? PROFESSIONAL : PATIENT;
   const onSearch = (value) => console.log(value);
 
   const [patientRecords, setPatientRecords] = useState();
@@ -33,7 +34,7 @@ export default function RecordsMain() {
   const email = user.email;
   const [allPatients, setAllPatients] = useState();
   useEffect(() => {
-    if (userType === "professional") {
+    if (userType === PROFESSIONAL) {
       getProfessionalAppointments(email)
         .then((result) => {
           const allPatientsData = {};
@@ -51,7 +52,7 @@ export default function RecordsMain() {
           setPatientRecords(allPatientsData[Object.keys(allPatientsData)?.[0]]);
         })
         .catch((error) => console.log(error));
-    } else if (userType === "patient") {
+    } else if (userType === PATIENT) {
       getPatientAppointments(email)
         .then((result) => {
           setPatientRecords(result.data);
@@ -62,7 +63,7 @@ export default function RecordsMain() {
 
   return (
     <Layout id="records">
-      {userType === "professional" && (
+      {userType === PROFESSIONAL && (
         <Sider className="patientSider" width={250}>
           <Search
             className="patientSearch"

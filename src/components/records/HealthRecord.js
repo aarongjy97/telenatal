@@ -252,7 +252,7 @@ export default function HealthRecord({
         </Button>
       </Row>
 
-      {userType === "professional" &&
+      {userType === PROFESSIONAL &&
         healthRecords &&
         healthRecords.length > 0 && (
           <Collapse defaultActiveKey={["0"]}>
@@ -393,7 +393,7 @@ export default function HealthRecord({
           </Collapse>
         )}
 
-      {userType === "patient" && healthRecords && healthRecords.length > 0 && (
+      {userType === PATIENT && healthRecords && healthRecords.length > 0 && (
         <Collapse defaultActiveKey={["0"]}>
           {healthRecords.map((record, index) => {
             return (

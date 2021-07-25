@@ -13,7 +13,7 @@ import {
   Upload,
 } from "antd";
 import { UploadOutlined, EditOutlined } from "@ant-design/icons";
-import { PROFESSIONAL, PATIENT } from "../../constants/constants";
+import { PROFESSIONAL } from "../../constants/constants";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
