@@ -20,7 +20,7 @@ export default function AppointmentCard({ appointment }) {
   // Fetch professional title data
   const [professionalTitle, setProfessionalTitle] = useState();
   useEffect(() => {
-    if (userType === PATIENT) {
+    if (userType === PATIENT && typeof appointment !== "undefined") {
       getProfessional(appointment.professionalId)
         .then((result) => {
           if (result.data.type === "doctor") {

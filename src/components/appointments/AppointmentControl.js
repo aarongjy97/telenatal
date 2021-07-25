@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import moment from "moment";
+import { useHistory } from "react-router-dom";
 import {
   Space,
   Button,
@@ -29,7 +30,7 @@ import { getPatient, getProfessional } from "./../../api/User";
 import AppointmentCard from "./AppointmentCard";
 import { formatDate, formatTime } from "./../utils";
 import { userContext } from "./../../userContext";
-import { PATIENT, PROFESSIONAL } from "../../constants/constants";
+import { PATIENT, PROFESSIONAL } from "./../../constants/constants";
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -37,10 +38,11 @@ const formItemLayout = {
 };
 
 export default function AppointmentControl({ upcomingAppointments }) {
-  // Get user context
+  // Get user context and history
   const context = useContext(userContext);
   const user = context.user;
   const userType = user.userType;
+  const history = useHistory();
 
   const [form] = Form.useForm();
   const { Option } = Select;
@@ -66,12 +68,16 @@ export default function AppointmentControl({ upcomingAppointments }) {
     setSelectedPurpose();
   }
 
-  const onBook = (values) => {
+  // Define actions after modal form submission
+  const onBookSubmit = (values) => {
+    console.log("book: ", values);
+    let purpose = values.purpose;
     let date = new Date(values.time).valueOf();
     let location = "";
     let postalCode = "";
     let patientId = "";
     let professionalId = "";
+    let remarks = values.remarks;
 
     // Set Professional and Patient Entity
     if (userType === PATIENT) {
@@ -111,27 +117,50 @@ export default function AppointmentControl({ upcomingAppointments }) {
     }
 
     createAppointment(
-      values.purpose,
+      purpose,
       date,
       location,
       postalCode,
       patientId,
       professionalId,
-      values.remarks
+      remarks
     )
       .then((result) => {
         clearSelection();
         setIsBookModalVisible(false);
+        history.go(0);
+        history.push({
+          state: { tab: "appointments" },
+        });
       })
       .catch((error) => console.log(error));
   };
 
-  const onReschedule = (values) => {
+  const onRescheduleSubmit = (values) => {
     console.log("reschedule: ", values);
+    let appointmentId = values.appointment;
+    updateAppointment(appointmentId).then((result) => {
+      clearSelection();
+      setIsRescheduleModalVisible(false);
+      history.go(0);
+      history.push({
+        state: { tab: "appointments" },
+      });
+    });
   };
 
-  const onCancel = (values) => {
+  const onCancelSubmit = (values) => {
     console.log("cancel: ", values);
+    let appointmentId = values.appointment;
+    let meetingId = selectedAppointment.meetingId;
+    deleteAppointment(appointmentId, meetingId).then((result) => {
+      clearSelection();
+      setIsCancelModalVisible(false);
+      history.go(0);
+      history.push({
+        state: { tab: "appointments" },
+      });
+    });
   };
 
   // Load options for appointment selection
@@ -207,9 +236,17 @@ export default function AppointmentControl({ upcomingAppointments }) {
   // TODO: load for medical professional view also
   function updateNewAppointmentsOption(appointmentSlots) {
     var newAppointmentsOption = [];
+
+    // After now without clash with patient's schedule
     for (let i = 0; i < appointmentSlots.length; i++) {
+      let hasClashes = false;
+      for (let j = 0; j < upcomingAppointments.length; j++) {
+        if (appointmentSlots[i] == upcomingAppointments[j].date) {
+          hasClashes = true;
+        }
+      }
       var appointmentTime = moment(appointmentSlots[i]);
-      if (appointmentTime.isAfter()) {
+      if (appointmentTime.isAfter() && hasClashes == false) {
         newAppointmentsOption.push({
           value: appointmentSlots[i],
           label: formatTime(appointmentSlots[i]),
@@ -286,7 +323,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
           {...formItemLayout}
           form={form}
           name="bookAppointment"
-          onFinish={onBook}
+          onFinish={onBookSubmit}
         >
           {userType === PROFESSIONAL && (
             <Form.Item
@@ -426,13 +463,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
   };
 
   const rescheduleModal = () => {
-    const onFinish = (values) => {
-      const appointmentId = values.appointment;
-      updateAppointment(appointmentId);
-      setIsRescheduleModalVisible(false);
-      window.location.replace("/appointments");
-    };
-
     return (
       <Modal
         title="Reschedule Existing Appointment"
@@ -471,7 +501,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
           {...formItemLayout}
           form={form}
           name="rescheduleAppointment"
-          onFinish={onFinish}
+          onFinish={onRescheduleSubmit}
         >
           <Form.Item
             name="appointment"
@@ -538,14 +568,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
   };
 
   const cancelModal = () => {
-    const onFinish = (values) => {
-      const appointmentId = values.appointment;
-      const meetingId = selectedAppointment.meetingId;
-      deleteAppointment(appointmentId, meetingId);
-      setIsCancelModalVisible(false);
-      window.location.replace("/appointments");
-    };
-
     return (
       <Modal
         title="Cancel Existing Appointment"
@@ -578,7 +600,11 @@ export default function AppointmentControl({ upcomingAppointments }) {
           </Button>,
         ]}
       >
-        <Form {...formItemLayout} name="cancelAppointment" onFinish={onFinish}>
+        <Form
+          {...formItemLayout}
+          name="cancelAppointment"
+          onFinish={onCancelSubmit}
+        >
           <Form.Item
             name="appointment"
             label="Appointment"
