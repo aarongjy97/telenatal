@@ -78,7 +78,7 @@ export default function RecordsMain() {
   return (
     <Layout id="records">
       {userType === PROFESSIONAL && (
-        <Sider className="patientSider" width={250}>
+        <Sider className="patientSider" width={250} collapsible={true}>
           <Search
             className="patientSearch"
             placeholder="Search for Patient"
