@@ -32,3 +32,10 @@ export function sortAppointments(appointments) {
   });
   return appointments;
 }
+
+export function getInitials(text) {
+  return text
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+}

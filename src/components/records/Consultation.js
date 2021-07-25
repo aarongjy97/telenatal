@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Collapse,
   Modal,
@@ -11,9 +12,8 @@ import {
   Input,
   Empty,
 } from "antd";
-import { useState } from "react";
-import { EditOutlined } from "@ant-design/icons";
-import { useHistory } from "react-router-dom";
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
+import Fade from "react-reveal";
 import { PATIENT, PROFESSIONAL } from "../../constants/constants";
 import { updateAppointment } from "./../../api/Appointment";
 import { formatDate } from "../utils";
@@ -217,33 +217,96 @@ export default function Consultation({
     <>
       {userType === PROFESSIONAL && (
         <Row justify="end" style={{ paddingBottom: "20px" }}>
-          <Button
-            type="secondary"
-            onClick={() => setIsCreateModalVisible(true)}
-          >
-            <Title level={5}>Add New Consultation Record</Title>
-          </Button>
+          <Fade>
+            <Button
+              type="secondary"
+              onClick={() => setIsCreateModalVisible(true)}
+            >
+              <PlusOutlined />
+              Add New Consultation Record
+            </Button>
+          </Fade>
         </Row>
       )}
 
       {userType === PROFESSIONAL &&
         consultationRecords &&
         consultationRecords?.length > 0 && (
-          <Collapse defaultActiveKey={["0"]} style={{ marginTop: 0 }}>
-            {patientRecords
-              .filter((appt, _) => {
-                return appt.consultationRecord != null;
-              })
-              .map((appt, index) => {
+          <Fade bottom>
+            <Collapse defaultActiveKey={["0"]} style={{ marginTop: 0 }}>
+              {patientRecords
+                .filter((appt, _) => {
+                  return appt.consultationRecord != null;
+                })
+                .map((appt, index) => {
+                  return (
+                    <Panel header={formatDate(appt?.date)} key={index}>
+                      <Row style={{ paddingBottom: "20px" }}>
+                        <Col span={8}>
+                          <Row>
+                            <Title level={5}>Diagnosis</Title>
+                          </Row>
+                          <Row>
+                            <Text>{appt.consultationRecord.diagnosis}</Text>
+                          </Row>
+                        </Col>
+                        <Col flex="auto">
+                          <Row>
+                            <Title level={5}>Medication/Prescription</Title>
+                          </Row>
+                          <Row>
+                            <Text>{appt.consultationRecord.medication}</Text>
+                          </Row>
+                        </Col>
+
+                        {userType === PROFESSIONAL && (
+                          <Col justify="end">
+                            <Row
+                              justify="end"
+                              style={{ paddingBottom: "20px" }}
+                            >
+                              <Button
+                                type="secondary"
+                                icon={<EditOutlined />}
+                                onClick={() => {
+                                  setIsEditModalVisible(true);
+                                  setEditAppt(appt);
+                                }}
+                              >
+                                <Text>Edit</Text>
+                              </Button>
+                            </Row>
+                          </Col>
+                        )}
+                      </Row>
+                      <Row>
+                        <Title level={5}>Notes</Title>
+                      </Row>
+                      <Row>
+                        <Text>{appt.consultationRecord.notes}</Text>
+                      </Row>
+                    </Panel>
+                  );
+                })}
+            </Collapse>
+          </Fade>
+        )}
+
+      {userType === PATIENT &&
+        consultationRecords &&
+        consultationRecords?.length > 0 && (
+          <Fade bottom>
+            <Collapse defaultActiveKey={["0"]} style={{ marginTop: 20 }}>
+              {consultationRecords.map((record, index) => {
                 return (
-                  <Panel header={formatDate(appt?.date)} key={index}>
+                  <Panel header={record.date} key={index}>
                     <Row style={{ paddingBottom: "20px" }}>
                       <Col span={8}>
                         <Row>
                           <Title level={5}>Diagnosis</Title>
                         </Row>
                         <Row>
-                          <Text>{appt.consultationRecord.diagnosis}</Text>
+                          <Text>{record.diagnosis}</Text>
                         </Row>
                       </Col>
                       <Col flex="auto">
@@ -251,74 +314,21 @@ export default function Consultation({
                           <Title level={5}>Medication/Prescription</Title>
                         </Row>
                         <Row>
-                          <Text>{appt.consultationRecord.medication}</Text>
+                          <Text>{record.medication}</Text>
                         </Row>
                       </Col>
-
-                      {userType === PROFESSIONAL && (
-                        <Col justify="end">
-                          <Row justify="end" style={{ paddingBottom: "20px" }}>
-                            <Button
-                              type="secondary"
-                              icon={<EditOutlined />}
-                              onClick={() => {
-                                setIsEditModalVisible(true);
-                                setEditAppt(appt);
-                              }}
-                            >
-                              <Text>Edit</Text>
-                            </Button>
-                          </Row>
-                        </Col>
-                      )}
                     </Row>
                     <Row>
                       <Title level={5}>Notes</Title>
                     </Row>
                     <Row>
-                      <Text>{appt.consultationRecord.notes}</Text>
+                      <Text>{record.notes}</Text>
                     </Row>
                   </Panel>
                 );
               })}
-          </Collapse>
-        )}
-
-      {userType === PATIENT &&
-        consultationRecords &&
-        consultationRecords?.length > 0 && (
-          <Collapse defaultActiveKey={["0"]} style={{ marginTop: 20 }}>
-            {consultationRecords.map((record, index) => {
-              return (
-                <Panel header={record.date} key={index}>
-                  <Row style={{ paddingBottom: "20px" }}>
-                    <Col span={8}>
-                      <Row>
-                        <Title level={5}>Diagnosis</Title>
-                      </Row>
-                      <Row>
-                        <Text>{record.diagnosis}</Text>
-                      </Row>
-                    </Col>
-                    <Col flex="auto">
-                      <Row>
-                        <Title level={5}>Medication/Prescription</Title>
-                      </Row>
-                      <Row>
-                        <Text>{record.medication}</Text>
-                      </Row>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Title level={5}>Notes</Title>
-                  </Row>
-                  <Row>
-                    <Text>{record.notes}</Text>
-                  </Row>
-                </Panel>
-              );
-            })}
-          </Collapse>
+            </Collapse>
+          </Fade>
         )}
 
       {(consultationRecords?.length == null ||

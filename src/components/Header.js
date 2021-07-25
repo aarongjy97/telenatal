@@ -3,6 +3,8 @@ import { Layout, Menu, Row, Col, Avatar, Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import { userContext } from "../userContext";
 import { PATIENT, PROFESSIONAL } from "../constants/constants";
+import { getInitials } from "./utils";
+
 export default function Header() {
   const { SubMenu } = Menu;
   const { Header } = Layout;
@@ -63,15 +65,12 @@ export default function Header() {
                         backgroundColor: "#780650",
                       }}
                     >
-                      {user.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
+                      {getInitials(user.name)}
                     </Avatar>
                   </>
                 }
               >
-                <div style={{margin: "2em 0 0 1em", color: "#eb2f96"}}>
+                <div style={{ margin: "2em 1em 0 1em", color: "#eb2f96" }}>
                   <p
                     style={{
                       fontWeight: "600",
@@ -81,9 +80,13 @@ export default function Header() {
                     {user.name}
                   </p>
                   <p>
-                    {userType == PATIENT && "Patient"}
-                    {userType == PROFESSIONAL && user.type === "doctor" && "Doctor"}
-                    {userType == PROFESSIONAL && user.type === "nurse" && "Nurse"}
+                    {userType === PATIENT && "Patient"}
+                    {userType === PROFESSIONAL &&
+                      user.type === "doctor" &&
+                      "Doctor"}
+                    {userType === PROFESSIONAL &&
+                      user.type === "nurse" &&
+                      "Nurse"}
                   </p>
                 </div>
                 <Menu.Item key="4" onClick={logoutUser}>

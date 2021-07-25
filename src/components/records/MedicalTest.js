@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Button,
   Col,
@@ -12,14 +13,14 @@ import {
   Select,
   Typography,
 } from "antd";
-import { EditOutlined } from "@ant-design/icons";
-import { useHistory } from "react-router-dom";
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
+import Fade from "react-reveal";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { updateAppointment } from "../../api/Appointment";
 import { formatDate } from "../utils";
 
 const { Panel } = Collapse;
-const { Text, Title } = Typography;
+const { Text } = Typography;
 const { Option } = Select;
 
 const formItemLayout = {
@@ -65,7 +66,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
   const createModal = () => {
     return (
       <Modal
-        title="Create New Test Results Record"
+        title="Create New Medical Test Record"
         centered
         onCancel={() => setIsCreateModalVisible(false)}
         visible={isCreateModalVisible}
@@ -194,22 +195,65 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
     <>
       {userType === PROFESSIONAL && (
         <Row justify="end" style={{ paddingBottom: "20px" }}>
-          <Button
-            type="secondary"
-            onClick={() => setIsCreateModalVisible(true)}
-          >
-            <Title level={5}>Add New Test Results</Title>
-          </Button>
+          <Fade>
+            <Button
+              type="secondary"
+              onClick={() => setIsCreateModalVisible(true)}
+            >
+              <PlusOutlined />
+              Add New Medical Test Record
+            </Button>
+          </Fade>
         </Row>
       )}
 
       {userType === PROFESSIONAL && testRecords && testRecords?.length > 0 && (
-        <Collapse defaultActiveKey={["1"]} style={{ marginTop: 0 }}>
-          {patientRecords
-            .filter((appt) => appt?.testRecord != null)
-            .map((appt, index) => {
+        <Fade bottom>
+          <Collapse defaultActiveKey={["1"]} style={{ marginTop: 0 }}>
+            {patientRecords
+              .filter((appt) => appt?.testRecord != null)
+              .map((appt, index) => {
+                return (
+                  <Panel header={formatDate(appt?.date)} key={index}>
+                    <Row>
+                      <Col flex="auto">
+                        <Divider orientation="left">Test</Divider>
+                      </Col>
+                      {userType === PROFESSIONAL && (
+                        <Col justify="end" style={{ paddingLeft: "15px" }}>
+                          <Button
+                            type="secondary"
+                            onClick={() => {
+                              setIsEditModalVisible(true);
+                              setEditAppt(appt);
+                            }}
+                            icon={<EditOutlined />}
+                          >
+                            <Text>Edit</Text>
+                          </Button>
+                        </Col>
+                      )}
+                    </Row>
+                    <Row style={{ paddingBottom: 20 }}>
+                      <Text>{appt.testRecord.testName}</Text>
+                    </Row>
+                    <Divider orientation="left">Notes</Divider>
+                    <Row>
+                      <Text>{appt.testRecord.notes}</Text>
+                    </Row>
+                  </Panel>
+                );
+              })}
+          </Collapse>
+        </Fade>
+      )}
+
+      {userType === PATIENT && testRecords && testRecords?.length > 0 && (
+        <Fade bottom>
+          <Collapse defaultActiveKey={["1"]} style={{ marginTop: 20 }}>
+            {testRecords.map((record, index) => {
               return (
-                <Panel header={formatDate(appt?.date)} key={index}>
+                <Panel header={record.date} key={index}>
                   <Row>
                     <Col flex="auto">
                       <Divider orientation="left">Test</Divider>
@@ -218,10 +262,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
                       <Col justify="end" style={{ paddingLeft: "15px" }}>
                         <Button
                           type="secondary"
-                          onClick={() => {
-                            setIsEditModalVisible(true);
-                            setEditAppt(appt);
-                          }}
+                          onClick={() => setIsEditModalVisible(true)}
                           icon={<EditOutlined />}
                         >
                           <Text>Edit</Text>
@@ -230,50 +271,17 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
                     )}
                   </Row>
                   <Row style={{ paddingBottom: 20 }}>
-                    <Text>{appt.testRecord.testName}</Text>
+                    <Text>{record.testName}</Text>
                   </Row>
                   <Divider orientation="left">Notes</Divider>
                   <Row>
-                    <Text>{appt.testRecord.notes}</Text>
+                    <Text>{record.notes}</Text>
                   </Row>
                 </Panel>
               );
             })}
-        </Collapse>
-      )}
-
-      {userType === PATIENT && testRecords && testRecords?.length > 0 && (
-        <Collapse defaultActiveKey={["1"]} style={{ marginTop: 20 }}>
-          {testRecords.map((record, index) => {
-            return (
-              <Panel header={record.date} key={index}>
-                <Row>
-                  <Col flex="auto">
-                    <Divider orientation="left">Test</Divider>
-                  </Col>
-                  {userType === PROFESSIONAL && (
-                    <Col justify="end" style={{ paddingLeft: "15px" }}>
-                      <Button
-                        type="secondary"
-                        onClick={() => setIsEditModalVisible(true)}
-                        icon={<EditOutlined />}
-                      >
-                        <Text>Edit</Text>
-                      </Button>
-                    </Col>
-                  )}
-                </Row>
-                <Row style={{ paddingBottom: 20 }}>
-                  <Text>{record.testName}</Text>
-                </Row>
-                <Divider orientation="left">Notes</Divider>
-                <Row>
-                  <Text>{record.notes}</Text>
-                </Row>
-              </Panel>
-            );
-          })}
-        </Collapse>
+          </Collapse>
+        </Fade>
       )}
 
       {(testRecords?.length == null || testRecords?.length === 0) && (

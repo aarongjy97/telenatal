@@ -238,12 +238,12 @@ export default function AppointmentControl({ upcomingAppointments }) {
     for (let i = 0; i < appointmentSlots.length; i++) {
       let hasClashes = false;
       for (let j = 0; j < upcomingAppointments.length; j++) {
-        if (appointmentSlots[i] == upcomingAppointments[j].date) {
+        if (appointmentSlots[i] === upcomingAppointments[j].date) {
           hasClashes = true;
         }
       }
       var appointmentTime = moment(appointmentSlots[i]);
-      if (appointmentTime.isAfter() && hasClashes == false) {
+      if (appointmentTime.isAfter() && hasClashes === false) {
         newAppointmentsOption.push({
           value: appointmentSlots[i],
           label: formatTime(appointmentSlots[i]),

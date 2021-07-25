@@ -31,7 +31,7 @@ export default function AppointmentCard({ appointment }) {
         })
         .catch((error) => console.log(error));
     }
-  }, [userType]);
+  }, [userType, appointment]);
 
   if (professionalTitle == null) {
     return <></>;
@@ -63,7 +63,7 @@ export default function AppointmentCard({ appointment }) {
           <p>
             <PushpinOutlined />
             &nbsp;{appointment.location}{" "}
-            {appointment.postalCode != 0 ? (
+            {appointment.postalCode !== 0 ? (
               <>S({appointment.postalCode})</>
             ) : null}
           </p>
