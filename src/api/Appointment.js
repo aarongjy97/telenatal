@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import axios from "axios";
-import { createMeeting, deleteMeeting } from "./Teleconference";
 
 dotenv.config();
 
@@ -51,7 +50,6 @@ export async function updateAppointment(appointment) {
 }
 
 export async function deleteAppointment(appointmentId, meetingId) {
-  deleteMeeting(meetingId);
   return await axios.delete(`${API_ENDPOINT}/appointment`, {
     data: {
       appointmentId: appointmentId,
@@ -69,10 +67,6 @@ export async function createAppointment(
   remarks
 ) {
   var meetingId;
-  if (postalCode == 0) {
-    const joinInfo = await createMeeting();
-    meetingId = joinInfo.Meeting.Meeting.MeetingId;
-  }
 
   return await axios.post(`${API_ENDPOINT}/appointment`, {
     purpose: purpose,

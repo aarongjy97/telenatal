@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Layout, Row, Col } from "antd";
+import { Layout, Row, Col, message } from "antd";
 import Teleconference from "./teleconference/Teleconference";
 import {
   MeetingProvider,
@@ -52,6 +52,7 @@ export default function Meet(props) {
   const [showRecordsPanel, setShowRecordsPanel] = React.useState(false);
   const [patientList, setPatientList] = React.useState([]);
   const [professionalList, setProfessionalList] = React.useState([]);
+  const [joinedCall, setJoinedCall] = React.useState(false);
 
   React.useEffect(() => {
     setTimeout(() => {
@@ -85,21 +86,29 @@ export default function Meet(props) {
   }, []);
 
   const onAppointmentTileClick = (appointment) => {
-    // change the view on the child
-    // get the appointment deets
-    setAppointment(appointment);
-    setTeleconView(teleConstants.BEFORE_CALL_VIEW);
+    if (!joinedCall) {
+      // change the view on the child
+      // get the appointment deets
+      setAppointment(appointment);
+      setTeleconView(teleConstants.BEFORE_CALL_VIEW);
 
-    if (userType === PROFESSIONAL) {
-      // assign the patient from the patientList
-      // for now use dummy ;P
-      console.log("user is doctor, setting selected patient");
-      setPatient(patientDummy);
+      if (userType === PROFESSIONAL) {
+        // assign the patient from the patientList
+        // for now use dummy ;P
+        console.log("user is doctor, setting selected patient");
+        setPatient(patientDummy);
+      }
+    } else {
+      // not allowed to get out of meeting before ending call
+      message.warning(
+        "End the current call before joining another appointment"
+      );
     }
   };
 
   const onJoinCall = () => {
     setTeleconView(teleConstants.MEETING_VIEW);
+    setJoinedCall(true);
     if (userType === PROFESSIONAL) {
       setShowRecordsPanel(true);
     }
@@ -107,6 +116,7 @@ export default function Meet(props) {
 
   const onEndCall = () => {
     setTeleconView(teleConstants.AFTER_CALL_VIEW);
+    setJoinedCall(false);
   };
 
   const onRecordsSubmit = () => {
@@ -139,7 +149,7 @@ export default function Meet(props) {
                 </MeetingProvider>
               </ThemeProvider>
             </Row>
-            <Row className="infoPanel">
+            {/* <Row className="infoPanel">
               {showRecordsPanel && (
                 <Col flex="auto">
                   <Records
@@ -149,7 +159,7 @@ export default function Meet(props) {
                   />
                 </Col>
               )}
-            </Row>
+            </Row> */}
           </Col>
         </Row>
       </Layout>
