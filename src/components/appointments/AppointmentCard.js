@@ -27,6 +27,9 @@ export default function AppointmentCard({ appointment, userType }) {
     }
   }, [userType]);
 
+  if (professionalTitle == null) {
+    return <></>;
+  }
   return (
     <Fade>
       {typeof appointment !== "undefined" && (
@@ -53,7 +56,7 @@ export default function AppointmentCard({ appointment, userType }) {
           )}
           <p>
             <PushpinOutlined />
-            &nbsp;{appointment.location} S({appointment.postalCode})
+            &nbsp;{appointment.location} {appointment.postalCode != 0 ? <>S({appointment.postalCode})</> : null}
           </p>
         </Card>
       )}
