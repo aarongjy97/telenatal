@@ -40,7 +40,7 @@ export default function AppointmentCard({ appointment }) {
   return (
     <Fade>
       {typeof appointment !== "undefined" && (
-        <Card id="appointmentCard">
+        <Card id="appointmentCard" hoverable>
           <p>
             <span>{appointment.purpose}</span>
           </p>
