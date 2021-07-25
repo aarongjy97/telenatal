@@ -71,6 +71,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
   // Define actions after modal form submission
   const onBookSubmit = (values) => {
     console.log("book: ", values);
+
     let purpose = values.purpose;
     let date = new Date(values.time).valueOf();
     let location = "";
@@ -138,8 +139,9 @@ export default function AppointmentControl({ upcomingAppointments }) {
 
   const onRescheduleSubmit = (values) => {
     console.log("reschedule: ", values);
-    let appointmentId = values.appointment;
-    updateAppointment(appointmentId).then((result) => {
+    let appointmentId = values.appointmentId;
+    let date = new Date(values.time).valueOf();
+    updateAppointment(appointmentId, date).then((result) => {
       clearSelection();
       setIsRescheduleModalVisible(false);
       history.go(0);
@@ -172,15 +174,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
     };
   }
 
-  // Render change for appointment selection
-  var upcomingAppointmentsChange = (appointmentId) => {
-    getAppointment(appointmentId)
-      .then((result) => {
-        setSelectedAppointment(result.data);
-      })
-      .catch((error) => console.log(error));
-  };
-
   useEffect(() => {
     if (userType === PATIENT) {
       // Fetch all doctors
@@ -206,33 +199,37 @@ export default function AppointmentControl({ upcomingAppointments }) {
     }
   }, [userType]);
 
-  // Load options for medical professionals
-  var doctorOption = { value: "doctor", label: "Doctor", options: [] };
-  for (let i = 0; i < doctors.length; i++) {
-    doctorOption.options[i] = {
-      value: doctors[i]["email"],
-      label: doctors[i]["name"],
-    };
+  // Load patients and medical professionals for selection
+  var userOption = [];
+  if (userType === PATIENT) {
+    // Load options for medical professionals
+    var doctorOption = { value: "doctor", label: "Doctor", options: [] };
+    for (let i = 0; i < doctors.length; i++) {
+      doctorOption.options[i] = {
+        value: doctors[i]["email"],
+        label: doctors[i]["name"],
+      };
+    }
+    var nurseOption = { value: "nurse", label: "Nurse", options: [] };
+    for (let i = 0; i < nurses.length; i++) {
+      nurseOption.options[i] = {
+        value: nurses[i]["email"],
+        label: nurses[i]["name"],
+      };
+    }
+    userOption = [doctorOption, nurseOption];
   }
-  var nurseOption = { value: "nurse", label: "Nurse", options: [] };
-  for (let i = 0; i < nurses.length; i++) {
-    nurseOption.options[i] = {
-      value: nurses[i]["email"],
-      label: nurses[i]["name"],
-    };
+  if (userType === PROFESSIONAL) {
+    // Load options for patients
+    for (let i = 0; i < patients.length; i++) {
+      userOption[i] = {
+        value: patients[i]["email"],
+        label: patients[i]["name"],
+      };
+    }
   }
-  const professionalOption = [doctorOption, nurseOption];
 
-  // Load options for patients
-  var patientOption = [];
-  for (let i = 0; i < patients.length; i++) {
-    patientOption[i] = {
-      value: patients[i]["email"],
-      label: patients[i]["name"],
-    };
-  }
-
-  // Load available appointments
+  // Load available appointments for booking
   // TODO: load for medical professional view also
   function updateNewAppointmentsOption(appointmentSlots) {
     var newAppointmentsOption = [];
@@ -256,8 +253,8 @@ export default function AppointmentControl({ upcomingAppointments }) {
     setNewAppointmentsOption(newAppointmentsOption);
   }
 
-  // Conditionally fetch available appointments
-  function getAppointmentSlots(professionalId, date) {
+  // Fetch available appointments for booking
+  function getBookAppointmentSlots(professionalId, date) {
     if (professionalId) {
       setSelectedProfessional(professionalId);
       if (selectedDate != null) {
@@ -279,6 +276,47 @@ export default function AppointmentControl({ upcomingAppointments }) {
       }
     }
   }
+
+  // Fetch available appointments for reschedule
+  function getRescheduleAppointmentSlots(appointmentId, date) {
+    if (appointmentId) {
+      setSelectedAppointment(appointmentId);
+      if (selectedDate != null) {
+        // Get professional for the appointment
+        getAppointment(appointmentId).then((result) => {
+          let professionalId = result.data.professionalId;
+          setSelectedProfessional(professionalId);
+          // Get professional availability
+          console.log(professionalId, selectedDate);
+          getProfessionalAvailability(professionalId, selectedDate).then(
+            (result) => {
+              updateNewAppointmentsOption(result.data);
+            }
+          );
+        });
+      }
+    }
+    if (date) {
+      setSelectedDate(date);
+      if (selectedProfessional != null) {
+        console.log(selectedProfessional, date);
+        getProfessionalAvailability(selectedProfessional, date).then(
+          (result) => {
+            updateNewAppointmentsOption(result.data);
+          }
+        );
+      }
+    }
+  }
+
+  // Render change for appointment selection // useless for now
+  var upcomingAppointmentsChange = (appointmentId) => {
+    getAppointment(appointmentId)
+      .then((result) => {
+        setSelectedAppointment(result.data);
+      })
+      .catch((error) => console.log(error));
+  };
 
   const bookModal = () => {
     return (
@@ -336,14 +374,11 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 },
               ]}
             >
-              <Select
-                placeholder="Select your patient"
-                options={patientOption}
-              />
+              <Select placeholder="Select your patient" options={userOption} />
             </Form.Item>
           )}
 
-          {userType === "patient" && (
+          {userType === PATIENT && (
             <Form.Item
               name="professionalId"
               label="Professional"
@@ -356,9 +391,9 @@ export default function AppointmentControl({ upcomingAppointments }) {
             >
               <Select
                 placeholder="Select medical professional"
-                options={professionalOption}
+                options={userOption}
                 onChange={(professionalId) => {
-                  getAppointmentSlots(professionalId, null);
+                  getBookAppointmentSlots(professionalId, null);
                 }}
               />
             </Form.Item>
@@ -381,7 +416,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 return current < moment().startOf("day");
               }}
               onChange={(date) => {
-                getAppointmentSlots(
+                getBookAppointmentSlots(
                   null,
                   date !== null ? date.format("YYYY-MM-DD") : null
                 );
@@ -504,7 +539,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
           onFinish={onRescheduleSubmit}
         >
           <Form.Item
-            name="appointment"
+            name="appointmentId"
             label="Appointment"
             rules={[
               {
@@ -516,7 +551,9 @@ export default function AppointmentControl({ upcomingAppointments }) {
             <Select
               placeholder="Select appointment to reschedule"
               options={upcomingAppointmentsOption}
-              onChange={upcomingAppointmentsChange}
+              onChange={(appointmentId) => {
+                getRescheduleAppointmentSlots(appointmentId, null);
+              }}
             />
           </Form.Item>
 
@@ -537,7 +574,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 return current < moment().startOf("day");
               }}
               onChange={(date) => {
-                getAppointmentSlots(
+                getRescheduleAppointmentSlots(
                   null,
                   date !== null ? date.format("YYYY-MM-DD") : null
                 );
