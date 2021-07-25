@@ -639,6 +639,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
       >
         <Form
           {...formItemLayout}
+          form={form}
           name="cancelAppointment"
           onFinish={onCancelSubmit}
         >

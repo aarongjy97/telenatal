@@ -48,39 +48,51 @@ export default function ProfessionalRegister() {
       )
         .then((result) => {
           console.log("Clinic Created");
-          console.log(result);
-          // TODO: Get clinic id, using dummy data first
+          clinicId = result.data;
           setSelectedClinic({
-            clinicId: "a50fcb02-f362-4514-9c0d-551b60c21e8e",
-            clinicName: "National University Hospital",
-            clinicAddress: "5 Lower Kent Ridge Rd",
-            clinicPostalCode: 119074,
+            clinicId: clinicId,
+            clinicName: values.clinicName,
+            clinicAddress: values.clinicAddress,
+            clinicPostalCode: values.clinicPostalCode,
           });
-          clinicId = result.data.clinicId;
-          setErrorMessage();
-          history.push("/login");
+
+          registerProfessional(
+            values.name,
+            values.password,
+            values.email,
+            values.phone,
+            values.type,
+            values.education,
+            values.medicalLicenseNo,
+            clinicId
+          )
+            .then((result) => {
+              console.log("Professional Registered");
+              setErrorMessage();
+              history.push("/login");
+            })
+            .catch((error) => setErrorMessage(error.response.data));
         })
         .catch((error) => setErrorMessage(error.response.data));
     } else {
       clinicId = selectedClinic.clinicId;
+      registerProfessional(
+        values.name,
+        values.password,
+        values.email,
+        values.phone,
+        values.type,
+        values.education,
+        values.medicalLicenseNo,
+        selectedClinic.clinicId
+      )
+        .then((result) => {
+          console.log("Professional Registered");
+          setErrorMessage();
+          history.push("/login");
+        })
+        .catch((error) => setErrorMessage(error.response.data));
     }
-
-    registerProfessional(
-      values.name,
-      values.password,
-      values.email,
-      values.phone,
-      values.type,
-      values.education,
-      values.medicalLicenseNo,
-      clinicId
-    )
-      .then((result) => {
-        console.log("Professional Registered");
-        console.log(result);
-        // history.push("/login");
-      })
-      .catch((error) => console.log(error));
   };
 
   const onSelectClinic = (clinicId) => {
@@ -112,7 +124,7 @@ export default function ProfessionalRegister() {
       onFinish={onRegistration}
       scrollToFirstError
     >
-      <p>About you</p>
+      <p className="formTitle">About you</p>
       <Form.Item
         name="name"
         label="Full Name"
@@ -265,7 +277,7 @@ export default function ProfessionalRegister() {
         />
       </Form.Item>
 
-      <p>About your clinic</p>
+      <p className="formTitle">About your clinic</p>
 
       <Form.Item
         name="clinicId"

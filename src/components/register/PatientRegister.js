@@ -11,11 +11,13 @@ import {
   tailFormItemLayout,
 } from "./constants";
 
-const { Option } = Select;
-
 export default function PatientRegister() {
   const [form] = Form.useForm();
+  const { Option } = Select;
+
+  // Get history
   const history = useHistory();
+
   const [errorMessage, setErrorMessage] = useState();
 
   const onRegistration = (values) => {
@@ -61,7 +63,7 @@ export default function PatientRegister() {
       onFinish={onRegistration}
       scrollToFirstError
     >
-      <p>About you</p>
+      <p className="formTitle">About you</p>
 
       <Form.Item
         name="name"
@@ -193,7 +195,7 @@ export default function PatientRegister() {
         </Select>
       </Form.Item>
 
-      <p>About your baby</p>
+      <p className="formTitle">About your baby</p>
 
       <Form.Item name="babyName" label="Baby's Name">
         <Input />
