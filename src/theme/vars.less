@@ -37,7 +37,7 @@ div#root {
 Header
 ----------------------------------------------------------------*/
 #header {
-  min-width: "100vh";
+  min-width: 100vw;
 
   .navbar {
     display: flex;
@@ -67,10 +67,10 @@ Home
 
 #home {
   background-color: @magenta-2;
-  height: 100vh;
+  height: 100%;
 
   .centerRow {
-    height: 100vh;
+    height: 100%;
     margin: auto;
   }
 
@@ -97,7 +97,7 @@ Profile/Register
 ----------------------------------------------------------------*/
 
 #profile {
-  height: 100vh;
+  height: 100%;
 
   .row {
     margin: auto;
@@ -151,12 +151,12 @@ Login
 ----------------------------------------------------------------*/
 
 #login {
-  height: 100vh;
+  height: 100%;
   display: block;
   margin: auto;
 
   .row {
-    height: 100vh;
+    height: 100%;
 
     .col {
       margin: auto;
@@ -200,7 +200,7 @@ Meet
 ----------------------------------------------------------------*/
 
 #meet {
-  height: 100vh;
+  height: 100%;
 
   .appointmentDetails {
     .videoConference {
@@ -222,9 +222,12 @@ Records
 ----------------------------------------------------------------*/
 
 #records {
-  height: 100vh;
+  height: 100%;
+  overflow: auto;
 
   .patientSider {
+    height: 100%;
+    overflow: auto;
     width: 10vw;
 
     .patientSearch {
