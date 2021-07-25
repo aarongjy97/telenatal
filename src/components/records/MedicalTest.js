@@ -13,6 +13,7 @@ import {
   Typography,
 } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { updateAppointment } from "../../api/Appointment";
 import { formatDate } from "../utils";
@@ -27,6 +28,8 @@ const formItemLayout = {
 };
 
 export default function MedicalTest({ userType, testRecords, patientRecords }) {
+  const history = useHistory();
+
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -55,6 +58,8 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
       })
       .catch((error) => console.log(error));
     setIsCreateModalVisible(false);
+    history.go(0);
+    history.push({ state: { tab: "test", patient: appointment.patientId } });
   };
 
   const createModal = () => {
@@ -143,6 +148,8 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
       .catch((error) => console.log(error));
     setEditAppt(null);
     setIsEditModalVisible(false);
+    history.go(0);
+    history.push({ state: { tab: "test", patient: appointment.patientId } });
   };
 
   const editModal = () => {

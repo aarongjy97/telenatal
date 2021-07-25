@@ -18,12 +18,26 @@ import {
 import { useState, useEffect, useContext } from "react";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { userContext } from "./../../userContext";
+import { useHistory } from "react-router-dom";
 
 const { TabPane } = Tabs;
 const { Content, Sider } = Layout;
 const { Search } = Input;
 
 export default function RecordsMain() {
+  const history = useHistory();
+  const activeTab = () => {
+    const tab = history.location.state.tab;
+    if (tab === "health") {
+      return "2";
+    } else if (tab === "ultrasound") {
+      return "3";
+    } else if (tab === "test") {
+      return "4";
+    }
+    return "1";
+  };
+
   const context = useContext(userContext);
   const user = context.user;
   const userType = user.medicalLicenseNo ? PROFESSIONAL : PATIENT;
@@ -96,7 +110,7 @@ export default function RecordsMain() {
         </Sider>
       )}
       <Content className="recordContent">
-        <Tabs defaultActiveKey="1">
+        <Tabs defaultActiveKey={activeTab()}>
           <TabPane
             tab={
               <span>

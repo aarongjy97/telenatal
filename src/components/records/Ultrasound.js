@@ -13,6 +13,7 @@ import {
   Upload,
 } from "antd";
 import { UploadOutlined, EditOutlined } from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
 import { PROFESSIONAL } from "../../constants/constants";
 
 const { Panel } = Collapse;
@@ -49,6 +50,8 @@ export default function Ultrasound({
   ultrasoundRecords,
   patientRecords,
 }) {
+  const history = useHistory();
+
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
