@@ -33,7 +33,8 @@ export default function AppointmentCard({ appointment }) {
     }
   }, [userType, appointment]);
 
-  if (professionalTitle == null) {
+  // Only allow card to load when professional title is loaded
+  if (userType === PATIENT && professionalTitle == null) {
     return <></>;
   }
   return (

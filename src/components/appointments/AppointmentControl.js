@@ -111,7 +111,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
         location = professional.clinicName + ", " + professional.clinicAddress;
         postalCode = professional.clinicPostalCode;
       } else if (userType === PROFESSIONAL) {
-        // Load professional detail
+        // Load professional details
         location = user.clinicName + ", " + user.clinicAddress;
         postalCode = user.clinicPostalCode;
       }
@@ -196,6 +196,9 @@ export default function AppointmentControl({ upcomingAppointments }) {
           setPatients(result.data);
         })
         .catch((error) => console.log(error));
+
+      // Set selected professional
+      setSelectedProfessional(user.email);
     }
   }, [userType]);
 
@@ -280,22 +283,24 @@ export default function AppointmentControl({ upcomingAppointments }) {
   // Fetch available appointments for reschedule
   function getRescheduleAppointmentSlots(appointmentId, date) {
     if (appointmentId) {
-      setSelectedAppointment(appointmentId);
-      if (selectedDate != null) {
-        // Get professional for the appointment
-        getAppointment(appointmentId).then((result) => {
-          let professionalId = result.data.professionalId;
+      getAppointment(appointmentId).then((result) => {
+        setSelectedAppointment(result.data);
+        let professionalId = result.data.professionalId;
+        if (userType === PATIENT) {
+          // Get professional for the appointment
           setSelectedProfessional(professionalId);
+        }
+        if (selectedDate != null) {
           // Get professional availability
-          console.log(professionalId, selectedDate);
           getProfessionalAvailability(professionalId, selectedDate).then(
             (result) => {
               updateNewAppointmentsOption(result.data);
             }
           );
-        });
-      }
+        }
+      });
     }
+
     if (date) {
       setSelectedDate(date);
       if (selectedProfessional != null) {
@@ -309,7 +314,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
     }
   }
 
-  // Render change for appointment selection // useless for now
+  // Render change for selected appointment (reschedule/cancel)
   var upcomingAppointmentsChange = (appointmentId) => {
     getAppointment(appointmentId)
       .then((result) => {
@@ -462,7 +467,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 </Radio>
                 <Radio name={"Others"} value={"Others"}>
                   Others
-                  {console.log(selectedPurpose)}
                   {![
                     "Check up",
                     "Ultrasound",
@@ -502,7 +506,10 @@ export default function AppointmentControl({ upcomingAppointments }) {
             <Input.TextArea />
           </Form.Item>
 
-          <AppointmentCard />
+          <AppointmentCard
+            appointment={selectedAppointment}
+            userType={userType}
+          />
         </Form>
       </Modal>
     );
