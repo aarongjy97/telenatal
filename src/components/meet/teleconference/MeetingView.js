@@ -7,6 +7,7 @@ import {
   Phone,
   VideoInputControl,
   VideoTileGrid,
+  ContentShareControl,
 } from "amazon-chime-sdk-component-library-react";
 import { Row } from "antd";
 
@@ -23,6 +24,7 @@ export default function MeetingView(props) {
           onClick={props.onEndCall}
           label="Leave Meeting"
         />
+        {/* <ContentShareControl /> */}
       </ControlBar>
     </Row>
   );

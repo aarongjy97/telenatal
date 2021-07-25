@@ -1,41 +1,72 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import getUuid from "uuid-by-string";
+import { getAppointment, updateAppointment } from "./Appointment";
 const JOIN = "/meet/join";
 const DELETE = "/meet/delete";
 const CREATE = "/meet/create";
 
 dotenv.config();
 
-// const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
-const API_ENDPOINT =
-  "https://h3vy7pkl85.execute-api.us-east-1.amazonaws.com/dev";
-// const accessKeyId = encodeURIComponent(process.env.CHIME_ACCESS_KEY);
-// const secretAccessKey = encodeURIComponent(process.env.CHIME_SECRET_ACCESS_KEY);
-// const accessKeyId = process.env.CHIME_ACCESS_KEY;
-// const secretAccessKey = process.env.CHIME_SECRET_ACCESS_KEY;
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+const accessKeyId = process.env.REACT_APP_CHIME_ACCESS_KEY;
+const secretAccessKey = process.env.REACT_APP_CHIME_SECRET_ACCESS_KEY;
 
-const accessKeyId = "AKIA5IJXS7IBDIVAE4EW";
-const secretAccessKey = "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";
+const createMeetingAndUpdateAppointment = async (appointment) => {
+  var joinInfo = await createMeeting();
+  var meetingId = joinInfo.Meeting.Meeting.MeetingId;
+  appointment.meetingId = meetingId;
+  // update appointment
+  updateAppointment(appointment);
+  return appointment;
+};
+const joinCall = async (appointment) => {
+  console.log(API_ENDPOINT);
+  console.log(accessKeyId);
+  console.log(secretAccessKey);
+  var numTries = 0;
+  while (numTries < 5) {
+    numTries++;
+    console.log("try number: " + numTries);
+    if (appointment.meetingId == null) {
+      // try to fetch the appointment again in case
+      // a meeting has been created by another user who just joined
+      res = await getAppointment(appointment.appointmentId);
+      console.log("received response: " + JSON.stringify(res));
+      appointment = res.data;
 
-const joinCall = async (meetingId) => {
-  console.log(API_ENDPOINT + JOIN);
-  var res = await axios.put(
-    API_ENDPOINT + JOIN,
-    JSON.stringify({
-      meetingId: meetingId,
-      accessKeyId: accessKeyId,
-      secretAccessKey: secretAccessKey,
-    }),
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      // create new appointment
+      if (appointment.meetingId == null) {
+        console.log("Appointment has no meetingId, creating new meeting");
+        appointment = await createMeetingAndUpdateAppointment(appointment);
+      }
     }
-  );
-  console.log(res);
-  console.log("result from joinCall: " + res.data);
-  return res.data.JoinInfo;
+
+    var meetingId = appointment.meetingId;
+    console.log("meetingId present");
+    console.log("meetingId: " + meetingId);
+    try {
+      var res = await axios.put(
+        API_ENDPOINT + JOIN,
+        JSON.stringify({
+          meetingId: meetingId,
+          accessKeyId: accessKeyId,
+          secretAccessKey: secretAccessKey,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("result from joinCall: " + JSON.stringify(res.data));
+      return res.data.JoinInfo;
+    } catch (error) {
+      // the given meeting has expired, need to create a new one
+      console.log("meetingId has expired, creating new");
+      console.log(error);
+      appointment = await createMeetingAndUpdateAppointment(appointment);
+    }
+  }
 };
 
 const deleteMeeting = async (meetingId) => {
@@ -60,15 +91,13 @@ const deleteMeeting = async (meetingId) => {
 };
 
 const createMeeting = async () => {
-  console.log(API_ENDPOINT + DELETE);
+  console.log(API_ENDPOINT + CREATE);
   var res = await axios.post(
     API_ENDPOINT + CREATE,
-    {
-      data: JSON.stringify({
-        accessKeyId: accessKeyId,
-        secretAccessKey: secretAccessKey,
-      }),
-    },
+    JSON.stringify({
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey,
+    }),
     {
       headers: {
         "Content-Type": "application/json",

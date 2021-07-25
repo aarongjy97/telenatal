@@ -11,6 +11,7 @@ import PlaceholderView from "./PlaceholderView";
 import AfterCallView from "./AfterCallView";
 import { joinCall, deleteMeeting } from "../../../api/Teleconference";
 export default function Teleconference(props) {
+  const [showPreview, setShowPreview] = React.useState(false);
   const meetingManager = useMeetingManager();
   const meetingStatus = useMeetingStatus();
 
@@ -29,10 +30,9 @@ export default function Teleconference(props) {
 
   const onJoinCall = async () => {
     // call connector method to create joinInfo
-    const meetingId = "1a1eaba8-5202-4f8f-923c-2c4debf10706";
     // take the meetingId from the appointment object
-    console.log(meetingId);
-    var joinInfo = await joinCall(meetingId);
+    console.log(props.appointment);
+    var joinInfo = await joinCall(props.appointment);
 
     // use meeting manager to join call
     await meetingManager.join({
