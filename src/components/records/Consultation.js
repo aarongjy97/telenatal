@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
 import { PATIENT, PROFESSIONAL } from "../../constants/constants";
 import { updateAppointment } from "./../../api/Appointment";
 import { formatDate } from "../utils";
@@ -31,6 +32,8 @@ export default function Consultation({
   consultationRecords,
   patientRecords,
 }) {
+  const history = useHistory();
+
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editAppt, setEditAppt] = useState();
@@ -59,6 +62,10 @@ export default function Consultation({
       })
       .catch((error) => console.log(error));
     setIsCreateModalVisible(false);
+    history.go(0);
+    history.push({
+      state: { tab: "consultation", patient: appointment.patientId },
+    });
   };
 
   const createModal = () => {
@@ -154,6 +161,10 @@ export default function Consultation({
       .catch((error) => console.log(error));
     setEditAppt(null);
     setIsEditModalVisible(false);
+    history.go(0);
+    history.push({
+      state: { tab: "consultation", patient: appointment.patientId },
+    });
   };
 
   const editModal = () => {
