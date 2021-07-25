@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Card } from "antd";
 import {
   ClockCircleOutlined,
   PushpinOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import Fade from "react-reveal";
 import { formatDate } from "./../utils";
 import { getProfessional } from "./../../api/User";
-import Fade from "react-reveal";
-import { PROFESSIONAL, PATIENT } from "../../constants/constants";
+import { userContext } from "./../../userContext";
+import { PROFESSIONAL, PATIENT } from "./../../constants/constants";
 
-export default function AppointmentCard({ appointment, userType }) {
+export default function AppointmentCard({ appointment }) {
+  // Get user context
+  const context = useContext(userContext);
+  const user = context.user;
+  const userType = user.userType;
+
   // Fetch professional title data
   const [professionalTitle, setProfessionalTitle] = useState();
   useEffect(() => {
@@ -27,6 +33,9 @@ export default function AppointmentCard({ appointment, userType }) {
     }
   }, [userType]);
 
+  if (professionalTitle == null) {
+    return <></>;
+  }
   return (
     <Fade>
       {typeof appointment !== "undefined" && (
@@ -53,7 +62,10 @@ export default function AppointmentCard({ appointment, userType }) {
           )}
           <p>
             <PushpinOutlined />
-            &nbsp;{appointment.location} S({appointment.postalCode})
+            &nbsp;{appointment.location}{" "}
+            {appointment.postalCode != 0 ? (
+              <>S({appointment.postalCode})</>
+            ) : null}
           </p>
         </Card>
       )}

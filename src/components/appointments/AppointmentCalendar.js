@@ -25,7 +25,7 @@ export default function AppointmentCalendar({ appointments }) {
 
     return (
       <>
-        {Object.keys(appointmentList).map(function (key, index) {
+        {Object.keys(appointmentList).map(function (key) {
           var appointmentPurpose = key;
           var appointmentCount = appointmentList[key];
 

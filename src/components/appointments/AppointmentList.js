@@ -2,7 +2,7 @@ import React from "react";
 import { Layout, Row, List } from "antd";
 import AppointmentCard from "./AppointmentCard";
 
-export default function AppointmentList({ upcomingAppointments, userType }) {
+export default function AppointmentList({ upcomingAppointments }) {
   return (
     <Layout id="appointmentList">
       <Row className="title">Upcoming Appointments</Row>
@@ -11,11 +11,15 @@ export default function AppointmentList({ upcomingAppointments, userType }) {
           grid={{ gutter: 16, column: 1 }}
           dataSource={upcomingAppointments}
           itemLayout="vertical"
-          renderItem={(appointment) => (
-            <List.Item>
-              <AppointmentCard appointment={appointment} userType={userType} />
-            </List.Item>
-          )}
+          renderItem={(appointment) => {
+            return (
+              <List.Item key="appointment.appointmentId">
+                <AppointmentCard
+                  appointment={appointment}
+                />
+              </List.Item>
+            );
+          }}
         />
       </Row>
     </Layout>
