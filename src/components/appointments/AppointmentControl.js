@@ -72,7 +72,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
   const onBookSubmit = (values) => {
     console.log("book: ", values);
 
-    let purpose = values.purpose;
+    let purpose = selectedPurpose; // Account for input
     let date = new Date(values.time).valueOf();
     let location = "";
     let postalCode = "";
@@ -462,8 +462,19 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 </Radio>
                 <Radio name={"Others"} value={"Others"}>
                   Others
-                  {selectedPurpose === "Others" ? (
-                    <Input style={{ width: "5em", marginLeft: 10 }} />
+                  {console.log(selectedPurpose)}
+                  {![
+                    "Check up",
+                    "Ultrasound",
+                    "Vaccination",
+                    undefined,
+                  ].includes(selectedPurpose) ? (
+                    <Input
+                      onChange={(values) =>
+                        setSelectedPurpose(values.target.value)
+                      }
+                      style={{ width: "5em", marginLeft: 10 }}
+                    />
                   ) : null}
                 </Radio>
               </Space>
