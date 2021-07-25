@@ -27,7 +27,7 @@ const { Search } = Input;
 export default function RecordsMain() {
   const history = useHistory();
   const activeTab = () => {
-    const tab = history.location.state.tab;
+    const tab = history.location?.state?.tab;
     if (tab === "health") {
       return "2";
     } else if (tab === "ultrasound") {
