@@ -99,3 +99,7 @@ export async function getProfessionalAvailability(professionalId, date) {
     },
   });
 }
+
+export async function getPatients() {
+  return await axios.get(`${API_ENDPOINT}/user/patients`);
+}

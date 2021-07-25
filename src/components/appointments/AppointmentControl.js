@@ -23,6 +23,7 @@ import {
   deleteAppointment,
   getDoctors,
   getNurses,
+  getPatients,
   getProfessionalAvailability,
   createAppointment,
 } from "./../../api/Appointment";
@@ -70,6 +71,35 @@ export default function AppointmentControl({ upcomingAppointments }) {
 
   // Define actions after modal form submission
   const onBookSubmit = (values) => {
+    function sendBookRequest(
+      purpose,
+      date,
+      location,
+      postalCode,
+      patientId,
+      professionalId,
+      remarks
+    ) {
+      createAppointment(
+        purpose,
+        date,
+        location,
+        postalCode,
+        patientId,
+        professionalId,
+        remarks
+      )
+        .then((result) => {
+          clearSelection();
+          setIsBookModalVisible(false);
+          history.go(0);
+          history.push({
+            state: { tab: "appointments" },
+          });
+        })
+        .catch((error) => console.log(error));
+    }
+
     console.log("book: ", values);
 
     let purpose = selectedPurpose; // Account for input
@@ -98,43 +128,69 @@ export default function AppointmentControl({ upcomingAppointments }) {
         // Load patient details
         location = user.address;
         postalCode = user.postalCode;
+        sendBookRequest(
+          purpose,
+          date,
+          location,
+          postalCode,
+          patientId,
+          professionalId,
+          remarks
+        );
       } else if (userType === PROFESSIONAL) {
         // Fetch patient details
-        let patient = getPatient(values.patientId);
-        location = patient.address;
-        postalCode = patient.postalCode;
+        getPatient(values.patientId)
+          .then((result) => {
+            let patient = result.data;
+            location = patient.address;
+            postalCode = patient.postalCode;
+            sendBookRequest(
+              purpose,
+              date,
+              location,
+              postalCode,
+              patientId,
+              professionalId,
+              remarks
+            );
+          })
+          .catch((error) => console.log(error));
       }
     } else if (values.location === "professional") {
       if (userType === PATIENT) {
         // Fetch professional details
-        let professional = getProfessional(values.professionalId);
-        location = professional.clinicName + ", " + professional.clinicAddress;
-        postalCode = professional.clinicPostalCode;
+        getProfessional(values.professionalId)
+          .then((result) => {
+            let professional = result.data;
+            location =
+              professional.clinicName + ", " + professional.clinicAddress;
+            postalCode = professional.clinicPostalCode;
+            sendBookRequest(
+              purpose,
+              date,
+              location,
+              postalCode,
+              patientId,
+              professionalId,
+              remarks
+            );
+          })
+          .catch((error) => console.log(error));
       } else if (userType === PROFESSIONAL) {
         // Load professional details
         location = user.clinicName + ", " + user.clinicAddress;
         postalCode = user.clinicPostalCode;
+        sendBookRequest(
+          purpose,
+          date,
+          location,
+          postalCode,
+          patientId,
+          professionalId,
+          remarks
+        );
       }
     }
-
-    createAppointment(
-      purpose,
-      date,
-      location,
-      postalCode,
-      patientId,
-      professionalId,
-      remarks
-    )
-      .then((result) => {
-        clearSelection();
-        setIsBookModalVisible(false);
-        history.go(0);
-        history.push({
-          state: { tab: "appointments" },
-        });
-      })
-      .catch((error) => console.log(error));
   };
 
   const onRescheduleSubmit = (values) => {
@@ -190,8 +246,8 @@ export default function AppointmentControl({ upcomingAppointments }) {
         })
         .catch((error) => console.log(error));
     } else if (userType === PROFESSIONAL) {
-      // TODO: Fetch all patients
-      getNurses()
+      // Fetch all patients
+      getPatients()
         .then((result) => {
           setPatients(result.data);
         })
@@ -304,7 +360,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
     if (date) {
       setSelectedDate(date);
       if (selectedProfessional != null) {
-        console.log(selectedProfessional, date);
         getProfessionalAvailability(selectedProfessional, date).then(
           (result) => {
             updateNewAppointmentsOption(result.data);
