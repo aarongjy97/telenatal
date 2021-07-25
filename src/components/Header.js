@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
-import { Layout, Menu, Row, Col, Avatar, Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
+import { Layout, Menu, Row, Col, Avatar, Button } from "antd";
+import { CalendarOutlined, HeartOutlined } from "@ant-design/icons";
 import { userContext } from "../userContext";
 import { PATIENT, PROFESSIONAL } from "../constants/constants";
-import { getInitials } from "./utils";
+import { getInitials, countdownDays } from "./utils";
 
 export default function Header() {
   const { SubMenu } = Menu;
@@ -87,6 +88,25 @@ export default function Header() {
                     {userType === PROFESSIONAL &&
                       user.type === "nurse" &&
                       "Nurse"}
+                  </p>
+                  <p
+                    style={{
+                      fontStyle: "italic",
+                      color: "#ff85c0",
+                    }}
+                  >
+                    {userType === PATIENT && user.dueDate !== undefined && (
+                      <>
+                        <CalendarOutlined />
+                        &nbsp;D-{countdownDays(user.dueDate)}&nbsp;
+                      </>
+                    )}
+                    {userType === PATIENT && user.babyName !== undefined && (
+                      <>
+                        <HeartOutlined />
+                        &nbsp;{user.babyName}
+                      </>
+                    )}
                   </p>
                 </div>
                 <Menu.Item key="4" onClick={logoutUser}>

@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Calendar, Badge } from "antd";
 import Fade from "react-reveal";
-import { sameDay, sameMonth, formatTime } from "./../utils";
+import { HeartOutlined, SmileOutlined } from "@ant-design/icons";
+import { userContext } from "./../../userContext";
+import { sameDay, sameMonth, isBirthday, formatTime } from "./../utils";
+import { PATIENT } from "./../../constants/constants";
 
 export default function AppointmentCalendar({ appointments }) {
+  // Get user context
+  const context = useContext(userContext);
+  const user = context.user;
+  const userType = user.userType;
+
   function monthCellRender(value) {
     var calendarDate = value.toDate();
     var appointmentList = {};
@@ -60,6 +68,23 @@ export default function AppointmentCalendar({ appointments }) {
             return null;
           }
         })}
+        {userType === PATIENT && isBirthday(calendarDate, new Date(user.dob)) && (
+          <li key="birthday">
+            <Badge color="orange" />
+            <span>
+              Happy Birthday! <SmileOutlined />
+            </span>
+          </li>
+        )}
+        {userType === PATIENT && sameDay(calendarDate, new Date(user.dueDate)) && (
+          <li key="duedate">
+            <Badge color="red" />
+            <span>
+              Welcome Baby {user.babyName}
+              <HeartOutlined />
+            </span>
+          </li>
+        )}
       </>
     );
   }
