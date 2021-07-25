@@ -15,9 +15,7 @@ import {
 } from "../../api/Appointment";
 import { userContext } from "./../../userContext";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
-
-const patientList = [];
-const professionalList = [];
+import { sortAppointments } from "./../utils";
 
 const patientDummy = {
   patientId: "PA0001",
@@ -42,8 +40,6 @@ export default function Meet(props) {
   const userType = user.userType;
 
   // TODO
-  const patientId = "gengen@gengen.com"; // switch with context later
-  const professionalId = "doctor1@aws.com"; // switch with context later
   const [teleconView, setTeleconView] = React.useState(
     teleConstants.PLACEHOLDER_VIEW
   );
@@ -65,25 +61,25 @@ export default function Meet(props) {
     }, 2000);
   }, []);
 
-  // Fetch upcoming appointment data
+  // Fetch upcoming appointments data
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   useEffect(() => {
     if (userType === PATIENT) {
-      console.log("getting patient's appointments");
-      getPatientUpcomingAppointments(patientId)
+      console.log("Getting patient's appointments");
+      getPatientUpcomingAppointments(user.email)
         .then((result) => {
-          setUpcomingAppointments(result.data);
+          setUpcomingAppointments(sortAppointments(result.data));
         })
         .catch((error) => console.log(error));
     } else if (userType === PROFESSIONAL) {
-      console.log("getting professional's appointments");
-      getProfessionalUpcomingAppointments(professionalId)
+      console.log("Getting professional's appointments");
+      getProfessionalUpcomingAppointments(user.email)
         .then((result) => {
-          setUpcomingAppointments(result.data);
+          setUpcomingAppointments(sortAppointments(result.data));
         })
         .catch((error) => console.log(error));
     }
-  }, []);
+  }, [user, userType]);
 
   const onAppointmentTileClick = (appointment) => {
     if (!joinedCall) {
