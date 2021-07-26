@@ -7,7 +7,6 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import { teleConstants } from "../constants";
 import BeforeCallView from "./BeforeCallView";
-import PlaceholderView from "./PlaceholderView";
 import AfterCallView from "./AfterCallView";
 import { joinCall } from "../../../api/Teleconference";
 export default function Teleconference(props) {
@@ -57,6 +56,6 @@ export default function Teleconference(props) {
     case teleConstants.AFTER_CALL_VIEW:
       return <AfterCallView />;
     default:
-      return <PlaceholderView />;
+      return;
   }
 }

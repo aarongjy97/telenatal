@@ -8,6 +8,7 @@ import {
 import { ThemeProvider } from "styled-components";
 import Records from "./records/Records";
 import AppointmentsList from "./appointments/AppointmentList";
+import Maps from "./maps/Maps";
 import { teleConstants } from "./constants";
 import {
   getPatientUpcomingAppointments,
@@ -17,6 +18,7 @@ import { getPatient } from "../../api/User";
 import { userContext } from "./../../userContext";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { sortAppointments } from "./../utils";
+import PlaceholderView from "./PlaceholderView";
 
 export default function Meet(props) {
   const { Sider } = Layout;
@@ -59,6 +61,7 @@ export default function Meet(props) {
     console.log(appointment);
     setAppointment(appointment);
 
+    // no physical location for appointment, set to teleconference
     if (appointment.postalCode === 0) {
       // Video Conference
       if (!joinedCall) {
@@ -71,9 +74,6 @@ export default function Meet(props) {
           "End the current call before joining another appointment"
         );
       }
-    } else {
-      // Not video conference
-      setTeleconView(teleConstants.MAPS);
     }
 
     if (userType === PROFESSIONAL) {
@@ -109,7 +109,12 @@ export default function Meet(props) {
   return (
     <>
       <Layout id="meet">
-        <Sider className="appointmentList" width={400} collapsible={true} collapsedWidth={0}>
+        <Sider
+          className="appointmentList"
+          width={400}
+          collapsible={true}
+          collapsedWidth={0}
+        >
           <AppointmentsList
             upcomingAppointments={upcomingAppointments}
             user={user}
@@ -117,16 +122,20 @@ export default function Meet(props) {
           />
         </Sider>
         <Row className="videoConference">
-          <ThemeProvider theme={darkTheme}>
-            <MeetingProvider>
-              <Teleconference
-                view={teleconView}
-                onJoinCall={onJoinCall}
-                onEndCall={onEndCall}
-                appointment={appointment}
-              />
-            </MeetingProvider>
-          </ThemeProvider>
+          {appointment && appointment.postalCode === 0 && (
+            <ThemeProvider theme={darkTheme}>
+              <MeetingProvider>
+                <Teleconference
+                  view={teleconView}
+                  onJoinCall={onJoinCall}
+                  onEndCall={onEndCall}
+                  appointment={appointment}
+                />
+              </MeetingProvider>
+            </ThemeProvider>
+          )}
+          {appointment && appointment.postalCode != 0 && <Maps />}
+          {!appointment && <PlaceholderView />}
         </Row>
         <Row className="infoPanel">
           {showRecordsPanel && (
