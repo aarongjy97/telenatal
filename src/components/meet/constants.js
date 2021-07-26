@@ -7,6 +7,7 @@ export const teleConstants = {
   BEFORE_CALL_VIEW: "BEFORE_CALL",
   MEETING_VIEW: "MEETING",
   AFTER_CALL_VIEW: "AFTER_CALL",
+  MAPS_VIEW: "MAPS",
 
   // messages
   AFTER_CALL: {

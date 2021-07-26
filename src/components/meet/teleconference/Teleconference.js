@@ -7,11 +7,9 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import { teleConstants } from "../constants";
 import BeforeCallView from "./BeforeCallView";
-import PlaceholderView from "./PlaceholderView";
 import AfterCallView from "./AfterCallView";
-import { joinCall, deleteMeeting } from "../../../api/Teleconference";
+import { joinCall } from "../../../api/Teleconference";
 export default function Teleconference(props) {
-  const [showPreview, setShowPreview] = React.useState(false);
   const meetingManager = useMeetingManager();
   const meetingStatus = useMeetingStatus();
 
@@ -20,9 +18,6 @@ export default function Teleconference(props) {
     if (meetingId) {
       await meetingManager.leave();
       console.log("Leaving meeting...");
-
-      // not sure if should be deleting this meeting straightaway, probably to be done with backend maintenance
-      // await deleteMeeting("80f775eb-d2b8-40f0-9bab-8f18d4270706");
     }
     // inform parent
     props.onEndCall();
@@ -31,7 +26,7 @@ export default function Teleconference(props) {
   const onJoinCall = async () => {
     // call connector method to create joinInfo
     // take the meetingId from the appointment object
-    console.log(props.appointment);
+    console.log("starting meeting...");
     var joinInfo = await joinCall(props.appointment);
 
     // use meeting manager to join call
@@ -61,6 +56,6 @@ export default function Teleconference(props) {
     case teleConstants.AFTER_CALL_VIEW:
       return <AfterCallView />;
     default:
-      return <PlaceholderView />;
+      return;
   }
 }
