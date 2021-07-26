@@ -135,10 +135,10 @@ export default function Records(props) {
         &nbsp; Appointment Details
       </Row>
       <Row className="toggle">
-        <p>View</p>&nbsp;
+        <p>View</p>&nbsp;&nbsp;&nbsp;
         <Select
           defaultValue="general"
-          style={{ width: 200 }}
+          style={{ width: 210, textAlign:"center"}}
           onChange={(value) => setSelectedView(value)}
         >
           <Option value="general">General Details</Option>
