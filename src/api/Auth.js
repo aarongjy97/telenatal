@@ -56,7 +56,7 @@ export async function registerPatient(
     dob: dob,
     address: address,
     postalCode: postalCode,
-    drugAllergies: drugAllergies,
+    allergies: drugAllergies,
     healthConditions: healthConditions,
     babyName: babyName,
     babyGender: babyGender,
