@@ -1,9 +1,8 @@
 import React from "react";
-import { Layout, Menu, Tabs, Input } from "antd";
-import Consultation from "./Consultation";
-import HealthRecord from "./HealthRecord";
-import Ultrasound from "./Ultrasound";
-import MedicalTest from "./MedicalTest";
+import { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
+import { Layout, Menu, Tabs } from "antd";
+import Fade from "react-reveal";
 import {
   UserOutlined,
   MessageOutlined,
@@ -11,23 +10,24 @@ import {
   ScanOutlined,
   ExperimentOutlined,
 } from "@ant-design/icons";
+import Consultation from "./Consultation";
+import HealthRecord from "./HealthRecord";
+import Ultrasound from "./Ultrasound";
+import MedicalTest from "./MedicalTest";
 import {
   getPatientAppointments,
   getProfessionalAppointments,
 } from "./../../api/Appointment";
-import { useState, useEffect, useContext } from "react";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { userContext } from "./../../userContext";
-import { useHistory } from "react-router-dom";
 
 const { TabPane } = Tabs;
 const { Content, Sider } = Layout;
-const { Search } = Input;
 
 export default function RecordsMain() {
   const history = useHistory();
   const activeTab = () => {
-    const tab = history.location.state.tab;
+    const tab = history.location?.state?.tab;
     if (tab === "health") {
       return "2";
     } else if (tab === "ultrasound") {
@@ -41,7 +41,6 @@ export default function RecordsMain() {
   const context = useContext(userContext);
   const user = context.user;
   const userType = user.medicalLicenseNo ? PROFESSIONAL : PATIENT;
-  const onSearch = (value) => console.log(value);
 
   const [patientRecords, setPatientRecords] = useState();
 
@@ -78,45 +77,41 @@ export default function RecordsMain() {
   return (
     <Layout id="records">
       {userType === PROFESSIONAL && (
-        <Sider className="patientSider" width={250}>
-          <Search
-            className="patientSearch"
-            placeholder="Search for Patient"
-            onSearch={onSearch}
-            allowClear="true"
-            enterButton
-          />
-          <Menu
-            className="patientMenu"
-            mode="inline"
-            defaultSelectedKeys={["0"]}
-            theme="dark"
-            onClick={(keyListener) => {
-              setPatientRecords(
-                allPatients[Object.keys(allPatients)[keyListener.key]]
-              );
-            }}
-          >
-            {allPatients &&
-              Object.keys(allPatients).map((patientEmail, index) => {
-                return (
-                  <Menu.Item icon={<UserOutlined />} key={index}>
-                    {allPatients[patientEmail]?.[0]?.patientName ??
-                      patientEmail}
-                  </Menu.Item>
+        <Sider className="patientSider" width={250} collapsible={true}>
+          <h1>Patients</h1>
+          <Fade bottom>
+            <Menu
+              className="patientMenu"
+              mode="inline"
+              defaultSelectedKeys={["0"]}
+              theme="dark"
+              onClick={(keyListener) => {
+                setPatientRecords(
+                  allPatients[Object.keys(allPatients)[keyListener.key]]
                 );
-              })}
-          </Menu>
+              }}
+            >
+              {allPatients &&
+                Object.keys(allPatients).map((patientEmail, index) => {
+                  return (
+                    <Menu.Item icon={<UserOutlined />} key={index}>
+                      {allPatients[patientEmail]?.[0]?.patientName ??
+                        patientEmail}
+                    </Menu.Item>
+                  );
+                })}
+            </Menu>
+          </Fade>
         </Sider>
       )}
       <Content className="recordContent">
         <Tabs defaultActiveKey={activeTab()}>
           <TabPane
             tab={
-              <span>
+              <>
                 <MessageOutlined />
                 Consultation Record
-              </span>
+              </>
             }
             key="1"
           >
@@ -137,10 +132,10 @@ export default function RecordsMain() {
           </TabPane>
           <TabPane
             tab={
-              <span>
+              <>
                 <DashboardOutlined />
                 Health Record
-              </span>
+              </>
             }
             key="2"
           >
@@ -161,10 +156,10 @@ export default function RecordsMain() {
           </TabPane>
           <TabPane
             tab={
-              <span>
+              <>
                 <ScanOutlined />
                 Ultrasound Scan Record
-              </span>
+              </>
             }
             key="3"
           >
@@ -172,10 +167,10 @@ export default function RecordsMain() {
           </TabPane>
           <TabPane
             tab={
-              <span>
+              <>
                 <ExperimentOutlined />
                 Medical Test Record
-              </span>
+              </>
             }
             key="4"
           >

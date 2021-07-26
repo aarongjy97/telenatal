@@ -45,8 +45,11 @@ export async function getProfessionalUpcomingAppointments(professionalId) {
   });
 }
 
-export async function updateAppointment(appointment) {
-  return await axios.put(`${API_ENDPOINT}/appointment`, appointment);
+export async function updateAppointment(appointmentId, date) {
+  return await axios.put(`${API_ENDPOINT}/appointment`, {
+    appointmentId: appointmentId,
+    date: date,
+  });
 }
 
 export async function deleteAppointment(appointmentId, meetingId) {
@@ -95,4 +98,8 @@ export async function getProfessionalAvailability(professionalId, date) {
       professionalId: professionalId,
     },
   });
+}
+
+export async function getPatients() {
+  return await axios.get(`${API_ENDPOINT}/user/patients`);
 }

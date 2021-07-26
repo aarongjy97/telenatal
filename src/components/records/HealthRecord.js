@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Divider,
   Tooltip,
@@ -17,19 +18,20 @@ import {
   Empty,
 } from "antd";
 import {
+  PlusOutlined,
   HeartOutlined,
   DashboardOutlined,
   ColumnWidthOutlined,
   ForkOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { useHistory } from "react-router-dom";
+import { Fade } from "react-reveal";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { updateAppointment } from "./../../api/Appointment";
 import { formatDate } from "../utils";
 
 const { Panel } = Collapse;
-const { Text, Title } = Typography;
+const { Text } = Typography;
 const { Option } = Select;
 
 const formItemLayout = {
@@ -254,35 +256,167 @@ export default function HealthRecord({
   return (
     <>
       <Row justify="end" style={{ paddingBottom: "20px" }}>
-        <Button type="secondary" onClick={() => setIsCreateModalVisible(true)}>
-          <Title level={5}>Add New Health Record</Title>
-        </Button>
+        <Fade>
+          <Button
+            type="secondary"
+            onClick={() => setIsCreateModalVisible(true)}
+          >
+            <PlusOutlined />
+            Add New Health Record
+          </Button>
+        </Fade>
       </Row>
 
       {userType === PROFESSIONAL && healthRecords && healthRecords.length > 0 && (
-        <Collapse defaultActiveKey={["0"]}>
-          {patientRecords
-            .filter((appt, _) => {
-              return appt.healthRecord != null;
-            })
-            .map((appt, index) => {
+        <Fade bottom>
+          <Collapse defaultActiveKey={["0"]}>
+            {patientRecords
+              .filter((appt, _) => {
+                return appt.healthRecord != null;
+              })
+              .map((appt, index) => {
+                return (
+                  <Panel header={formatDate(appt?.date)} key={index}>
+                    <Row style={{ paddingBottom: "20px" }}>
+                      <Col flex="auto">
+                        <Divider orientation="left">Health Readings</Divider>
+                      </Col>
+                      <Col justify="end" style={{ paddingLeft: "15px" }}>
+                        <Button
+                          type="secondary"
+                          onClick={() => {
+                            setIsEditModalVisible(true);
+                            setEditAppt(appt);
+                          }}
+                          icon={<EditOutlined />}
+                        >
+                          <Text>Edit</Text>
+                        </Button>
+                      </Col>
+                    </Row>
+                    <Row style={{ paddingBottom: "20px" }} gutter={24}>
+                      <Col span={6}>
+                        <Row>
+                          <Layout
+                            className="layout"
+                            style={{ minHeight: "10vh" }}
+                          >
+                            <Tooltip
+                              title="Your weight is entering the abnormal range. Please consult your doctor during your subsequent appointment."
+                              color="#b86f1b"
+                              key="bp"
+                            >
+                              <Card>
+                                <Statistic
+                                  title="Weight"
+                                  value={appt.healthRecord.weight}
+                                  precision={0}
+                                  prefix={<DashboardOutlined />}
+                                  valueStyle={{ color: "#b86f1b" }}
+                                  suffix="kg"
+                                />
+                              </Card>
+                            </Tooltip>
+                          </Layout>
+                        </Row>
+                      </Col>
+                      <Col span={6}>
+                        <Row>
+                          <Layout
+                            className="layout"
+                            style={{ minHeight: "10vh" }}
+                          >
+                            <Tooltip
+                              title="Your waist measurement is in the normal range!"
+                              color="#1d8a25"
+                              key="bp"
+                            >
+                              <Card>
+                                <Statistic
+                                  title="Waist Measurement"
+                                  value={appt.healthRecord.waistMeasurement}
+                                  precision={0}
+                                  prefix={<ColumnWidthOutlined />}
+                                  valueStyle={{ color: "#1d8a25" }}
+                                  suffix="inches"
+                                />
+                              </Card>
+                            </Tooltip>
+                          </Layout>
+                        </Row>
+                      </Col>
+                      <Col span={6}>
+                        <Row>
+                          <Layout
+                            className="layout"
+                            style={{ minHeight: "10vh" }}
+                          >
+                            <Tooltip
+                              title="Your heart rate is in the normal range!"
+                              color="#1d8a25"
+                              key="bp"
+                            >
+                              <Card>
+                                <Statistic
+                                  title="Resting Heart Rate"
+                                  value={appt.healthRecord.heartRate}
+                                  precision={0}
+                                  prefix={<HeartOutlined />}
+                                  valueStyle={{ color: "#1d8a25" }}
+                                  suffix="bpm"
+                                />
+                              </Card>
+                            </Tooltip>
+                          </Layout>
+                        </Row>
+                      </Col>
+                      <Col span={6}>
+                        <Row>
+                          <Layout
+                            className="layout"
+                            style={{ minHeight: "10vh" }}
+                          >
+                            <Tooltip
+                              title="Your blood pressure is in the abnormal range. Please consult your doctor during your subsequent appointment."
+                              color="#ad0e2d"
+                              key="bp"
+                            >
+                              <Card>
+                                <Statistic
+                                  title="Blood Pressure"
+                                  value={appt.healthRecord.bloodPressure}
+                                  precision={0}
+                                  prefix={<ForkOutlined />}
+                                  valueStyle={{ color: "#ad0e2d" }}
+                                  suffix="mm Hg"
+                                />
+                              </Card>
+                            </Tooltip>
+                          </Layout>
+                        </Row>
+                      </Col>
+                    </Row>
+
+                    <Divider orientation="left">Notes</Divider>
+                    <Row>
+                      <Text>{appt.healthRecord.notes}</Text>
+                    </Row>
+                  </Panel>
+                );
+              })}
+          </Collapse>
+        </Fade>
+      )}
+
+      {userType === PATIENT && healthRecords && healthRecords.length > 0 && (
+        <Fade bottom>
+          <Collapse defaultActiveKey={["0"]}>
+            {healthRecords.map((record, index) => {
               return (
-                <Panel header={formatDate(appt?.date)} key={index}>
+                <Panel header={record.date} key={index}>
                   <Row style={{ paddingBottom: "20px" }}>
                     <Col flex="auto">
                       <Divider orientation="left">Health Readings</Divider>
-                    </Col>
-                    <Col justify="end" style={{ paddingLeft: "15px" }}>
-                      <Button
-                        type="secondary"
-                        onClick={() => {
-                          setIsEditModalVisible(true);
-                          setEditAppt(appt);
-                        }}
-                        icon={<EditOutlined />}
-                      >
-                        <Text>Edit</Text>
-                      </Button>
                     </Col>
                   </Row>
                   <Row style={{ paddingBottom: "20px" }} gutter={24}>
@@ -300,7 +434,7 @@ export default function HealthRecord({
                             <Card>
                               <Statistic
                                 title="Weight"
-                                value={appt.healthRecord.weight}
+                                value={record.weight}
                                 precision={0}
                                 prefix={<DashboardOutlined />}
                                 valueStyle={{ color: "#b86f1b" }}
@@ -325,7 +459,7 @@ export default function HealthRecord({
                             <Card>
                               <Statistic
                                 title="Waist Measurement"
-                                value={appt.healthRecord.waistMeasurement}
+                                value={record.waistMeasurement}
                                 precision={0}
                                 prefix={<ColumnWidthOutlined />}
                                 valueStyle={{ color: "#1d8a25" }}
@@ -350,7 +484,7 @@ export default function HealthRecord({
                             <Card>
                               <Statistic
                                 title="Resting Heart Rate"
-                                value={appt.healthRecord.heartRate}
+                                value={record.heartRate}
                                 precision={0}
                                 prefix={<HeartOutlined />}
                                 valueStyle={{ color: "#1d8a25" }}
@@ -375,7 +509,7 @@ export default function HealthRecord({
                             <Card>
                               <Statistic
                                 title="Blood Pressure"
-                                value={appt.healthRecord.bloodPressure}
+                                value={record.bloodPressure}
                                 precision={0}
                                 prefix={<ForkOutlined />}
                                 valueStyle={{ color: "#ad0e2d" }}
@@ -390,123 +524,13 @@ export default function HealthRecord({
 
                   <Divider orientation="left">Notes</Divider>
                   <Row>
-                    <Text>{appt.healthRecord.notes}</Text>
+                    <Text>{record.notes}</Text>
                   </Row>
                 </Panel>
               );
             })}
-        </Collapse>
-      )}
-
-      {userType === PATIENT && healthRecords && healthRecords.length > 0 && (
-        <Collapse defaultActiveKey={["0"]}>
-          {healthRecords.map((record, index) => {
-            return (
-              <Panel header={record.date} key={index}>
-                <Row style={{ paddingBottom: "20px" }}>
-                  <Col flex="auto">
-                    <Divider orientation="left">Health Readings</Divider>
-                  </Col>
-                </Row>
-                <Row style={{ paddingBottom: "20px" }} gutter={24}>
-                  <Col span={6}>
-                    <Row>
-                      <Layout className="layout" style={{ minHeight: "10vh" }}>
-                        <Tooltip
-                          title="Your weight is entering the abnormal range. Please consult your doctor during your subsequent appointment."
-                          color="#b86f1b"
-                          key="bp"
-                        >
-                          <Card>
-                            <Statistic
-                              title="Weight"
-                              value={record.weight}
-                              precision={0}
-                              prefix={<DashboardOutlined />}
-                              valueStyle={{ color: "#b86f1b" }}
-                              suffix="kg"
-                            />
-                          </Card>
-                        </Tooltip>
-                      </Layout>
-                    </Row>
-                  </Col>
-                  <Col span={6}>
-                    <Row>
-                      <Layout className="layout" style={{ minHeight: "10vh" }}>
-                        <Tooltip
-                          title="Your waist measurement is in the normal range!"
-                          color="#1d8a25"
-                          key="bp"
-                        >
-                          <Card>
-                            <Statistic
-                              title="Waist Measurement"
-                              value={record.waistMeasurement}
-                              precision={0}
-                              prefix={<ColumnWidthOutlined />}
-                              valueStyle={{ color: "#1d8a25" }}
-                              suffix="inches"
-                            />
-                          </Card>
-                        </Tooltip>
-                      </Layout>
-                    </Row>
-                  </Col>
-                  <Col span={6}>
-                    <Row>
-                      <Layout className="layout" style={{ minHeight: "10vh" }}>
-                        <Tooltip
-                          title="Your heart rate is in the normal range!"
-                          color="#1d8a25"
-                          key="bp"
-                        >
-                          <Card>
-                            <Statistic
-                              title="Resting Heart Rate"
-                              value={record.heartRate}
-                              precision={0}
-                              prefix={<HeartOutlined />}
-                              valueStyle={{ color: "#1d8a25" }}
-                              suffix="bpm"
-                            />
-                          </Card>
-                        </Tooltip>
-                      </Layout>
-                    </Row>
-                  </Col>
-                  <Col span={6}>
-                    <Row>
-                      <Layout className="layout" style={{ minHeight: "10vh" }}>
-                        <Tooltip
-                          title="Your blood pressure is in the abnormal range. Please consult your doctor during your subsequent appointment."
-                          color="#ad0e2d"
-                          key="bp"
-                        >
-                          <Card>
-                            <Statistic
-                              title="Blood Pressure"
-                              value={record.bloodPressure}
-                              precision={0}
-                              prefix={<ForkOutlined />}
-                              valueStyle={{ color: "#ad0e2d" }}
-                              suffix="mm Hg"
-                            />
-                          </Card>
-                        </Tooltip>
-                      </Layout>
-                    </Row>
-                  </Col>
-                </Row>
-
-                <Divider orientation="left">Notes</Divider>
-                <Row>
-                  <Text>{record.notes}</Text>
-                </Row>
-              </Panel>
-            );
-          })}
-        </Collapse>
+          </Collapse>
+        </Fade>
       )}
 
       {(healthRecords?.length == null || healthRecords?.length === 0) && (

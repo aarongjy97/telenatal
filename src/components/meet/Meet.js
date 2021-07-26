@@ -13,96 +13,77 @@ import {
   getPatientUpcomingAppointments,
   getProfessionalUpcomingAppointments,
 } from "../../api/Appointment";
+import { getPatient } from "../../api/User";
 import { userContext } from "./../../userContext";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
-
-const patientList = [];
-const professionalList = [];
-
-const patientDummy = {
-  patientId: "PA0001",
-  name: "Lee Ji Eun",
-  email: "jieunlee@naver.co.kr",
-  phone: "98765432",
-  profileImage: "avatar.jpg",
-  dob: "1995-12-09",
-  address: "Coex Artium, Gangnam-gu, Seoul",
-  postalCode: "57132",
-  drugAllergies: null,
-  healthConditions: null,
-  dueDate: "2021-12-03",
-  babyName: "Eve",
-  babyGender: "Undetermined",
-  professionalId: "PR0001",
-};
+import { sortAppointments } from "./../utils";
 
 export default function Meet(props) {
+  const { Sider } = Layout;
+
+  // Get user context
   const context = useContext(userContext);
   const user = context.user;
   const userType = user.userType;
 
   // TODO
-  const patientId = "gengen@gengen.com"; // switch with context later
-  const professionalId = "doctor1@aws.com"; // switch with context later
   const [teleconView, setTeleconView] = React.useState(
     teleConstants.PLACEHOLDER_VIEW
   );
   const [appointment, setAppointment] = React.useState({});
   const [patient, setPatient] = React.useState({});
   const [showRecordsPanel, setShowRecordsPanel] = React.useState(false);
-  const [patientList, setPatientList] = React.useState([]);
-  const [professionalList, setProfessionalList] = React.useState([]);
   const [joinedCall, setJoinedCall] = React.useState(false);
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      // NOTE: may also need to fetch patients for each appointment for the list view (for PROFESSIONAL) and professionals for each appointment (for PATIENT)
-      if (userType === PROFESSIONAL) {
-        setPatientList(patientList);
-      } else {
-        setProfessionalList(professionalList);
-      }
-    }, 2000);
-  }, []);
-
-  // Fetch upcoming appointment data
+  // Fetch upcoming appointments data
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   useEffect(() => {
     if (userType === PATIENT) {
       console.log("getting patient's appointments");
-      getPatientUpcomingAppointments(patientId)
+      getPatientUpcomingAppointments(user.email)
         .then((result) => {
-          setUpcomingAppointments(result.data);
+          setUpcomingAppointments(sortAppointments(result.data));
         })
         .catch((error) => console.log(error));
     } else if (userType === PROFESSIONAL) {
       console.log("getting professional's appointments");
-      getProfessionalUpcomingAppointments(professionalId)
+      getProfessionalUpcomingAppointments(user.email)
         .then((result) => {
-          setUpcomingAppointments(result.data);
+          setUpcomingAppointments(sortAppointments(result.data));
         })
         .catch((error) => console.log(error));
     }
-  }, []);
+  }, [user, userType]);
 
   const onAppointmentTileClick = (appointment) => {
-    if (!joinedCall) {
-      // change the view on the child
-      // get the appointment deets
-      setAppointment(appointment);
-      setTeleconView(teleConstants.BEFORE_CALL_VIEW);
+    console.log(appointment);
+    setAppointment(appointment);
 
-      if (userType === PROFESSIONAL) {
-        // assign the patient from the patientList
-        // for now use dummy ;P
-        console.log("user is doctor, setting selected patient");
-        setPatient(patientDummy);
+    if (appointment.postalCode === 0) {
+      // Video Conference
+      if (!joinedCall) {
+        // change the view on the child
+        // get the appointment deets
+        setTeleconView(teleConstants.BEFORE_CALL_VIEW);
+      } else {
+        // not allowed to get out of meeting before ending call
+        message.warning(
+          "End the current call before joining another appointment"
+        );
       }
     } else {
-      // not allowed to get out of meeting before ending call
-      message.warning(
-        "End the current call before joining another appointment"
-      );
+      // Not video conference
+      setTeleconView(teleConstants.MAPS);
+    }
+
+    if (userType === PROFESSIONAL) {
+      // Assign patient from selected appointment
+      console.log("user is doctor, setting selected patient");
+      getPatient(appointment.patientId)
+        .then((result) => {
+          setPatient(result.data);
+        })
+        .catch((error) => console.log(error));
     }
   };
 
@@ -128,39 +109,35 @@ export default function Meet(props) {
   return (
     <>
       <Layout id="meet">
-        <Row style={{ height: "100%" }}>
-          <Col className="appointmentList" span={6}>
-            <AppointmentsList
-              upcomingAppointments={upcomingAppointments}
-              user={user}
-              onAppointmentTileClick={onAppointmentTileClick}
-            />
-          </Col>
-          <Col className="appointmentDetails" span={14}>
-            <Row className="videoConference">
-              <ThemeProvider theme={darkTheme}>
-                <MeetingProvider>
-                  <Teleconference
-                    view={teleconView}
-                    onJoinCall={onJoinCall}
-                    onEndCall={onEndCall}
-                    appointment={appointment}
-                  />
-                </MeetingProvider>
-              </ThemeProvider>
-            </Row>
-            {/* <Row className="infoPanel">
-              {showRecordsPanel && (
-                <Col flex="auto">
-                  <Records
-                    onRecordsSubmit={onRecordsSubmit}
-                    appointment={appointment}
-                    patient={patient}
-                  />
-                </Col>
-              )}
-            </Row> */}
-          </Col>
+        <Sider className="appointmentList" width={400} collapsible={true} collapsedWidth={0}>
+          <AppointmentsList
+            upcomingAppointments={upcomingAppointments}
+            user={user}
+            onAppointmentTileClick={onAppointmentTileClick}
+          />
+        </Sider>
+        <Row className="videoConference">
+          <ThemeProvider theme={darkTheme}>
+            <MeetingProvider>
+              <Teleconference
+                view={teleconView}
+                onJoinCall={onJoinCall}
+                onEndCall={onEndCall}
+                appointment={appointment}
+              />
+            </MeetingProvider>
+          </ThemeProvider>
+        </Row>
+        <Row className="infoPanel">
+          {showRecordsPanel && (
+            <Col flex="auto">
+              <Records
+                onRecordsSubmit={onRecordsSubmit}
+                appointment={appointment}
+                patient={patient}
+              />
+            </Col>
+          )}
         </Row>
       </Layout>
     </>

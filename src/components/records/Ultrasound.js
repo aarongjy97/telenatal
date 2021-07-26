@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Collapse,
   Row,
@@ -12,9 +13,10 @@ import {
   Select,
   Upload,
 } from "antd";
-import { UploadOutlined, EditOutlined } from "@ant-design/icons";
-import { useHistory } from "react-router-dom";
+import { PlusOutlined, UploadOutlined, EditOutlined } from "@ant-design/icons";
+import Fade from "react-reveal";
 import { PROFESSIONAL } from "../../constants/constants";
+import { formatDate } from "../utils";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -62,7 +64,7 @@ export default function Ultrasound({
   const createModal = () => {
     return (
       <Modal
-        title="Create New Ultrasound Record"
+        title="Create New Ultrasound Scan Record"
         centered
         onCancel={() => setIsCreateModalVisible(false)}
         visible={isCreateModalVisible}
@@ -140,72 +142,76 @@ export default function Ultrasound({
     <>
       {userType === PROFESSIONAL && (
         <Row justify="end" style={{ paddingBottom: "20px" }}>
-          <Button
-            type="secondary"
-            onClick={() => setIsCreateModalVisible(true)}
-          >
-            <Title level={5}>Add New Ultrasound Record</Title>
-          </Button>
+          <Fade>
+            <Button
+              type="secondary"
+              onClick={() => setIsCreateModalVisible(true)}
+            >
+              <PlusOutlined />
+              Add New Ultrasound Scan Record
+            </Button>
+          </Fade>
         </Row>
       )}
+      <Fade bottom>
+        <Collapse
+          defaultActiveKey={["1"]}
+          style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}
+        >
+          {records.map((record, index) => {
+            return (
+              <Panel header={record.time} key={index}>
+                <Row style={{ paddingBottom: "20px" }}>
+                  <Col span={6} style={{ paddingLeft: 20 }}>
+                    <Row>
+                      <Title level={5}>Image</Title>
+                    </Row>
+                    <Row>
+                      <Image width={200} height={200} src={record.image} />
+                    </Row>
+                  </Col>
+                  <Col span={6} flex="auto" style={{ paddingLeft: 10 }}>
+                    <Row>
+                      <Title level={5}>Notes</Title>
+                    </Row>
+                    <Row>
+                      <Text>{record.notes}</Text>
+                    </Row>
+                  </Col>
 
-      <Collapse
-        defaultActiveKey={["1"]}
-        style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}
-      >
-        {records.map((record, index) => {
-          return (
-            <Panel header={record.time} key={index}>
-              <Row style={{ paddingBottom: "20px" }}>
-                <Col span={6} style={{ paddingLeft: 20 }}>
-                  <Row>
-                    <Title level={5}>Image</Title>
-                  </Row>
-                  <Row>
-                    <Image width={200} height={200} src={record.image} />
-                  </Row>
-                </Col>
-                <Col span={6} flex="auto" style={{ paddingLeft: 10 }}>
-                  <Row>
-                    <Title level={5}>Notes</Title>
-                  </Row>
-                  <Row>
-                    <Text>{record.notes}</Text>
-                  </Row>
-                </Col>
-
-                <Col span={6} style={{ paddingLeft: 20 }}>
-                  <Row>
-                    <Title level={5}>Image</Title>
-                  </Row>
-                  <Row>
-                    <Image width={200} height={200} src={record.image} />
-                  </Row>
-                </Col>
-                <Col span={6} style={{ paddingLeft: 10 }}>
-                  <Row>
-                    <Title level={5}>Notes</Title>
-                  </Row>
-                  <Row>
-                    <Text>{record.notes}</Text>
-                  </Row>
-                </Col>
-              </Row>
-              {userType === PROFESSIONAL && (
-                <Row justify="end" style={{ paddingBottom: "20px" }}>
-                  <Button
-                    type="secondary"
-                    icon={<EditOutlined />}
-                    onClick={() => setIsEditModalVisible(true)}
-                  >
-                    <Text>Edit</Text>
-                  </Button>
+                  <Col span={6} style={{ paddingLeft: 20 }}>
+                    <Row>
+                      <Title level={5}>Image</Title>
+                    </Row>
+                    <Row>
+                      <Image width={200} height={200} src={record.image} />
+                    </Row>
+                  </Col>
+                  <Col span={6} style={{ paddingLeft: 10 }}>
+                    <Row>
+                      <Title level={5}>Notes</Title>
+                    </Row>
+                    <Row>
+                      <Text>{record.notes}</Text>
+                    </Row>
+                  </Col>
                 </Row>
-              )}
-            </Panel>
-          );
-        })}
-      </Collapse>
+                {userType === PROFESSIONAL && (
+                  <Row justify="end" style={{ paddingBottom: "20px" }}>
+                    <Button
+                      type="secondary"
+                      icon={<EditOutlined />}
+                      onClick={() => setIsEditModalVisible(true)}
+                    >
+                      <Text>Edit</Text>
+                    </Button>
+                  </Row>
+                )}
+              </Panel>
+            );
+          })}
+        </Collapse>
+      </Fade>
       {userType === PROFESSIONAL && createModal()}
       {userType === PROFESSIONAL && editModal()}
     </>

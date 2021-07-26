@@ -1,8 +1,11 @@
 import React, { useContext } from "react";
-import { Layout, Menu, Row, Col, Avatar, Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
+import { Layout, Menu, Row, Col, Avatar, Button } from "antd";
+import { CalendarOutlined, HeartOutlined } from "@ant-design/icons";
 import { userContext } from "../userContext";
 import { PATIENT, PROFESSIONAL } from "../constants/constants";
+import { getInitials, countdownDays } from "./utils";
+
 export default function Header() {
   const { SubMenu } = Menu;
   const { Header } = Layout;
@@ -63,14 +66,49 @@ export default function Header() {
                         backgroundColor: "#780650",
                       }}
                     >
-                      {user.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
+                      {getInitials(user.name)}
                     </Avatar>
                   </>
                 }
               >
+                <div style={{ margin: "2em 1em 0 1em", color: "#eb2f96" }}>
+                  <p
+                    style={{
+                      fontWeight: "600",
+                      fontSize: "large",
+                    }}
+                  >
+                    {user.name}
+                  </p>
+                  <p>
+                    {userType === PATIENT && "Patient"}
+                    {userType === PROFESSIONAL &&
+                      user.type === "doctor" &&
+                      "Doctor"}
+                    {userType === PROFESSIONAL &&
+                      user.type === "nurse" &&
+                      "Nurse"}
+                  </p>
+                  <p
+                    style={{
+                      fontStyle: "italic",
+                      color: "#ff85c0",
+                    }}
+                  >
+                    {userType === PATIENT && user.dueDate !== undefined && (
+                      <>
+                        <CalendarOutlined />
+                        &nbsp;D-{countdownDays(user.dueDate)}&nbsp;
+                      </>
+                    )}
+                    {userType === PATIENT && user.babyName !== undefined && (
+                      <>
+                        <HeartOutlined />
+                        &nbsp;{user.babyName}
+                      </>
+                    )}
+                  </p>
+                </div>
                 <Menu.Item key="4" onClick={logoutUser}>
                   Logout
                   <Link to="/" />

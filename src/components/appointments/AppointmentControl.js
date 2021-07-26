@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import moment from "moment";
+import { useHistory } from "react-router-dom";
 import {
   Space,
   Button,
@@ -22,6 +23,7 @@ import {
   deleteAppointment,
   getDoctors,
   getNurses,
+  getPatients,
   getProfessionalAvailability,
   createAppointment,
 } from "./../../api/Appointment";
@@ -29,7 +31,7 @@ import { getPatient, getProfessional } from "./../../api/User";
 import AppointmentCard from "./AppointmentCard";
 import { formatDate, formatTime } from "./../utils";
 import { userContext } from "./../../userContext";
-import { PATIENT, PROFESSIONAL } from "../../constants/constants";
+import { PATIENT, PROFESSIONAL } from "./../../constants/constants";
 
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -37,10 +39,11 @@ const formItemLayout = {
 };
 
 export default function AppointmentControl({ upcomingAppointments }) {
-  // Get user context
+  // Get user context and history
   const context = useContext(userContext);
   const user = context.user;
   const userType = user.userType;
+  const history = useHistory();
 
   const [form] = Form.useForm();
   const { Option } = Select;
@@ -66,12 +69,46 @@ export default function AppointmentControl({ upcomingAppointments }) {
     setSelectedPurpose();
   }
 
-  const onBook = (values) => {
+  // Define actions after modal form submission
+  const onBookSubmit = (values) => {
+    function sendBookRequest(
+      purpose,
+      date,
+      location,
+      postalCode,
+      patientId,
+      professionalId,
+      remarks
+    ) {
+      createAppointment(
+        purpose,
+        date,
+        location,
+        postalCode,
+        patientId,
+        professionalId,
+        remarks
+      )
+        .then((result) => {
+          clearSelection();
+          setIsBookModalVisible(false);
+          history.go(0);
+          history.push({
+            state: { tab: "appointments" },
+          });
+        })
+        .catch((error) => console.log(error));
+    }
+
+    console.log("book: ", values);
+
+    let purpose = selectedPurpose; // Account for input
     let date = new Date(values.time).valueOf();
     let location = "";
     let postalCode = "";
     let patientId = "";
     let professionalId = "";
+    let remarks = values.remarks;
 
     // Set Professional and Patient Entity
     if (userType === PATIENT) {
@@ -91,47 +128,97 @@ export default function AppointmentControl({ upcomingAppointments }) {
         // Load patient details
         location = user.address;
         postalCode = user.postalCode;
+        sendBookRequest(
+          purpose,
+          date,
+          location,
+          postalCode,
+          patientId,
+          professionalId,
+          remarks
+        );
       } else if (userType === PROFESSIONAL) {
         // Fetch patient details
-        let patient = getPatient(values.patientId);
-        location = patient.address;
-        postalCode = patient.postalCode;
+        getPatient(values.patientId)
+          .then((result) => {
+            let patient = result.data;
+            location = patient.address;
+            postalCode = patient.postalCode;
+            sendBookRequest(
+              purpose,
+              date,
+              location,
+              postalCode,
+              patientId,
+              professionalId,
+              remarks
+            );
+          })
+          .catch((error) => console.log(error));
       }
     } else if (values.location === "professional") {
       if (userType === PATIENT) {
         // Fetch professional details
-        let professional = getProfessional(values.professionalId);
-        location = professional.clinicName + ", " + professional.clinicAddress;
-        postalCode = professional.clinicPostalCode;
+        getProfessional(values.professionalId)
+          .then((result) => {
+            let professional = result.data;
+            location =
+              professional.clinicName + ", " + professional.clinicAddress;
+            postalCode = professional.clinicPostalCode;
+            sendBookRequest(
+              purpose,
+              date,
+              location,
+              postalCode,
+              patientId,
+              professionalId,
+              remarks
+            );
+          })
+          .catch((error) => console.log(error));
       } else if (userType === PROFESSIONAL) {
-        // Load professional detail
+        // Load professional details
         location = user.clinicName + ", " + user.clinicAddress;
         postalCode = user.clinicPostalCode;
+        sendBookRequest(
+          purpose,
+          date,
+          location,
+          postalCode,
+          patientId,
+          professionalId,
+          remarks
+        );
       }
     }
-
-    createAppointment(
-      values.purpose,
-      date,
-      location,
-      postalCode,
-      patientId,
-      professionalId,
-      values.remarks
-    )
-      .then((result) => {
-        clearSelection();
-        setIsBookModalVisible(false);
-      })
-      .catch((error) => console.log(error));
   };
 
-  const onReschedule = (values) => {
+  const onRescheduleSubmit = (values) => {
     console.log("reschedule: ", values);
+    let appointmentId = values.appointmentId;
+    let date = new Date(values.time).valueOf();
+    updateAppointment(appointmentId, date).then((result) => {
+      clearSelection();
+      setIsRescheduleModalVisible(false);
+      history.go(0);
+      history.push({
+        state: { tab: "appointments" },
+      });
+    });
   };
 
-  const onCancel = (values) => {
+  const onCancelSubmit = (values) => {
     console.log("cancel: ", values);
+    let appointmentId = values.appointment;
+    let meetingId = selectedAppointment.meetingId;
+    deleteAppointment(appointmentId, meetingId).then((result) => {
+      clearSelection();
+      setIsCancelModalVisible(false);
+      history.go(0);
+      history.push({
+        state: { tab: "appointments" },
+      });
+    });
   };
 
   // Load options for appointment selection
@@ -142,15 +229,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
       label: formatDate(upcomingAppointments[i].date),
     };
   }
-
-  // Render change for appointment selection
-  var upcomingAppointmentsChange = (appointmentId) => {
-    getAppointment(appointmentId)
-      .then((result) => {
-        setSelectedAppointment(result.data);
-      })
-      .catch((error) => console.log(error));
-  };
 
   useEffect(() => {
     if (userType === PATIENT) {
@@ -168,48 +246,63 @@ export default function AppointmentControl({ upcomingAppointments }) {
         })
         .catch((error) => console.log(error));
     } else if (userType === PROFESSIONAL) {
-      // TODO: Fetch all patients
-      getNurses()
+      // Fetch all patients
+      getPatients()
         .then((result) => {
           setPatients(result.data);
         })
         .catch((error) => console.log(error));
+
+      // Set selected professional
+      setSelectedProfessional(user.email);
     }
   }, [userType]);
 
-  // Load options for medical professionals
-  var doctorOption = { value: "doctor", label: "Doctor", options: [] };
-  for (let i = 0; i < doctors.length; i++) {
-    doctorOption.options[i] = {
-      value: doctors[i]["email"],
-      label: doctors[i]["name"],
-    };
+  // Load patients and medical professionals for selection
+  var userOption = [];
+  if (userType === PATIENT) {
+    // Load options for medical professionals
+    var doctorOption = { value: "doctor", label: "Doctor", options: [] };
+    for (let i = 0; i < doctors.length; i++) {
+      doctorOption.options[i] = {
+        value: doctors[i]["email"],
+        label: doctors[i]["name"],
+      };
+    }
+    var nurseOption = { value: "nurse", label: "Nurse", options: [] };
+    for (let i = 0; i < nurses.length; i++) {
+      nurseOption.options[i] = {
+        value: nurses[i]["email"],
+        label: nurses[i]["name"],
+      };
+    }
+    userOption = [doctorOption, nurseOption];
   }
-  var nurseOption = { value: "nurse", label: "Nurse", options: [] };
-  for (let i = 0; i < nurses.length; i++) {
-    nurseOption.options[i] = {
-      value: nurses[i]["email"],
-      label: nurses[i]["name"],
-    };
+  if (userType === PROFESSIONAL) {
+    // Load options for patients
+    for (let i = 0; i < patients.length; i++) {
+      userOption[i] = {
+        value: patients[i]["email"],
+        label: patients[i]["name"],
+      };
+    }
   }
-  const professionalOption = [doctorOption, nurseOption];
 
-  // Load options for patients
-  var patientOption = [];
-  for (let i = 0; i < patients.length; i++) {
-    patientOption[i] = {
-      value: patients[i]["email"],
-      label: patients[i]["name"],
-    };
-  }
-
-  // Load available appointments
+  // Load available appointments for booking
   // TODO: load for medical professional view also
   function updateNewAppointmentsOption(appointmentSlots) {
     var newAppointmentsOption = [];
+
+    // After now without clash with patient's schedule
     for (let i = 0; i < appointmentSlots.length; i++) {
+      let hasClashes = false;
+      for (let j = 0; j < upcomingAppointments.length; j++) {
+        if (appointmentSlots[i] === upcomingAppointments[j].date) {
+          hasClashes = true;
+        }
+      }
       var appointmentTime = moment(appointmentSlots[i]);
-      if (appointmentTime.isAfter()) {
+      if (appointmentTime.isAfter() && hasClashes === false) {
         newAppointmentsOption.push({
           value: appointmentSlots[i],
           label: formatTime(appointmentSlots[i]),
@@ -219,8 +312,8 @@ export default function AppointmentControl({ upcomingAppointments }) {
     setNewAppointmentsOption(newAppointmentsOption);
   }
 
-  // Conditionally fetch available appointments
-  function getAppointmentSlots(professionalId, date) {
+  // Fetch available appointments for booking
+  function getBookAppointmentSlots(professionalId, date) {
     if (professionalId) {
       setSelectedProfessional(professionalId);
       if (selectedDate != null) {
@@ -242,6 +335,48 @@ export default function AppointmentControl({ upcomingAppointments }) {
       }
     }
   }
+
+  // Fetch available appointments for reschedule
+  function getRescheduleAppointmentSlots(appointmentId, date) {
+    if (appointmentId) {
+      getAppointment(appointmentId).then((result) => {
+        setSelectedAppointment(result.data);
+        let professionalId = result.data.professionalId;
+        if (userType === PATIENT) {
+          // Get professional for the appointment
+          setSelectedProfessional(professionalId);
+        }
+        if (selectedDate != null) {
+          // Get professional availability
+          getProfessionalAvailability(professionalId, selectedDate).then(
+            (result) => {
+              updateNewAppointmentsOption(result.data);
+            }
+          );
+        }
+      });
+    }
+
+    if (date) {
+      setSelectedDate(date);
+      if (selectedProfessional != null) {
+        getProfessionalAvailability(selectedProfessional, date).then(
+          (result) => {
+            updateNewAppointmentsOption(result.data);
+          }
+        );
+      }
+    }
+  }
+
+  // Render change for selected appointment (reschedule/cancel)
+  var upcomingAppointmentsChange = (appointmentId) => {
+    getAppointment(appointmentId)
+      .then((result) => {
+        setSelectedAppointment(result.data);
+      })
+      .catch((error) => console.log(error));
+  };
 
   const bookModal = () => {
     return (
@@ -286,7 +421,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
           {...formItemLayout}
           form={form}
           name="bookAppointment"
-          onFinish={onBook}
+          onFinish={onBookSubmit}
         >
           {userType === PROFESSIONAL && (
             <Form.Item
@@ -299,14 +434,11 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 },
               ]}
             >
-              <Select
-                placeholder="Select your patient"
-                options={patientOption}
-              />
+              <Select placeholder="Select your patient" options={userOption} />
             </Form.Item>
           )}
 
-          {userType === "patient" && (
+          {userType === PATIENT && (
             <Form.Item
               name="professionalId"
               label="Professional"
@@ -319,9 +451,9 @@ export default function AppointmentControl({ upcomingAppointments }) {
             >
               <Select
                 placeholder="Select medical professional"
-                options={professionalOption}
+                options={userOption}
                 onChange={(professionalId) => {
-                  getAppointmentSlots(professionalId, null);
+                  getBookAppointmentSlots(professionalId, null);
                 }}
               />
             </Form.Item>
@@ -344,7 +476,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 return current < moment().startOf("day");
               }}
               onChange={(date) => {
-                getAppointmentSlots(
+                getBookAppointmentSlots(
                   null,
                   date !== null ? date.format("YYYY-MM-DD") : null
                 );
@@ -390,8 +522,18 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 </Radio>
                 <Radio name={"Others"} value={"Others"}>
                   Others
-                  {selectedPurpose === "Others" ? (
-                    <Input style={{ width: "5em", marginLeft: 10 }} />
+                  {![
+                    "Check up",
+                    "Ultrasound",
+                    "Vaccination",
+                    undefined,
+                  ].includes(selectedPurpose) ? (
+                    <Input
+                      onChange={(values) =>
+                        setSelectedPurpose(values.target.value)
+                      }
+                      style={{ width: "5em", marginLeft: 10 }}
+                    />
                   ) : null}
                 </Radio>
               </Space>
@@ -419,20 +561,16 @@ export default function AppointmentControl({ upcomingAppointments }) {
             <Input.TextArea />
           </Form.Item>
 
-          <AppointmentCard />
+          <AppointmentCard
+            appointment={selectedAppointment}
+            userType={userType}
+          />
         </Form>
       </Modal>
     );
   };
 
   const rescheduleModal = () => {
-    const onFinish = (values) => {
-      const appointmentId = values.appointment;
-      updateAppointment(appointmentId);
-      setIsRescheduleModalVisible(false);
-      window.location.replace("/appointments");
-    };
-
     return (
       <Modal
         title="Reschedule Existing Appointment"
@@ -471,10 +609,10 @@ export default function AppointmentControl({ upcomingAppointments }) {
           {...formItemLayout}
           form={form}
           name="rescheduleAppointment"
-          onFinish={onFinish}
+          onFinish={onRescheduleSubmit}
         >
           <Form.Item
-            name="appointment"
+            name="appointmentId"
             label="Appointment"
             rules={[
               {
@@ -486,7 +624,9 @@ export default function AppointmentControl({ upcomingAppointments }) {
             <Select
               placeholder="Select appointment to reschedule"
               options={upcomingAppointmentsOption}
-              onChange={upcomingAppointmentsChange}
+              onChange={(appointmentId) => {
+                getRescheduleAppointmentSlots(appointmentId, null);
+              }}
             />
           </Form.Item>
 
@@ -507,7 +647,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 return current < moment().startOf("day");
               }}
               onChange={(date) => {
-                getAppointmentSlots(
+                getRescheduleAppointmentSlots(
                   null,
                   date !== null ? date.format("YYYY-MM-DD") : null
                 );
@@ -538,14 +678,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
   };
 
   const cancelModal = () => {
-    const onFinish = (values) => {
-      const appointmentId = values.appointment;
-      const meetingId = selectedAppointment.meetingId;
-      deleteAppointment(appointmentId, meetingId);
-      setIsCancelModalVisible(false);
-      window.location.replace("/appointments");
-    };
-
     return (
       <Modal
         title="Cancel Existing Appointment"
@@ -578,7 +710,12 @@ export default function AppointmentControl({ upcomingAppointments }) {
           </Button>,
         ]}
       >
-        <Form {...formItemLayout} name="cancelAppointment" onFinish={onFinish}>
+        <Form
+          {...formItemLayout}
+          form={form}
+          name="cancelAppointment"
+          onFinish={onCancelSubmit}
+        >
           <Form.Item
             name="appointment"
             label="Appointment"

@@ -4,7 +4,6 @@ import AppointmentCard from "./AppointmentCard";
 
 export default function AppointmentsList({
   upcomingAppointments,
-  user,
   onAppointmentTileClick,
 }) {
   return (
@@ -20,7 +19,7 @@ export default function AppointmentsList({
               key={appointment.appointmentId}
               onClick={() => onAppointmentTileClick(appointment)}
             >
-              <AppointmentCard appointment={appointment} user={user} />
+              <AppointmentCard appointment={appointment} />
             </List.Item>
           )}
         />

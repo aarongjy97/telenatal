@@ -32,12 +32,13 @@ div#root {
 @highlight-color: @red-5;
 @warning-color: @gold-6;
 @normal-color: #f3f3f3;
+@layout-trigger-background: @magenta-8;
 
 /*----------------------------------------------------------------
 Header
 ----------------------------------------------------------------*/
 #header {
-  min-width: "100vh";
+  min-width: 100vw;
 
   .navbar {
     display: flex;
@@ -67,10 +68,10 @@ Home
 
 #home {
   background-color: @magenta-2;
-  height: 100vh;
+  height: 100%;
 
   .centerRow {
-    height: 100vh;
+    height: 100%;
     margin: auto;
   }
 
@@ -97,7 +98,7 @@ Profile/Register
 ----------------------------------------------------------------*/
 
 #profile {
-  height: 100vh;
+  height: 100%;
 
   .row {
     margin: auto;
@@ -124,25 +125,11 @@ Profile/Register
           float: right;
         }
       }
-    }
 
-    .right {
-      margin-top: auto;
-      margin-bottom: auto;
-      width: 20vw;
-
-      .image {
-        display: block;
-        text-align: center;
-        margin: auto;
-        padding: 1em;
-      }
-
-      .button {
-        display: block;
-        text-align: center;
-        margin: auto;
-        padding: 1em;
+      .errorMessage {
+        width: 100%;
+        padding: 0 0 0 13rem;
+        color: @red-6;
       }
     }
   }
@@ -153,7 +140,7 @@ Profile/Register
   width: 100%;
   margin: auto;
 
-  p {
+  .formTitle {
     padding-left: 9em;
     font-size: large;
     font-weight: 600;
@@ -165,12 +152,12 @@ Login
 ----------------------------------------------------------------*/
 
 #login {
-  height: 100vh;
+  height: 100%;
   display: block;
   margin: auto;
 
   .row {
-    height: 100vh;
+    height: 100%;
 
     .col {
       margin: auto;
@@ -214,15 +201,16 @@ Meet
 ----------------------------------------------------------------*/
 
 #meet {
-  height: 100vh;
+  height: 100%;
+  overflow: auto;
 
   .appointmentDetails {
     .videoConference {
-      height: 60vh;
+      height: 60%;
     }
 
     .infoPanel {
-      height: 40vh;
+      height: 40%;
     }
   }
 
@@ -236,14 +224,19 @@ Records
 ----------------------------------------------------------------*/
 
 #records {
-  height: 100vh;
+  height: 100%;
+  overflow: auto;
 
   .patientSider {
+    height: 100%;
+    overflow: auto;
     width: 10vw;
 
-    .patientSearch {
-      padding: 1em;
-      padding-top: 1.25em;
+    h1 {
+      padding: 1.25em 0.3em 0.5em 0.3em;
+      color: @magenta-1;
+      font-size: large;
+      text-align: center;
     }
 
     .patientMenu {
@@ -261,7 +254,8 @@ Appointments
 ----------------------------------------------------------------*/
 
 #appointments {
-  height: 100vh;
+  height: 100%;
+  overflow: auto;
 }
 
 #appointments .left {
@@ -294,7 +288,7 @@ Appointments
 }
 
 #appointmentList {
-  padding: 1em;
+  padding: 1em 1em 0 1em;
   background-color: @calendar-bg;
 
   .title {
