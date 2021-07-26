@@ -28,7 +28,6 @@ export default function Meet(props) {
   const user = context.user;
   const userType = user.userType;
 
-  // TODO
   const [teleconView, setTeleconView] = React.useState(
     teleConstants.PLACEHOLDER_VIEW
   );

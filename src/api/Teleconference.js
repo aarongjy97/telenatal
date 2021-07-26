@@ -20,10 +20,12 @@ const createMeetingAndUpdateAppointment = async (appointment) => {
     appointmentId: appointment.appointmentId,
     meetingId: appointment.meetingId,
   };
+  console.log("update: ");
+  console.log(update);
   // update appointment
-  updateAppointmentWithData(update);
-  console.log("Updated appointment: ");
-  console.log(appointment);
+  updateAppointmentWithData(appointment);
+  // console.log("Updated appointment: ");
+  // console.log(appointment);
   return appointment;
 };
 
