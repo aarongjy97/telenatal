@@ -22,8 +22,11 @@ const createMeetingAndUpdateAppointment = async (appointment) => {
   };
   // update appointment
   updateAppointmentWithData(update);
+  console.log("Updated appointment: ");
+  console.log(appointment);
   return appointment;
 };
+
 const joinCall = async (appointment) => {
   console.log(API_ENDPOINT);
   console.log(accessKeyId);
@@ -109,7 +112,7 @@ const createMeeting = async () => {
       },
     }
   );
-  console.log("result from createMeeting: " + res.data);
+  console.log("result from createMeeting: " + JSON.stringify(res.data));
   return res.data.JoinInfo;
 };
 

@@ -11,9 +11,9 @@ export default function AfterCallView(props) {
   return (
     <>
       <Card title="Appointment Ended" bordered={true}>
-        {userType == PATIENT &&
+        {userType === PATIENT &&
           "Thank you for attending your appointment. Your doctor will be uploading your appointment details soon, which you can view in the health records tab."}
-        {userType == PROFESSIONAL &&
+        {userType === PROFESSIONAL &&
           "Meeting has ended. Please save the patient's appointment notes as soon as possible. This can be done through the 'Quick Notes' option below, or by adding a new record through the 'Records' tab."}
       </Card>
     </>
