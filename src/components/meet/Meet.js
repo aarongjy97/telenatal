@@ -5,12 +5,6 @@ import {
 } from "amazon-chime-sdk-component-library-react";
 import { ThemeProvider } from "styled-components";
 import { Layout, message } from "antd";
-import {
-  UserOutlined,
-  CalendarOutlined,
-  PushpinOutlined,
-  EllipsisOutlined,
-} from "@ant-design/icons";
 import Teleconference from "./teleconference/Teleconference";
 import Records from "./records/Records";
 import AppointmentsList from "./appointments/AppointmentList";
@@ -23,8 +17,9 @@ import {
 import { getPatient } from "../../api/User";
 import { userContext } from "./../../userContext";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
-import { sortAppointments, formatDateTime, isDictEmpty } from "./../utils";
+import { sortAppointments, isDictEmpty } from "./../utils";
 import PlaceholderView from "./PlaceholderView";
+import TitleView from "./TitleView";
 
 export default function Meet(props) {
   const { Content, Sider } = Layout;
@@ -119,34 +114,9 @@ export default function Meet(props) {
         />
       </Sider>
       <Content className="meetContent">
-        <h1>{appointment.purpose}</h1>
-        {userType === PROFESSIONAL && (
-          <li>
-            <UserOutlined /> {appointment.patientName}
-          </li>
-        )}
-        {userType === PATIENT && (
-          <li>
-            <UserOutlined /> {appointment.professionalName}
-          </li>
-        )}
-        <li>
-          <CalendarOutlined /> {formatDateTime(appointment.date)}
-        </li>
-        <li>
-          <PushpinOutlined /> {appointment.location}{" "}
-          {appointment.postalCode !== 0 ? (
-            <>S({appointment.postalCode})</>
-          ) : null}
-        </li>
-        {appointment.remarks !== undefined && (
-          <li>
-            <EllipsisOutlined />
-            {appointment.remarks}
-          </li>
-        )}
+        {!isDictEmpty(appointment) && <TitleView appointment={appointment} />}
         <div className="meetCore">
-          {appointment && appointment.postalCode === 0 && (
+          {!isDictEmpty(appointment) && appointment.postalCode === 0 && (
             <ThemeProvider theme={darkTheme}>
               <MeetingProvider>
                 <Teleconference
@@ -158,8 +128,10 @@ export default function Meet(props) {
               </MeetingProvider>
             </ThemeProvider>
           )}
-          {appointment && appointment.postalCode !== 0 && <Maps />}
-          {!appointment && <PlaceholderView />}
+          {!isDictEmpty(appointment) && appointment.postalCode !== 0 && (
+            <Maps />
+          )}
+          {isDictEmpty(appointment) && <PlaceholderView />}
         </div>
       </Content>
       {!isDictEmpty(appointment) && (

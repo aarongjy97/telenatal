@@ -123,6 +123,15 @@ export default function AppointmentControl({ upcomingAppointments }) {
     if (values.location === "video") {
       location = "Video Conference";
       postalCode = 0;
+      sendBookRequest(
+        purpose,
+        date,
+        location,
+        postalCode,
+        patientId,
+        professionalId,
+        remarks
+      );
     } else if (values.location === "patient") {
       if (userType === PATIENT) {
         // Load patient details

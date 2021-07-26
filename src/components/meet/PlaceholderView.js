@@ -1,17 +1,10 @@
 import React from "react";
-import { Card } from "antd";
 
 export default function PlaceholderView(props) {
   return (
-    <>
-      <Card
-        title="No Appointment Selected"
-        bordered={true}
-        flex="auto"
-        style={{ verticalAlign: "middle", textAlign: "center" }}
-      >
-        Select an upcoming appointment from the left panel.
-      </Card>
-    </>
+    <div className="placeholderView">
+      <p>No Appointment Selected!</p>
+      Please select an upcoming appointment from the left panel.
+    </div>
   );
 }
