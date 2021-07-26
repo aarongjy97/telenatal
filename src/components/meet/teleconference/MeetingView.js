@@ -9,11 +9,10 @@ import {
   VideoTileGrid,
   ContentShareControl,
 } from "amazon-chime-sdk-component-library-react";
-import { Row } from "antd";
 
 export default function MeetingView(props) {
   return (
-    <Row>
+    <div className="meetingView">
       <VideoTileGrid />
       <ControlBar layout="docked-horizontal" showLabels>
         <AudioInputControl />
@@ -26,6 +25,6 @@ export default function MeetingView(props) {
         />
         {/* <ContentShareControl /> */}
       </ControlBar>
-    </Row>
+    </div>
   );
 }

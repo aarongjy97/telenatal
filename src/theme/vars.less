@@ -215,6 +215,7 @@ Meet
 
     h1 {
       font-size: x-large;
+      padding: 0;
     }
 
     li {
@@ -230,11 +231,14 @@ Meet
     justify-content: center;
     align-items: center;
 
-    .beforeCallView, .placeholderView {
+    .beforeCallView,
+    .placeholderView,
+    .afterCallView,
+    .meetingView {
       text-align: center;
       align-items: center;
 
-      p { 
+      p {
         font-size: medium;
         color: @magenta-8;
         font-weight: 400;

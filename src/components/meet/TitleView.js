@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import {
   UserOutlined,
   CalendarOutlined,
@@ -10,7 +10,7 @@ import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { formatDateTime } from "./../utils";
 
 export default function TitleView(props) {
-    // Get user context
+  // Get user context
   const context = useContext(userContext);
   const user = context.user;
   const userType = user.userType;
@@ -18,6 +18,11 @@ export default function TitleView(props) {
   return (
     <div className="titleView">
       <h1>{props.appointment.purpose}</h1>
+      {props.appointment.remarks !== undefined && (
+        <p>
+          <EllipsisOutlined /> {props.appointment.remarks}
+        </p>
+      )}
       {userType === PROFESSIONAL && (
         <li>
           <UserOutlined /> {props.appointment.patientName}
@@ -37,11 +42,6 @@ export default function TitleView(props) {
           <>S({props.appointment.postalCode})</>
         ) : null}
       </li>
-      {props.appointment.remarks !== undefined && (
-        <li>
-          <EllipsisOutlined /> {props.appointment.remarks}
-        </li>
-      )}
     </div>
   );
 }
