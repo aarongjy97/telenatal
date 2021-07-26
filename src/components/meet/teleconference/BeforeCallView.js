@@ -19,8 +19,8 @@ export default function BeforeCallView(props) {
         {disableJoinCall && (
           <p>Please come back nearer to the appointment time!</p>
         )}
-        {countdownHours(props.appointment.date) <= 0.5 && (
-          <p>Please join the call now!</p>
+        {!disableJoinCall && (
+          <p>Click to join call now!</p>
         )}
       </Row>
       <Row
