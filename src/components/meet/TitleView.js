@@ -5,6 +5,7 @@ import {
   PushpinOutlined,
   EllipsisOutlined,
 } from "@ant-design/icons";
+import Fade from "react-reveal";
 import { userContext } from "./../../userContext";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { formatDateTime } from "./../utils";
@@ -16,6 +17,7 @@ export default function TitleView(props) {
   const userType = user.userType;
 
   return (
+    <Fade top>
     <div className="titleView">
       <h1>{props.appointment.purpose}</h1>
       {props.appointment.remarks !== undefined && (
@@ -43,5 +45,6 @@ export default function TitleView(props) {
         ) : null}
       </li>
     </div>
+    </Fade>
   );
 }
