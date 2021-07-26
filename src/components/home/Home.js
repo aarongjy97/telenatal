@@ -3,12 +3,13 @@ import { Redirect } from "react-router-dom";
 import { Avatar, Layout, Row, Col } from "antd";
 import Fade from "react-reveal";
 import { userContext } from "./../../userContext";
+import { isDictEmpty } from "../utils";
 
 export default function Home() {
   // Get user context
   const context = useContext(userContext);
   const user = context.user;
-  const loggedIn = Object.keys(user).length === 0 ? false : true;
+  const loggedIn = isDictEmpty(user) ? false : true;
 
   if (loggedIn) {
     return <Redirect to="/appointments" />;

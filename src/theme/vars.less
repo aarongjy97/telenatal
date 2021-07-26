@@ -208,8 +208,40 @@ Meet
     background-color: white;
     height: 100%;
   }
-}
 
+  .meetContent {
+    padding: 1.5em 3em;
+    height: 100%;
+
+    h1 {
+      font-size: x-large;
+    }
+
+    li {
+      display: inline;
+      margin-right: 2em;
+      color: @magenta-7;
+    }
+  }
+
+  .meetCore {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .beforeCallView {
+      text-align: center;
+      align-items: center;
+
+      p { 
+        font-size: medium;
+        color: @magenta-8;
+        font-weight: 400;
+      }
+    }
+  }
+}
 #appointmentDetails {
   background-color: white;
   height: 100%;
@@ -254,11 +286,14 @@ Meet
     li {
       margin: 0.3em;
     }
-
-    // .generalView {
-
-    // }
   }
+}
+
+.countdownTimer {
+  font-size: large;
+  text-align: center;
+  display: flex;
+  margin: 0 auto;
 }
 
 /*----------------------------------------------------------------

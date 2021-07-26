@@ -4,7 +4,7 @@ import { Layout, Menu, Row, Col, Avatar, Button } from "antd";
 import { CalendarOutlined, HeartOutlined } from "@ant-design/icons";
 import { userContext } from "../userContext";
 import { PATIENT, PROFESSIONAL } from "../constants/constants";
-import { getInitials, countdownDays } from "./utils";
+import { getInitials, countdownDays, isDictEmpty } from "./utils";
 
 export default function Header() {
   const { SubMenu } = Menu;
@@ -20,7 +20,7 @@ export default function Header() {
   const context = useContext(userContext);
   const user = context.user;
   const logoutUser = context.logoutUser;
-  const loggedIn = Object.keys(user).length === 0 ? false : true;
+  const loggedIn = isDictEmpty(user) ? false : true;
   const userType = user.userType;
   const logoUrl = loggedIn === false ? "/" : "/appointments";
 

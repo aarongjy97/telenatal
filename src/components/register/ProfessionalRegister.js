@@ -5,6 +5,7 @@ import { WarningOutlined } from "@ant-design/icons";
 import { registerProfessional } from "./../../api/Auth";
 import { getClinics, createClinic } from "./../../api/Clinic";
 import { educationList, formItemLayout, tailFormItemLayout } from "./constants";
+import { isDictEmpty } from "./../utils";
 
 export default function ProfessionalRegister() {
   const [form] = Form.useForm();
@@ -40,7 +41,7 @@ export default function ProfessionalRegister() {
   const onRegistration = (values) => {
     // Create clinic if does not exist need
     var clinicId = null;
-    if (Object.keys(selectedClinic).length === 0) {
+    if (isDictEmpty(selectedClinic)) {
       createClinic(
         values.clinicName,
         values.clinicAddress,

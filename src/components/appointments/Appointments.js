@@ -11,7 +11,7 @@ import {
   getProfessionalAppointments,
   getProfessionalUpcomingAppointments,
 } from "./../../api/Appointment";
-import { sortAppointments } from "./../utils";
+import { sortAppointments, isDictEmpty } from "./../utils";
 import { userContext } from "./../../userContext";
 import { PATIENT, PROFESSIONAL } from "../../constants/constants";
 
@@ -20,7 +20,7 @@ export default function Appointments() {
   const context = useContext(userContext);
   const user = context.user;
   const userType = user.userType;
-  const loggedIn = Object.keys(user).length === 0 ? false : true;
+  const loggedIn = isDictEmpty(user) ? false : true;
 
   // Fetch appointment data
   const [appointments, setAppointments] = useState([]);

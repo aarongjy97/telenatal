@@ -18,7 +18,11 @@ export default function AppointmentDetails(props) {
             <span>Date Time:</span> {formatDateTime(props.appointment["date"])}
           </li>
           <li>
-            <span>Location:</span> {props.appointment["location"]}
+            <span>Location:</span>{" "}
+            {props.appointment["location"]}{" "}
+            {props.appointment["postalCode"] !== 0 ? (
+              <>S({props.appointment["postalCode"]})</>
+            ) : null}
           </li>
           <li>
             <span>Purpose:</span> {props.appointment["purpose"]}

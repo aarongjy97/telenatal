@@ -5,6 +5,7 @@ import { LoginOutlined, WarningOutlined } from "@ant-design/icons";
 import Fade from "react-reveal";
 import { loginPatient, loginProfessional } from "./../../api/Auth";
 import { userContext } from "./../../userContext";
+import {isDictEmpty} from "./../utils";
 
 const formItemLayout = {
   labelCol: {
@@ -44,7 +45,7 @@ export default function Login() {
   const context = useContext(userContext);
   const user = context.user;
   const loginUser = context.loginUser;
-  const loggedIn = Object.keys(user).length === 0 ? false : true;
+  const loggedIn = isDictEmpty(user) ? false : true;
 
   // Set states
   const [showPatient, setShowPatient] = useState(true);

@@ -6,12 +6,13 @@ import Fade from "react-reveal";
 import PatientRegister from "./PatientRegister";
 import ProfessionalRegister from "./ProfessionalRegister";
 import { userContext } from "./../../userContext";
+import { isDictEmpty } from "./../utils";
 
 export default function Profile() {
   // Get user context
   const context = useContext(userContext);
   const user = context.user;
-  const loggedIn = Object.keys(user).length === 0 ? false : true;
+  const loggedIn = isDictEmpty(user) ? false : true;
 
   const [showPatient, setShowPatient] = useState(true);
 

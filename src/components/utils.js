@@ -55,3 +55,14 @@ export function countdownDays(inputDate) {
   var differenceInDays = differenceInSeconds / (1000 * 3600 * 24);
   return differenceInDays;
 }
+
+export function countdownHours(inputDate) {
+  var differenceInSeconds =
+    new Date().getTime() - new Date(inputDate.date).getTime();
+  var differenceInHours = differenceInSeconds / (1000 * 3600);
+  return differenceInHours;
+}
+
+export function isDictEmpty(dict) {
+  return Object.keys(dict).length === 0;
+}
