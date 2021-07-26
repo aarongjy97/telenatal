@@ -7,7 +7,7 @@ export default function AppointmentsList({
   onAppointmentTileClick,
 }) {
   return (
-    <Layout id="appointmentList">
+    <Layout id="appointmentListMeet">
       <Row className="title">Upcoming Appointments</Row>
       <Row className="content">
         <List

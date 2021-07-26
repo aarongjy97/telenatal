@@ -14,7 +14,7 @@ export default function BeforeCallView(props) {
     if (countdownHours(props.appointment) > 12) {
       setDisableJoinCall(true);
     }
-  }, []);
+  }, [props]);
 
   return (
     <Fade bottom>

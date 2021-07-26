@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
 import { useHistory, Redirect } from "react-router-dom";
-import { Layout, Button, Row, Col, Input, Form, Switch } from "antd";
+import { Layout, Button, Row, Input, Form, Switch } from "antd";
 import { LoginOutlined, WarningOutlined } from "@ant-design/icons";
 import Fade from "react-reveal";
 import { loginPatient, loginProfessional } from "./../../api/Auth";
 import { userContext } from "./../../userContext";
-import {isDictEmpty} from "./../utils";
+import { isDictEmpty } from "./../utils";
 
 const formItemLayout = {
   labelCol: {
@@ -77,73 +77,69 @@ export default function Login() {
   } else {
     return (
       <Layout id="login">
-        <Row className="row">
-          <Col className="col" span={10}>
-            <Fade bottom>
-              <Row className="top">
-                <div className="title">
-                  <LoginOutlined />
-                  &nbsp;Login {showPatient ? "Patient" : "Medical Professional"}
-                </div>
-                <div className="toggle">
-                  <Switch
-                    onClick={() => setShowPatient(!showPatient)}
-                    defaultChecked
-                  />
-                </div>
-              </Row>
-              <Row className="bottom">
-                <Form {...formItemLayout} name="loginForm" onFinish={onFinish}>
-                  <Form.Item
-                    label="E-mail"
-                    name="email"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your E-mail!",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
+        <Fade bottom>
+          <Row className="top">
+            <div className="title">
+              <LoginOutlined />
+              &nbsp;Login {showPatient ? "Patient" : "Medical Professional"}
+            </div>
+            <div className="toggle">
+              <Switch
+                onClick={() => setShowPatient(!showPatient)}
+                defaultChecked
+              />
+            </div>
+          </Row>
+          <Row className="bottom">
+            <Form {...formItemLayout} name="loginForm" onFinish={onFinish}>
+              <Form.Item
+                label="E-mail"
+                name="email"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your E-mail!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-                  <Form.Item
-                    label="Password"
-                    name="password"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your password!",
-                      },
-                    ]}
-                  >
-                    <Input.Password />
-                  </Form.Item>
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your password!",
+                  },
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
 
-                  {typeof errorMessage != "undefined" && (
-                    <p className="errorMessage">
-                      <WarningOutlined />
-                      &nbsp;{errorMessage}
-                    </p>
-                  )}
+              {typeof errorMessage != "undefined" && (
+                <p className="errorMessage">
+                  <WarningOutlined />
+                  &nbsp;{errorMessage}
+                </p>
+              )}
 
-                  <Form.Item {...tailFormItemLayout}>
-                    <Button type="primary" htmlType="submit">
-                      Login
-                    </Button>
-                    &nbsp;&nbsp;&nbsp;
-                    <Button type="default" href="/">
-                      Back to Home
-                    </Button>
-                    <Button type="link" href="/register">
-                      New here? Register
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Row>
-            </Fade>
-          </Col>
-        </Row>
+              <Form.Item {...tailFormItemLayout}>
+                <Button type="primary" htmlType="submit">
+                  Login
+                </Button>
+                &nbsp;&nbsp;&nbsp;
+                <Button type="default" href="/">
+                  Back to Home
+                </Button>
+                <Button type="link" href="/register">
+                  New here? Register
+                </Button>
+              </Form.Item>
+            </Form>
+          </Row>
+        </Fade>
       </Layout>
     );
   }

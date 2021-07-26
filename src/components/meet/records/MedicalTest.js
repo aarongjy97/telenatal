@@ -8,7 +8,7 @@ import {
 } from "antd";
 
 const { Panel } = Collapse;
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 export default function MedicalTest(props) {
   return (

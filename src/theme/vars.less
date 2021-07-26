@@ -8,7 +8,9 @@ General
 html,
 body,
 div#root {
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .menu {
@@ -68,7 +70,7 @@ Home
 
 #home {
   background-color: @magenta-2;
-  height: 100%;
+  height: 100vh;
 
   .centerRow {
     height: 100%;
@@ -97,53 +99,53 @@ Home
 Profile/Register
 ----------------------------------------------------------------*/
 
-#profile {
-  height: 100%;
+#register {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
 
-  .row {
-    margin: auto;
+  .top {
+    margin: 2em 0 1.5em 0;
+    font-size: x-large;
+    font-weight: 600;
+    color: @magenta-7;
+    padding-left: 7em;
+    width: 40vw;
 
-    .left {
-      margin-top: auto;
-      margin-bottom: auto;
-      width: 45vw;
+    .title {
+      width: 80%;
+      float: left;
+    }
 
-      .top {
-        margin: 1.5em 0 1.5em 0;
-        font-size: x-large;
-        font-weight: 600;
-        color: @magenta-7;
-        padding-left: 7em;
-
-        .title {
-          width: 80%;
-          float: left;
-        }
-
-        .toggle {
-          width: 20%;
-          float: right;
-        }
-      }
-
-      .errorMessage {
-        width: 100%;
-        padding: 0 0 0 13rem;
-        color: @red-6;
-      }
+    .toggle {
+      width: 20%;
+      float: right;
     }
   }
-}
 
-#patientProfile,
-#professionalProfile {
-  width: 100%;
-  margin: auto;
+  .bottom {
+    width: 40vw;
 
-  .formTitle {
-    padding-left: 9em;
-    font-size: large;
-    font-weight: 600;
+    #patientProfile,
+    #professionalProfile {
+      width: 100%;
+      margin: auto;
+
+      .formTitle {
+        padding-left: 9em;
+        font-size: large;
+        font-weight: 600;
+      }
+    }
+
+    .errorMessage {
+      width: 100%;
+      color: @red-6;
+      padding-left: 13em;
+    }
   }
 }
 
@@ -152,46 +154,43 @@ Login
 ----------------------------------------------------------------*/
 
 #login {
-  height: 100%;
-  display: block;
-  margin: auto;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  .row {
-    height: 100%;
+  .top {
+    margin: 2em 0 1.5em 0;
+    width: 40vw;
 
-    .col {
+    .title {
+      width: 80%;
+      float: left;
+      font-size: x-large;
+      padding-left: 7em;
+      font-weight: 600;
+      color: @magenta-7;
+    }
+
+    .toggle {
+      width: 20%;
+      float: right;
+    }
+  }
+
+  .bottom {
+    width: 40vw;
+
+    #loginForm {
+      width: 100%;
       margin: auto;
+    }
 
-      .top {
-        margin: 1.5em 0 1.5em 0;
-
-        .title {
-          width: 80%;
-          float: left;
-          padding-left: 7em;
-          font-size: x-large;
-          font-weight: 600;
-          color: @magenta-7;
-        }
-
-        .toggle {
-          width: 20%;
-          float: right;
-        }
-      }
-
-      .bottom {
-        #loginForm {
-          width: 100%;
-          margin: auto;
-        }
-
-        .errorMessage {
-          width: 100%;
-          padding: 0 0 0 13rem;
-          color: @red-6;
-        }
-      }
+    .errorMessage {
+      width: 100%;
+      color: @red-6;
+      padding-left: 13em;
     }
   }
 }
@@ -201,17 +200,17 @@ Meet
 ----------------------------------------------------------------*/
 
 #meet {
-  height: 100%;
-  overflow: auto;
+  overflow: hidden;
+  position: relative;
 
   .appointmentList {
     background-color: white;
-    height: 100%;
   }
 
   .meetContent {
     padding: 1.5em 3em;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
 
     h1 {
       font-size: x-large;
@@ -246,9 +245,12 @@ Meet
     }
   }
 }
+
 #appointmentDetails {
   background-color: white;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 
   .title {
     font-size: large;
@@ -293,11 +295,29 @@ Meet
   }
 }
 
-.countdownTimer {
-  font-size: large;
-  text-align: center;
-  display: flex;
-  margin: 0 auto;
+#appointmentListMeet {
+  padding: 1em 1em 4em 1em;
+  background-color: @calendar-bg;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100vh;
+
+  .title {
+    width: 100%;
+    text-align: center;
+    color: @magenta-7;
+    margin: auto;
+    padding-bottom: 0.5em;
+    font-weight: 600;
+    font-size: large;
+    display: block;
+  }
+
+  .content {
+    width: 100%;
+    margin: auto;
+    display: block;
+  }
 }
 
 /*----------------------------------------------------------------
@@ -305,7 +325,7 @@ Records
 ----------------------------------------------------------------*/
 
 #records {
-  height: 100%;
+  height: 100vh;
   overflow: auto;
 
   .patientSider {
@@ -335,8 +355,8 @@ Appointments
 ----------------------------------------------------------------*/
 
 #appointments {
-  height: 100%;
-  overflow: auto;
+  position: relative;
+  overflow: hidden;
 }
 
 #appointments .left {
@@ -346,6 +366,9 @@ Appointments
   .calendar {
     padding: 1em;
     background-color: @calendar-bg;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 87vh;
   }
 
   span {
@@ -371,6 +394,9 @@ Appointments
 #appointmentList {
   padding: 1em 1em 0 1em;
   background-color: @calendar-bg;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 70vh;
 
   .title {
     width: 100%;
