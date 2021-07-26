@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import { getAppointment, updateAppointment } from "./Appointment";
+import { getAppointment, updateAppointmentWithData } from "./Appointment";
 const JOIN = "/meet/join";
 const DELETE = "/meet/delete";
 const CREATE = "/meet/create";
@@ -15,10 +15,20 @@ const createMeetingAndUpdateAppointment = async (appointment) => {
   var joinInfo = await createMeeting();
   var meetingId = joinInfo.Meeting.Meeting.MeetingId;
   appointment.meetingId = meetingId;
+
+  var update = {
+    appointmentId: appointment.appointmentId,
+    meetingId: appointment.meetingId,
+  };
+  console.log("update: ");
+  console.log(update);
   // update appointment
-  updateAppointment(appointment);
+  updateAppointmentWithData(appointment);
+  // console.log("Updated appointment: ");
+  // console.log(appointment);
   return appointment;
 };
+
 const joinCall = async (appointment) => {
   console.log(API_ENDPOINT);
   console.log(accessKeyId);
@@ -104,7 +114,7 @@ const createMeeting = async () => {
       },
     }
   );
-  console.log("result from createMeeting: " + res.data);
+  console.log("result from createMeeting: " + JSON.stringify(res.data));
   return res.data.JoinInfo;
 };
 

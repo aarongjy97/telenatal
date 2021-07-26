@@ -52,7 +52,11 @@ export async function updateAppointment(appointmentId, date) {
   });
 }
 
-export async function deleteAppointment(appointmentId, meetingId) {
+export async function updateAppointmentWithData(data) {
+  return await axios.put(`${API_ENDPOINT}/appointment`, data);
+}
+
+export async function deleteAppointment(appointmentId) {
   return await axios.delete(`${API_ENDPOINT}/appointment`, {
     data: {
       appointmentId: appointmentId,
