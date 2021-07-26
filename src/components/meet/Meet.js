@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Layout, Row, Col, message } from "antd";
-import Teleconference from "./teleconference/Teleconference";
 import {
   MeetingProvider,
   darkTheme,
 } from "amazon-chime-sdk-component-library-react";
 import { ThemeProvider } from "styled-components";
+import { Layout, message } from "antd";
+import Teleconference from "./teleconference/Teleconference";
 import Records from "./records/Records";
 import AppointmentsList from "./appointments/AppointmentList";
 import Maps from "./maps/Maps";
@@ -21,7 +21,7 @@ import { sortAppointments } from "./../utils";
 import PlaceholderView from "./PlaceholderView";
 
 export default function Meet(props) {
-  const { Sider } = Layout;
+  const { Content, Sider } = Layout;
 
   // Get user context
   const context = useContext(userContext);
@@ -31,9 +31,8 @@ export default function Meet(props) {
   const [teleconView, setTeleconView] = React.useState(
     teleConstants.PLACEHOLDER_VIEW
   );
-  const [appointment, setAppointment] = React.useState({});
+  const [appointment, setAppointment] = React.useState();
   const [patient, setPatient] = React.useState({});
-  const [showRecordsPanel, setShowRecordsPanel] = React.useState(false);
   const [joinedCall, setJoinedCall] = React.useState(false);
 
   // Fetch upcoming appointments data
@@ -89,9 +88,6 @@ export default function Meet(props) {
   const onJoinCall = () => {
     setTeleconView(teleConstants.MEETING_VIEW);
     setJoinedCall(true);
-    if (userType === PROFESSIONAL) {
-      setShowRecordsPanel(true);
-    }
   };
 
   const onEndCall = () => {
@@ -99,55 +95,54 @@ export default function Meet(props) {
     setJoinedCall(false);
   };
 
-  const onRecordsSubmit = () => {
-    console.log("records panel to false");
-    setShowRecordsPanel(false);
-  };
+  const onRecordsSubmit = () => {};
 
   // the one that pieces together all the components (appointment list, records input, teleconference)
   return (
-    <>
-      <Layout id="meet">
+    <Layout id="meet">
+      <Sider
+        className="appointmentList"
+        width={400}
+        collapsible={true}
+        collapsedWidth={0}
+      >
+        <AppointmentsList
+          upcomingAppointments={upcomingAppointments}
+          user={user}
+          onAppointmentTileClick={onAppointmentTileClick}
+        />
+      </Sider>
+      <Content className="videoConference">
+        {appointment && appointment.postalCode === 0 && (
+          <ThemeProvider theme={darkTheme}>
+            <MeetingProvider>
+              <Teleconference
+                view={teleconView}
+                onJoinCall={onJoinCall}
+                onEndCall={onEndCall}
+                appointment={appointment}
+              />
+            </MeetingProvider>
+          </ThemeProvider>
+        )}
+        {appointment && appointment.postalCode !== 0 && <Maps />}
+        {!appointment && <PlaceholderView />}
+      </Content>
+      {appointment && (
         <Sider
-          className="appointmentList"
+          className="infoPanel"
           width={400}
           collapsible={true}
           collapsedWidth={0}
+          reverseArrow={true}
         >
-          <AppointmentsList
-            upcomingAppointments={upcomingAppointments}
-            user={user}
-            onAppointmentTileClick={onAppointmentTileClick}
+          <Records
+            onRecordsSubmit={onRecordsSubmit}
+            appointment={appointment}
+            patient={patient}
           />
         </Sider>
-        <Row className="videoConference">
-          {appointment && appointment.postalCode === 0 && (
-            <ThemeProvider theme={darkTheme}>
-              <MeetingProvider>
-                <Teleconference
-                  view={teleconView}
-                  onJoinCall={onJoinCall}
-                  onEndCall={onEndCall}
-                  appointment={appointment}
-                />
-              </MeetingProvider>
-            </ThemeProvider>
-          )}
-          {appointment && appointment.postalCode != 0 && <Maps />}
-          {!appointment && <PlaceholderView />}
-        </Row>
-        <Row className="infoPanel">
-          {showRecordsPanel && (
-            <Col flex="auto">
-              <Records
-                onRecordsSubmit={onRecordsSubmit}
-                appointment={appointment}
-                patient={patient}
-              />
-            </Col>
-          )}
-        </Row>
-      </Layout>
-    </>
+      )}
+    </Layout>
   );
 }

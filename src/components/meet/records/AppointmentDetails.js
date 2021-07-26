@@ -1,71 +1,82 @@
 import React from "react";
-import { Descriptions, Row, Col } from "antd";
-import { formatDate } from "../../utils";
-
-// maps fields to readable format
-const patientFields = [
-  ["name", "Name"],
-  ["dob", "DOB"],
-  ["drugAllergies", "Drug Allergies"],
-  ["healthConditions", "Health Conditions"],
-  ["dueDate", "Expected Due Date"],
-  ["babyGender", "Baby Gender"],
-  ["babyName", "Baby's Name"],
-];
-
-const appointmentFields = [
-  ["date", "Appointment Date Time"],
-  ["location", "Location"],
-  ["purpose", "Visit Purpose"],
-  ["remarks", "Visit Remarks"],
-];
+import { Row } from "antd";
+import { UserOutlined, CalendarOutlined } from "@ant-design/icons";
+import { formatDate, formatDateTime } from "../../utils";
 
 export default function AppointmentDetails(props) {
-  const renderPatient = () => {
-    return patientFields.map((item, i) => {
-      return (
-        <Descriptions.Item key={i} label={item[1]}>
-          {props.patient[item[0]]}
-        </Descriptions.Item>
-      );
-    });
-  };
-
-  const renderAppointment = () => {
-    return appointmentFields.map((item, i) => {
-      return (
-        <Descriptions.Item key={i} label={item[1]}>
-          {item[0] === "date" ? (
-            <>{formatDate(props.appointment[item[0]])}</>
-          ) : (
-            <>{props.appointment[item[0]]}</>
-          )}
-        </Descriptions.Item>
-      );
-    });
-  };
   return (
-    <>
+    <div className="generalView">
       <Row>
-        <Col>
-          <Descriptions
-            title="Patient"
-            layout="vertical"
-            labelStyle={{ fontWeight: "bold" }}
-          >
-            {renderPatient()}
-          </Descriptions>
-        </Col>
-        <Col>
-          <Descriptions
-            title="Appointment"
-            layout="vertical"
-            labelStyle={{ fontWeight: "bold" }}
-          >
-            {renderAppointment()}
-          </Descriptions>
-        </Col>
+        <h1>
+          <CalendarOutlined />
+          &nbsp;Appointment
+        </h1>
       </Row>
-    </>
+      <Row>
+        <ul>
+          <li>
+            <span>Date Time:</span> {formatDateTime(props.appointment["date"])}
+          </li>
+          <li>
+            <span>Location:</span> {props.appointment["location"]}
+          </li>
+          <li>
+            <span>Purpose:</span> {props.appointment["purpose"]}
+          </li>
+          <li>
+            <span>Remarks:</span>{" "}
+            {props.appointment["remarks"] === undefined
+              ? "NIL"
+              : props.appointment["remarks"]}
+          </li>
+        </ul>
+      </Row>
+      <Row>
+        <h1>
+          <UserOutlined />
+          &nbsp;Patient
+        </h1>
+      </Row>
+      <Row>
+        <ul>
+          <li>
+            <span>Name:</span> {props.patient["name"]}
+          </li>
+          <li>
+            <span>Date of Birth:</span> {formatDate(props.patient["dob"])}
+          </li>
+          <li>
+            <span>Drug Allergies:</span>{" "}
+            {props.patient["allergies"] === undefined
+              ? "NIL"
+              : props.patient["allergies"].join(", ")}
+          </li>
+          <li>
+            <span>Health Conditions:</span>{" "}
+            {props.patient["healthConditions"] === undefined
+              ? "NIL"
+              : props.patient["healthConditions"].join(", ")}
+          </li>
+          <li>
+            <span>Baby's Name: </span>
+            {props.patient["babyName"] === undefined
+              ? "Undetermined"
+              : props.patient["babyName"]}
+          </li>
+          <li>
+            <span>Baby Gender: </span>
+            {props.patient["babyGender"] === undefined
+              ? "Undetermined"
+              : props.patient["babyGender"]}
+          </li>
+          <li>
+            <span>Expected Due Date: </span>
+            {props.patient["dueDate"] === undefined
+              ? "Undetermined"
+              : props.patient["dueDate"]}
+          </li>
+        </ul>
+      </Row>
+    </div>
   );
 }

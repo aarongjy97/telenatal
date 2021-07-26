@@ -23,9 +23,14 @@ export function formatTime(inputDate) {
   return moment(date).format("h:mmA");
 }
 
-export function formatDate(inputDate) {
+export function formatDateTime(inputDate) {
   var date = new Date(inputDate);
   return moment(date).format("ddd, D MMM YYYY, h:mmA");
+}
+
+export function formatDate(inputDate) {
+  var date = new Date(inputDate);
+  return moment(date).format("YYYY-MM-DD");
 }
 
 export function sortAppointments(appointments) {

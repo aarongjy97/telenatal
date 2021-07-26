@@ -16,7 +16,7 @@ import {
 import { PlusOutlined, UploadOutlined, EditOutlined } from "@ant-design/icons";
 import Fade from "react-reveal";
 import { PROFESSIONAL } from "../../constants/constants";
-import { formatDate } from "../utils";
+import { formatDateTime } from "../utils";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;

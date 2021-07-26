@@ -204,18 +204,60 @@ Meet
   height: 100%;
   overflow: auto;
 
-  .appointmentDetails {
-    .videoConference {
-      height: 60%;
-    }
+  .appointmentList {
+    background-color: white;
+    height: 100%;
+  }
+}
 
-    .infoPanel {
-      height: 40%;
+#appointmentDetails {
+  background-color: white;
+  height: 100%;
+
+  .title {
+    font-size: large;
+    font-weight: 600;
+    color: @magenta-7;
+    margin: 0 auto;
+    padding: 1em 0.3em 1em 0.3em;
+  }
+
+  .toggle {
+    margin: 0 auto;
+    vertical-align: middle;
+
+    p {
+      font-weight: 500;
+      padding-top: 0.2em;
     }
   }
 
-  .appointmentList {
-    background-color: @calendar-bg;
+  .view {
+    margin: 1em;
+    padding: 1em;
+    background-color: @magenta-1;
+
+    h1 {
+      font-size: medium;
+      color: @magenta-6;
+    }
+
+    span {
+      font-weight: 600;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 0.3em;
+    }
+
+    // .generalView {
+
+    // }
   }
 }
 

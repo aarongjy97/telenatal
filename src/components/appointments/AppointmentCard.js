@@ -6,7 +6,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import Fade from "react-reveal";
-import { formatDate } from "./../utils";
+import { formatDateTime } from "./../utils";
 import { getProfessional } from "./../../api/User";
 import { userContext } from "./../../userContext";
 import { PROFESSIONAL, PATIENT } from "./../../constants/constants";
@@ -46,7 +46,7 @@ export default function AppointmentCard({ appointment }) {
           </p>
           <p>
             <ClockCircleOutlined />
-            &nbsp;{formatDate(appointment.date)}
+            &nbsp;{formatDateTime(appointment.date)}
           </p>
           {userType === PROFESSIONAL && (
             <p>

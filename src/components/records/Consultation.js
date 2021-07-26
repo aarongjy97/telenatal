@@ -16,7 +16,7 @@ import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import Fade from "react-reveal";
 import { PATIENT, PROFESSIONAL } from "../../constants/constants";
 import { updateAppointment } from "./../../api/Appointment";
-import { formatDate } from "../utils";
+import { formatDateTime } from "../utils";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -105,7 +105,7 @@ export default function Consultation({
                     value={record.appointmentId}
                     key={record.appointmentId}
                   >
-                    {formatDate(record.date)}
+                    {formatDateTime(record.date)}
                   </Option>,
                 ];
               })}
@@ -240,7 +240,7 @@ export default function Consultation({
                 })
                 .map((appt, index) => {
                   return (
-                    <Panel header={formatDate(appt?.date)} key={index}>
+                    <Panel header={formatDateTime(appt?.date)} key={index}>
                       <Row style={{ paddingBottom: "20px" }}>
                         <Col span={8}>
                           <Row>

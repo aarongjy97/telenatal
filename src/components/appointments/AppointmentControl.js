@@ -29,7 +29,7 @@ import {
 } from "./../../api/Appointment";
 import { getPatient, getProfessional } from "./../../api/User";
 import AppointmentCard from "./AppointmentCard";
-import { formatDate, formatTime } from "./../utils";
+import { formatDateTime, formatTime } from "./../utils";
 import { userContext } from "./../../userContext";
 import { PATIENT, PROFESSIONAL } from "./../../constants/constants";
 
@@ -226,7 +226,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
   for (let i = 0; i < upcomingAppointments.length; i++) {
     upcomingAppointmentsOption[i] = {
       value: upcomingAppointments[i].appointmentId,
-      label: formatDate(upcomingAppointments[i].date),
+      label: formatDateTime(upcomingAppointments[i].date),
     };
   }
 
@@ -256,7 +256,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
       // Set selected professional
       setSelectedProfessional(user.email);
     }
-  }, [userType]);
+  }, [user, userType]);
 
   // Load patients and medical professionals for selection
   var userOption = [];

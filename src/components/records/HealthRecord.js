@@ -28,7 +28,7 @@ import {
 import { Fade } from "react-reveal";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { updateAppointment } from "./../../api/Appointment";
-import { formatDate } from "../utils";
+import { formatDateTime } from "../utils";
 
 const { Panel } = Collapse;
 const { Text } = Typography;
@@ -118,7 +118,7 @@ export default function HealthRecord({
                       value={record.appointmentId}
                       key={record.appointmentId}
                     >
-                      {formatDate(record.date)}
+                      {formatDateTime(record.date)}
                     </Option>,
                   ];
                 })}
@@ -276,7 +276,7 @@ export default function HealthRecord({
               })
               .map((appt, index) => {
                 return (
-                  <Panel header={formatDate(appt?.date)} key={index}>
+                  <Panel header={formatDateTime(appt?.date)} key={index}>
                     <Row style={{ paddingBottom: "20px" }}>
                       <Col flex="auto">
                         <Divider orientation="left">Health Readings</Divider>

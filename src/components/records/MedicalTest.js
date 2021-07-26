@@ -17,7 +17,7 @@ import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import Fade from "react-reveal";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { updateAppointment } from "../../api/Appointment";
-import { formatDate } from "../utils";
+import { formatDateTime } from "../utils";
 
 const { Panel } = Collapse;
 const { Text } = Typography;
@@ -100,7 +100,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
                     value={record.appointmentId}
                     key={record.appointmentId}
                   >
-                    {formatDate(record.date)}
+                    {formatDateTime(record.date)}
                   </Option>,
                 ];
               })}
@@ -214,7 +214,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
               .filter((appt) => appt?.testRecord != null)
               .map((appt, index) => {
                 return (
-                  <Panel header={formatDate(appt?.date)} key={index}>
+                  <Panel header={formatDateTime(appt?.date)} key={index}>
                     <Row>
                       <Col flex="auto">
                         <Divider orientation="left">Test</Divider>
