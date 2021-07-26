@@ -57,8 +57,9 @@ export function countdownDays(inputDate) {
 }
 
 export function countdownHours(inputDate) {
+  
   var differenceInSeconds =
-    new Date().getTime() - new Date(inputDate.date).getTime();
+    new Date(inputDate.date).getTime() - new Date().getTime();
   var differenceInHours = differenceInSeconds / (1000 * 3600);
   return differenceInHours;
 }

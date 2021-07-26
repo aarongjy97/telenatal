@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Button } from "antd";
 import { countdownHours } from "./../../utils";
 
 export default function BeforeCallView(props) {
-  const [disableJoinCall, setDisableJoinCall] = useState(true);
+  const [disableJoinCall, setDisableJoinCall] = useState(false);
 
   const onJoinCall = () => {
     props.onJoinCall();
   };
 
-  if (countdownHours(props.appointment.date) <= 6) {
-    setDisableJoinCall(false);
-  }
+  useEffect(() => {
+    if (countdownHours(props.appointment) > 12) {
+      setDisableJoinCall(true);
+    }
+  }, []);
 
   return (
     <div className="beforeCallView">
@@ -19,9 +21,7 @@ export default function BeforeCallView(props) {
         {disableJoinCall && (
           <p>Please come back nearer to the appointment time!</p>
         )}
-        {!disableJoinCall && (
-          <p>Click to join call now!</p>
-        )}
+        {!disableJoinCall && <p>Click to join call now!</p>}
       </Row>
       <Row
         type="flex"
