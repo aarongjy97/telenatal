@@ -19,7 +19,7 @@ import {
 import Fade from "react-reveal";
 import {
   getAppointment,
-  updateAppointment,
+  updateAppointmentDate,
   deleteAppointment,
   getDoctors,
   getNurses,
@@ -124,14 +124,14 @@ export default function AppointmentControl({ upcomingAppointments }) {
       location = "Video Conference";
       postalCode = 0;
       sendBookRequest(
-        purpose,
-        date,
-        location,
-        postalCode,
-        patientId,
-        professionalId,
-        remarks
-      );
+          purpose,
+          date,
+          location,
+          postalCode,
+          patientId,
+          professionalId,
+          remarks
+        );
     } else if (values.location === "patient") {
       if (userType === PATIENT) {
         // Load patient details
@@ -206,7 +206,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
     console.log("reschedule: ", values);
     let appointmentId = values.appointmentId;
     let date = new Date(values.time).valueOf();
-    updateAppointment(appointmentId, date).then((result) => {
+    updateAppointmentDate(appointmentId, date).then((result) => {
       clearSelection();
       setIsRescheduleModalVisible(false);
       history.go(0);

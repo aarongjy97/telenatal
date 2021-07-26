@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import { getAppointment, updateAppointmentWithData } from "./Appointment";
+import { getAppointment, updateAppointment } from "./Appointment";
 const JOIN = "/meet/join";
 const DELETE = "/meet/delete";
 const CREATE = "/meet/create";
@@ -23,7 +23,7 @@ const createMeetingAndUpdateAppointment = async (appointment) => {
   console.log("update: ");
   console.log(update);
   // update appointment
-  updateAppointmentWithData(appointment);
+  updateAppointment(appointment);
   // console.log("Updated appointment: ");
   // console.log(appointment);
   return appointment;

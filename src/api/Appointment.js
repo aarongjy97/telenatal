@@ -45,14 +45,14 @@ export async function getProfessionalUpcomingAppointments(professionalId) {
   });
 }
 
-export async function updateAppointment(appointmentId, date) {
+export async function updateAppointmentDate(appointmentId, date) {
   return await axios.put(`${API_ENDPOINT}/appointment`, {
     appointmentId: appointmentId,
     date: date,
   });
 }
 
-export async function updateAppointmentWithData(data) {
+export async function updateAppointment(data) {
   return await axios.put(`${API_ENDPOINT}/appointment`, data);
 }
 
