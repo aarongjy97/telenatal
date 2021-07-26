@@ -23,6 +23,7 @@ import {
   deleteAppointment,
   getDoctors,
   getNurses,
+  getPatients,
   getProfessionalAvailability,
   createAppointment,
 } from "./../../api/Appointment";
@@ -70,6 +71,35 @@ export default function AppointmentControl({ upcomingAppointments }) {
 
   // Define actions after modal form submission
   const onBookSubmit = (values) => {
+    function sendBookRequest(
+      purpose,
+      date,
+      location,
+      postalCode,
+      patientId,
+      professionalId,
+      remarks
+    ) {
+      createAppointment(
+        purpose,
+        date,
+        location,
+        postalCode,
+        patientId,
+        professionalId,
+        remarks
+      )
+        .then((result) => {
+          clearSelection();
+          setIsBookModalVisible(false);
+          history.go(0);
+          history.push({
+            state: { tab: "appointments" },
+          });
+        })
+        .catch((error) => console.log(error));
+    }
+
     console.log("book: ", values);
 
     let purpose = selectedPurpose; // Account for input
@@ -98,43 +128,69 @@ export default function AppointmentControl({ upcomingAppointments }) {
         // Load patient details
         location = user.address;
         postalCode = user.postalCode;
+        sendBookRequest(
+          purpose,
+          date,
+          location,
+          postalCode,
+          patientId,
+          professionalId,
+          remarks
+        );
       } else if (userType === PROFESSIONAL) {
         // Fetch patient details
-        let patient = getPatient(values.patientId);
-        location = patient.address;
-        postalCode = patient.postalCode;
+        getPatient(values.patientId)
+          .then((result) => {
+            let patient = result.data;
+            location = patient.address;
+            postalCode = patient.postalCode;
+            sendBookRequest(
+              purpose,
+              date,
+              location,
+              postalCode,
+              patientId,
+              professionalId,
+              remarks
+            );
+          })
+          .catch((error) => console.log(error));
       }
     } else if (values.location === "professional") {
       if (userType === PATIENT) {
         // Fetch professional details
-        let professional = getProfessional(values.professionalId);
-        location = professional.clinicName + ", " + professional.clinicAddress;
-        postalCode = professional.clinicPostalCode;
+        getProfessional(values.professionalId)
+          .then((result) => {
+            let professional = result.data;
+            location =
+              professional.clinicName + ", " + professional.clinicAddress;
+            postalCode = professional.clinicPostalCode;
+            sendBookRequest(
+              purpose,
+              date,
+              location,
+              postalCode,
+              patientId,
+              professionalId,
+              remarks
+            );
+          })
+          .catch((error) => console.log(error));
       } else if (userType === PROFESSIONAL) {
-        // Load professional detail
+        // Load professional details
         location = user.clinicName + ", " + user.clinicAddress;
         postalCode = user.clinicPostalCode;
+        sendBookRequest(
+          purpose,
+          date,
+          location,
+          postalCode,
+          patientId,
+          professionalId,
+          remarks
+        );
       }
     }
-
-    createAppointment(
-      purpose,
-      date,
-      location,
-      postalCode,
-      patientId,
-      professionalId,
-      remarks
-    )
-      .then((result) => {
-        clearSelection();
-        setIsBookModalVisible(false);
-        history.go(0);
-        history.push({
-          state: { tab: "appointments" },
-        });
-      })
-      .catch((error) => console.log(error));
   };
 
   const onRescheduleSubmit = (values) => {
@@ -190,12 +246,15 @@ export default function AppointmentControl({ upcomingAppointments }) {
         })
         .catch((error) => console.log(error));
     } else if (userType === PROFESSIONAL) {
-      // TODO: Fetch all patients
-      getNurses()
+      // Fetch all patients
+      getPatients()
         .then((result) => {
           setPatients(result.data);
         })
         .catch((error) => console.log(error));
+
+      // Set selected professional
+      setSelectedProfessional(user.email);
     }
   }, [userType]);
 
@@ -280,26 +339,27 @@ export default function AppointmentControl({ upcomingAppointments }) {
   // Fetch available appointments for reschedule
   function getRescheduleAppointmentSlots(appointmentId, date) {
     if (appointmentId) {
-      setSelectedAppointment(appointmentId);
-      if (selectedDate != null) {
-        // Get professional for the appointment
-        getAppointment(appointmentId).then((result) => {
-          let professionalId = result.data.professionalId;
+      getAppointment(appointmentId).then((result) => {
+        setSelectedAppointment(result.data);
+        let professionalId = result.data.professionalId;
+        if (userType === PATIENT) {
+          // Get professional for the appointment
           setSelectedProfessional(professionalId);
+        }
+        if (selectedDate != null) {
           // Get professional availability
-          console.log(professionalId, selectedDate);
           getProfessionalAvailability(professionalId, selectedDate).then(
             (result) => {
               updateNewAppointmentsOption(result.data);
             }
           );
-        });
-      }
+        }
+      });
     }
+
     if (date) {
       setSelectedDate(date);
       if (selectedProfessional != null) {
-        console.log(selectedProfessional, date);
         getProfessionalAvailability(selectedProfessional, date).then(
           (result) => {
             updateNewAppointmentsOption(result.data);
@@ -309,7 +369,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
     }
   }
 
-  // Render change for appointment selection // useless for now
+  // Render change for selected appointment (reschedule/cancel)
   var upcomingAppointmentsChange = (appointmentId) => {
     getAppointment(appointmentId)
       .then((result) => {
@@ -462,7 +522,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
                 </Radio>
                 <Radio name={"Others"} value={"Others"}>
                   Others
-                  {console.log(selectedPurpose)}
                   {![
                     "Check up",
                     "Ultrasound",
@@ -502,7 +561,10 @@ export default function AppointmentControl({ upcomingAppointments }) {
             <Input.TextArea />
           </Form.Item>
 
-          <AppointmentCard />
+          <AppointmentCard
+            appointment={selectedAppointment}
+            userType={userType}
+          />
         </Form>
       </Modal>
     );
