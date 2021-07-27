@@ -316,7 +316,7 @@ Meet
   .content {
     width: 100%;
     margin: 0 auto;
-    display:block;
+    display: block;
   }
 }
 
@@ -362,6 +362,7 @@ Appointments
 #appointments .left {
   padding: 1em;
   padding-right: 0.5em;
+  height: 90vh;
 
   .calendar {
     padding: 1em;
@@ -379,14 +380,20 @@ Appointments
 #appointments .right {
   padding: 1em;
   padding-left: 0.5em;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   .control {
     margin-bottom: 1em;
 
     .buttons {
       width: 100%;
+      height: 15vh;
       display: flex;
-      margin: auto;
+      flex-direction: column;
+      justify-content: space-between;
     }
   }
 }
@@ -412,7 +419,7 @@ Appointments
   .content {
     width: 100%;
     margin: 0 auto;
-    display:block;
+    display: block;
   }
 }
 
