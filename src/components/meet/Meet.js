@@ -134,7 +134,7 @@ export default function Meet(props) {
           {isDictEmpty(appointment) && <PlaceholderView />}
         </div>
       </Content>
-      {!isDictEmpty(appointment) && (
+      {!isDictEmpty(appointment) && userType === PROFESSIONAL && (
         <Sider
           className="infoPanel"
           width={400}
