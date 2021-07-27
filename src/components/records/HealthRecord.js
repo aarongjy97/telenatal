@@ -73,11 +73,13 @@ export default function HealthRecord({
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
+        setIsCreateModalVisible(false);
+        history.go(0);
+        history.push({
+          state: { tab: "health", patient: appointment.patientId },
+        });
       })
       .catch((error) => console.log(error.message));
-    setIsCreateModalVisible(false);
-    history.go(0);
-    history.push({ state: { tab: "health", patient: appointment.patientId } });
   };
 
   const createModal = () => {
@@ -184,12 +186,14 @@ export default function HealthRecord({
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
+        setEditAppt(null);
+        setIsEditModalVisible(false);
+        history.go(0);
+        history.push({
+          state: { tab: "health", patient: appointment.patientId },
+        });
       })
       .catch((error) => console.log(error));
-    setEditAppt(null);
-    setIsEditModalVisible(false);
-    history.go(0);
-    history.push({ state: { tab: "health", patient: appointment.patientId } });
   };
 
   const editModal = () => {
@@ -255,17 +259,19 @@ export default function HealthRecord({
 
   return (
     <>
-      <Row justify="end" style={{ paddingBottom: "20px" }}>
-        <Fade>
-          <Button
-            type="secondary"
-            onClick={() => setIsCreateModalVisible(true)}
-          >
-            <PlusOutlined />
-            Add New Health Record
-          </Button>
-        </Fade>
-      </Row>
+      {userType === PROFESSIONAL && (
+        <Row justify="end" style={{ paddingBottom: "20px" }}>
+          <Fade>
+            <Button
+              type="secondary"
+              onClick={() => setIsCreateModalVisible(true)}
+            >
+              <PlusOutlined />
+              Add New Health Record
+            </Button>
+          </Fade>
+        </Row>
+      )}
 
       {userType === PROFESSIONAL && healthRecords && healthRecords.length > 0 && (
         <Fade bottom>

@@ -59,13 +59,13 @@ export default function Consultation({
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
+        setIsCreateModalVisible(false);
+        history.go(0);
+        history.push({
+          state: { tab: "consultation", patient: appointment.patientId },
+        });
       })
       .catch((error) => console.log(error));
-    setIsCreateModalVisible(false);
-    history.go(0);
-    history.push({
-      state: { tab: "consultation", patient: appointment.patientId },
-    });
   };
 
   const createModal = () => {
@@ -157,14 +157,14 @@ export default function Consultation({
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
+        setEditAppt(null);
+        setIsEditModalVisible(false);
+        history.go(0);
+        history.push({
+          state: { tab: "consultation", patient: appointment.patientId },
+        });
       })
       .catch((error) => console.log(error));
-    setEditAppt(null);
-    setIsEditModalVisible(false);
-    history.go(0);
-    history.push({
-      state: { tab: "consultation", patient: appointment.patientId },
-    });
   };
 
   const editModal = () => {

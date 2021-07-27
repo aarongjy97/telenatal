@@ -25,7 +25,7 @@ const { Option } = Select;
 
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 14 },
+  wrapperCol: { span: 16 },
 };
 
 export default function MedicalTest({ userType, testRecords, patientRecords }) {
@@ -36,6 +36,15 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
   const [form] = Form.useForm();
   const [editAppt, setEditAppt] = useState();
 
+  const testCategories = [
+    "Urine test",
+    "Blood test",
+    "Group B streptococcus infection screening",
+    "Glucose challenge screening",
+    "Chromosomal & neural tube screening",
+    "Kick counts",
+    "Non-stress test",
+  ];
   const onFinishCreate = (values) => {
     const appointment = patientRecords?.find(
       (record) => record.id === values.appointmentId
@@ -56,11 +65,13 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
+        setIsCreateModalVisible(false);
+        history.go(0);
+        history.push({
+          state: { tab: "test", patient: appointment.patientId },
+        });
       })
       .catch((error) => console.log(error));
-    setIsCreateModalVisible(false);
-    history.go(0);
-    history.push({ state: { tab: "test", patient: appointment.patientId } });
   };
 
   const createModal = () => {
@@ -111,7 +122,15 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
             label="Test Name"
             rules={[{ required: true }]}
           >
-            <Input />
+            <Select placeholder="Select an test category.">
+              {testCategories?.map((test, idx) => {
+                return (
+                  <Option value={test} key={idx}>
+                    {test}
+                  </Option>
+                );
+              })}
+            </Select>
           </Form.Item>
           <Form.Item
             name={["notes"]}
@@ -145,12 +164,14 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
+        setEditAppt(null);
+        setIsEditModalVisible(false);
+        history.go(0);
+        history.push({
+          state: { tab: "test", patient: appointment.patientId },
+        });
       })
       .catch((error) => console.log(error));
-    setEditAppt(null);
-    setIsEditModalVisible(false);
-    history.go(0);
-    history.push({ state: { tab: "test", patient: appointment.patientId } });
   };
 
   const editModal = () => {

@@ -24,19 +24,19 @@ const { Option } = Select;
 
 const records = [
   {
-    time: "6 Jul 2021, 6.30pm",
+    time: "Tues, 6 Jul 2021, 6.30pm",
     image:
       "https://upload.wikimedia.org/wikipedia/commons/c/c7/CRL_Crown_rump_length_12_weeks_ecografia_Dr._Wolfgang_Moroder.jpg",
     notes: "Fetal growth normal, able to identify that baby has a huge head! ",
   },
   {
-    time: "5 Jul 2021, 4.30pm",
+    time: "Mon, 5 Jul 2021, 4.30pm",
     image:
       "https://upload.wikimedia.org/wikipedia/commons/c/c7/CRL_Crown_rump_length_12_weeks_ecografia_Dr._Wolfgang_Moroder.jpg",
     notes: "Fetal growth normal, able to identify that baby has a huge head! ",
   },
   {
-    time: "20 Jun 2021, 8.00am",
+    time: "Sun, 20 Jun 2021, 8.00am",
     image:
       "https://upload.wikimedia.org/wikipedia/commons/c/c7/CRL_Crown_rump_length_12_weeks_ecografia_Dr._Wolfgang_Moroder.jpg",
     notes: "Fetal growth normal, able to identify that baby has a huge head! ",
