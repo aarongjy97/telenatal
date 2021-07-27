@@ -47,7 +47,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
   ];
   const onFinishCreate = (values) => {
     const appointment = patientRecords?.find(
-      (record) => record.id === values.appointmentId
+      (record) => record.appointmentId === values.appointment
     );
     const payload = {
       appointmentId: values.appointment,
