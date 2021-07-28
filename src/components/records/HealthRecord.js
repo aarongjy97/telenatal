@@ -275,7 +275,7 @@ export default function HealthRecord({
 
       {userType === PROFESSIONAL && healthRecords && healthRecords.length > 0 && (
         <Fade bottom>
-          <Collapse defaultActiveKey={["0"]}>
+          <Collapse>
             {patientRecords
               .filter((appt, _) => {
                 return appt.healthRecord != null;

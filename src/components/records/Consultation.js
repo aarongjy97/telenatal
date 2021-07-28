@@ -233,7 +233,7 @@ export default function Consultation({
         consultationRecords &&
         consultationRecords?.length > 0 && (
           <Fade bottom>
-            <Collapse defaultActiveKey={["0"]} style={{ marginTop: 0 }}>
+            <Collapse style={{ marginTop: 0 }}>
               {patientRecords
                 .filter((appt, _) => {
                   return appt.consultationRecord != null;

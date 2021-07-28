@@ -230,7 +230,7 @@ export default function MedicalTest({ userType, testRecords, patientRecords }) {
 
       {userType === PROFESSIONAL && testRecords && testRecords?.length > 0 && (
         <Fade bottom>
-          <Collapse defaultActiveKey={["1"]} style={{ marginTop: 0 }}>
+          <Collapse style={{ marginTop: 0 }}>
             {patientRecords
               .filter((appt) => appt?.testRecord != null)
               .map((appt, index) => {

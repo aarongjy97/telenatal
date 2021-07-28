@@ -155,7 +155,6 @@ export default function Ultrasound({
       )}
       <Fade bottom>
         <Collapse
-          defaultActiveKey={["1"]}
           style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}
         >
           {records.map((record, index) => {
