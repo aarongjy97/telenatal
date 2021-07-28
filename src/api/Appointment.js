@@ -51,7 +51,7 @@ export async function updateAppointmentDate(appointmentId, date) {
     date: date,
   });
 }
-
+f;
 export async function updateAppointment(data) {
   return await axios.put(`${API_ENDPOINT}/appointment`, data);
 }

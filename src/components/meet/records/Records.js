@@ -114,19 +114,6 @@ export default function Records(props) {
   };
 
   const [selectedView, setSelectedView] = useState();
-  const [healthRecords, setHealthRecords] = useState([]);
-  const [medicalTests, setMedicalTests] = useState([]);
-  const [ultrasounds, setUltrasounds] = useState([]);
-
-  useEffect(() => {
-    // make call to fetch records of the given props.patient.patientId (or props.appoinment.patientId)
-    // use dummy call first
-    setTimeout(() => {
-      setHealthRecords(dummyHealthRecords);
-      setMedicalTests(dummyMedicalTests);
-      setUltrasounds(dummyUltrasounds);
-    }, 5000);
-  }, []);
 
   return (
     <Layout id="appointmentDetails">
@@ -135,28 +122,16 @@ export default function Records(props) {
         &nbsp; Appointment Details
       </Row>
       <Row className="toggle">
-        <p>View</p>&nbsp;&nbsp;&nbsp;
+        {/* <p>View</p>&nbsp;&nbsp;&nbsp; */}
         <Select
           defaultValue="general"
-          style={{ width: 210, textAlign:"center"}}
+          style={{ width: 210, textAlign: "center" }}
           onChange={(value) => setSelectedView(value)}
         >
           <Option value="general">General Details</Option>
           <Option value="consultation">
             <MessageOutlined />
-            &nbsp;Consultation Record
-          </Option>
-          <Option value="health">
-            <DashboardOutlined />
-            &nbsp;Health Record
-          </Option>
-          <Option value="ultrasound">
-            <ScanOutlined />
-            &nbsp;Ultrasound Scan Record
-          </Option>
-          <Option value="test">
-            <ExperimentOutlined />
-            &nbsp;Medical Test Record
+            &nbsp;Add Consultation Notes
           </Option>
         </Select>
       </Row>
@@ -173,22 +148,6 @@ export default function Records(props) {
           {selectedView === "consultation" && (
             <Fade>
               <Consultation onRecordsSubmit={onRecordsSubmit} />
-            </Fade>
-          )}
-
-          {selectedView === "health" && (
-            <Fade>
-              <HealthRecord healthRecords={healthRecords} />
-            </Fade>
-          )}
-          {selectedView === "ultrasound" && (
-            <Fade>
-              <Ultrasound ultrasounds={ultrasounds} />
-            </Fade>
-          )}
-          {selectedView === "test" && (
-            <Fade>
-              <MedicalTest medicalTests={medicalTests} />
             </Fade>
           )}
         </Row>
