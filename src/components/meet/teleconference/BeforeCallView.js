@@ -10,11 +10,11 @@ export default function BeforeCallView(props) {
     props.onJoinCall();
   };
 
-  useEffect(() => {
-    if (countdownHours(props.appointment) > 12) {
-      setDisableJoinCall(true);
-    }
-  }, [props]);
+  // useEffect(() => {
+  //   if (countdownHours(props.appointment) > 12) {
+  //     setDisableJoinCall(true);
+  //   }
+  // }, [props]);
 
   return (
     <Fade bottom>
