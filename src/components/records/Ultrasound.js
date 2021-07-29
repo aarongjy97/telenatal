@@ -13,6 +13,7 @@ import {
   Select,
   Upload,
   Empty,
+  Spin,
 } from "antd";
 import {
   PlusOutlined,
@@ -48,6 +49,8 @@ export default function Ultrasound({
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [predict, setPredict] = useState(false);
   const [form] = Form.useForm();
+
+  const [showSpin, setShowSpin] = useState(false);
 
   const [fileList, setFilelist] = useState([]);
   const [arrayBuffer, setArrayBuffer] = useState();
@@ -286,16 +289,16 @@ export default function Ultrasound({
                     ).toString("base64")}`}
                   />
                 </Row>
-                {!arrayBuffer &&
-                  <Row style={{paddingTop: 20}}>
+                {!arrayBuffer && (
+                  <Row style={{ paddingTop: 20 }}>
                     <Button
-                      icon={<DeleteOutlined/>}
+                      icon={<DeleteOutlined />}
                       onClick={() => setRemovePhoto(true)}
                     >
                       Delete
                     </Button>
                   </Row>
-                }
+                )}
               </Col>
             )}
             <Upload
@@ -405,7 +408,12 @@ export default function Ultrasound({
                                 type="secondary"
                                 icon={<CalculatorOutlined />}
                                 onClick={() => {
-                                  setPredict(true);
+                                  setShowSpin(true);
+                                  console.log(showSpin);
+                                  setTimeout(() => {
+                                    setPredict(true);
+                                    setShowSpin(false);
+                                  }, 3000);
                                 }}
                               >
                                 <Text>Generate Measurements</Text>
@@ -413,22 +421,27 @@ export default function Ultrasound({
                             </Row>
                           </Col>
                         )}
+                        {showSpin && (
+                          <Col span={6} style={{ paddingLeft: 30, paddingTop: 100 }}>
+                            <Spin size="large"/>
+                          </Col>
+                        )}
                         {predict && (
-                          <Col span={6} flex="auto" style={{ paddingLeft: 10 }}>
+                          <Col span={6} flex="auto" style={{ paddingLeft: 10, paddingTop: 10 }}>
                             <Row>
-                              <Title level={5}>Center X mm</Title>
+                              <Title level={5}>Center X (in mm)</Title>
                             </Row>
                             <Row>
                               <Text>{appt.ultrasoundRecord.center_x_mm}</Text>
                             </Row>
                             <Row>
-                              <Title level={5}>Center Y mm</Title>
+                              <Title level={5}>Center Y (in mm)</Title>
                             </Row>
                             <Row>
                               <Text>{appt.ultrasoundRecord.center_y_mm}</Text>
                             </Row>
                             <Row>
-                              <Title level={5}>Semi Axes A mm</Title>
+                              <Title level={5}>Semi Axes A (in mm)</Title>
                             </Row>
                             <Row>
                               <Text>
@@ -436,7 +449,7 @@ export default function Ultrasound({
                               </Text>
                             </Row>
                             <Row>
-                              <Title level={5}>Semi Axes B mm</Title>
+                              <Title level={5}>Semi Axes B (in mm)</Title>
                             </Row>
                             <Row>
                               <Text>
