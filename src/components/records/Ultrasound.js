@@ -14,11 +14,17 @@ import {
   Upload,
   Empty,
 } from "antd";
-import { PlusOutlined, UploadOutlined, EditOutlined, CalculatorOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  UploadOutlined,
+  EditOutlined,
+  CalculatorOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import Fade from "react-reveal";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { formatDateTime } from "../utils";
-import { updateAppointment, getAppointment } from "../../api/Appointment";
+import { updateAppointment } from "../../api/Appointment";
 
 const { Panel } = Collapse;
 const { Text, Title } = Typography;
@@ -36,7 +42,18 @@ export default function Ultrasound({
 }) {
   const history = useHistory();
 
+  const arrayBufferToBase64 = (buffer) => {
+    var binary = "";
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+  };
+
   const [editAppt, setEditAppt] = useState();
+  const [removePhoto, setRemovePhoto] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [predict, setPredict] = useState(false);
@@ -57,6 +74,7 @@ export default function Ultrasound({
       setArrayBuffer(null);
     }
     setFilelist(fileList);
+    setRemovePhoto(false);
   };
 
   const onFinishCreate = (values) => {
@@ -199,6 +217,7 @@ export default function Ultrasound({
     );
   };
 
+  console.log(editAppt);
   const onFinishEdit = (values) => {
     const appointment = patientRecords?.find(
       (record) => record.appointmentId === editAppt.appointmentId
@@ -219,20 +238,22 @@ export default function Ultrasound({
       professionalId: appointment.professionalId,
     };
     if (arrayBuffer) {
-      payload["imageBuffer"] = arrayBuffer;
+      payload["imageBuffer"] = Buffer.from(arrayBuffer).toString("base64");
+      // payload["imageBuffer"] = arrayBufferToBase64(arrayBuffer);
     } else if (appointment?.imageBuffer) {
       payload["imageBuffer"] = appointment?.imageBuffer;
     }
+    console.log(payload["imageBuffer"]);
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
         setEditAppt(null);
         setArrayBuffer(null);
         setIsEditModalVisible(false);
-        history.go(0);
-        history.push({
-          state: { tab: "ultrasound", patient: appointment.patientId },
-        });
+        // history.go(0);
+        // history.push({
+        //   state: { tab: "ultrasound", patient: appointment.patientId },
+        // });
       })
       .catch((error) => console.log(error));
   };
@@ -244,25 +265,52 @@ export default function Ultrasound({
         centered
         visible={isEditModalVisible}
         footer={[
-          <Button key="cancel" onClick={() => setIsEditModalVisible(false)}>
+          <Button
+            key="cancel"
+            onClick={() => {
+              setIsEditModalVisible(false);
+              setRemovePhoto(false);
+              setArrayBuffer(null);
+              setFilelist([]);
+            }}
+          >
             Cancel
           </Button>,
           <Button form="ultrasound-edit" key="submit" htmlType="submit">
             Submit
           </Button>,
         ]}
-        onCancel={() => setIsEditModalVisible(false)}
+        onCancel={() => {
+          setIsEditModalVisible(false);
+          setRemovePhoto(false);
+          setArrayBuffer(null);
+          setFilelist([]);
+        }}
       >
         <Form form={form} name="ultrasound-edit" onFinish={onFinishEdit}>
           <Form.Item name="imageBuffer" label="Upload Image">
-            {(arrayBuffer || editAppt?.imageBuffer) && (
-              <Image
-                width={200}
-                height={200}
-                src={`data:image/png;base64,${Buffer.from(arrayBuffer ?? editAppt?.imageBuffer.data).toString(
-                  "base64"
-                )}`}
-              />
+            {!removePhoto && (arrayBuffer || editAppt?.imageBuffer) && (
+              <Col>
+                <Row>
+                  <Image
+                    width={200}
+                    height={200}
+                    src={`data:image/png;base64,${Buffer.from(
+                      arrayBuffer ?? editAppt?.imageBuffer.data
+                    ).toString("base64")}`}
+                  />
+                </Row>
+                {!arrayBuffer &&
+                  <Row style={{paddingTop: 20}}>
+                    <Button
+                      icon={<DeleteOutlined/>}
+                      onClick={() => setRemovePhoto(true)}
+                    >
+                      Delete
+                    </Button>
+                  </Row>
+                }
+              </Col>
             )}
             <Upload
               accept=".png, .jpg, .jpeg"
@@ -270,7 +318,7 @@ export default function Ultrasound({
               onChange={handleUpload}
               beforeUpload={() => false}
             >
-              {!arrayBuffer && !editAppt?.imageBuffer && (
+              {!arrayBuffer && (removePhoto || !editAppt?.imageBuffer) && (
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
               )}
             </Upload>
@@ -340,7 +388,10 @@ export default function Ultrasound({
         ultrasoundRecords &&
         ultrasoundRecords?.length > 0 && (
           <Fade bottom>
-            <Collapse style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }} onChange={() => setPredict(false)}>
+            <Collapse
+              style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}
+              onChange={() => setPredict(false)}
+            >
               {patientRecords
                 .filter((appt, _) => {
                   return appt.ultrasoundRecord != null;
@@ -368,7 +419,7 @@ export default function Ultrasound({
                                 type="secondary"
                                 icon={<CalculatorOutlined />}
                                 onClick={() => {
-                                  setPredict(true)
+                                  setPredict(true);
                                 }}
                               >
                                 <Text>Predict</Text>
@@ -376,7 +427,94 @@ export default function Ultrasound({
                             </Row>
                           </Col>
                         )}
-                        {predict && <Col span={6} flex="auto" style={{paddingLeft: 10}}>
+                        {predict && (
+                          <Col span={6} flex="auto" style={{ paddingLeft: 10 }}>
+                            <Row>
+                              <Title level={5}>Center X mm</Title>
+                            </Row>
+                            <Row>
+                              <Text>{appt.ultrasoundRecord.center_x_mm}</Text>
+                            </Row>
+                            <Row>
+                              <Title level={5}>Center Y mm</Title>
+                            </Row>
+                            <Row>
+                              <Text>{appt.ultrasoundRecord.center_y_mm}</Text>
+                            </Row>
+                            <Row>
+                              <Title level={5}>Semi Axes A mm</Title>
+                            </Row>
+                            <Row>
+                              <Text>
+                                {appt.ultrasoundRecord.semi_axes_a_mm}
+                              </Text>
+                            </Row>
+                            <Row>
+                              <Title level={5}>Semi Axes B mm</Title>
+                            </Row>
+                            <Row>
+                              <Text>
+                                {appt.ultrasoundRecord.semi_axes_b_mm}
+                              </Text>
+                            </Row>
+                            <Row>
+                              <Title level={5}>Angle (in rad)</Title>
+                            </Row>
+                            <Row>
+                              <Text>{appt.ultrasoundRecord.angle_rad}</Text>
+                            </Row>
+                          </Col>
+                        )}
+                      </Row>
+                      <Row justify="end" style={{ paddingBottom: "20px" }}>
+                        <Button
+                          type="secondary"
+                          icon={<EditOutlined />}
+                          onClick={() => {
+                            setIsEditModalVisible(true);
+                            setEditAppt(appt);
+                          }}
+                        >
+                          <Text>Edit</Text>
+                        </Button>
+                      </Row>
+                    </Panel>
+                  );
+                })}
+            </Collapse>
+          </Fade>
+        )}
+
+      {userType === PATIENT &&
+        ultrasoundRecords &&
+        ultrasoundRecords?.length > 0 && (
+          <Fade bottom>
+            <Collapse style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}>
+              {patientRecords
+                .filter((appt, _) => {
+                  return appt.ultrasoundRecord != null;
+                })
+                .map((appt, index) => {
+                  return (
+                    <Panel header={formatDateTime(appt?.date)} key={index}>
+                      <Row style={{ paddingBottom: "20px" }}>
+                        {appt?.imageBuffer && (
+                          <Col span={6} style={{ paddingLeft: 20 }}>
+                            <Row>
+                              <Title level={5}>Image</Title>
+                            </Row>
+                            <Row>
+                              <Image
+                                width={200}
+                                height={200}
+                                src={`data:image/png;base64,${Buffer.from(
+                                  appt.imageBuffer.data
+                                ).toString("base64")}`}
+                              />
+                            </Row>
+                          </Col>
+                        )}
+                        <Col span={6} flex="auto" style={{ paddingLeft: 10 }}>
                           <Row>
                             <Title level={5}>Center X mm</Title>
                           </Row>
@@ -408,19 +546,6 @@ export default function Ultrasound({
                             <Text>{appt.ultrasoundRecord.angle_rad}</Text>
                           </Row>
                         </Col>
-                        }
-                      </Row>
-                      <Row justify="end" style={{ paddingBottom: "20px" }}>
-                        <Button
-                          type="secondary"
-                          icon={<EditOutlined />}
-                          onClick={() => {
-                            setIsEditModalVisible(true);
-                            setEditAppt(appt);
-                          }}
-                        >
-                          <Text>Edit</Text>
-                        </Button>
                       </Row>
                     </Panel>
                   );
@@ -428,75 +553,6 @@ export default function Ultrasound({
             </Collapse>
           </Fade>
         )}
-
-      {userType === PATIENT &&
-      ultrasoundRecords &&
-      ultrasoundRecords?.length > 0 && (
-        <Fade bottom>
-          <Collapse style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}>
-            {patientRecords
-              .filter((appt, _) => {
-                return appt.ultrasoundRecord != null;
-              })
-              .map((appt, index) => {
-                return (
-                  <Panel header={formatDateTime(appt?.date)} key={index}>
-                    <Row style={{ paddingBottom: "20px" }}>
-                      {appt?.imageBuffer && (
-                        <Col span={6} style={{ paddingLeft: 20 }}>
-                          <Row>
-                            <Title level={5}>Image</Title>
-                          </Row>
-                          <Row>
-                            <Image
-                              width={200}
-                              height={200}
-                              src={`data:image/png;base64,${Buffer.from(
-                                appt.imageBuffer.data
-                              ).toString("base64")}`}
-                            />
-                          </Row>
-                        </Col>
-                      )}
-                      <Col span={6} flex="auto" style={{ paddingLeft: 10 }}>
-                        <Row>
-                          <Title level={5}>Center X mm</Title>
-                        </Row>
-                        <Row>
-                          <Text>{appt.ultrasoundRecord.center_x_mm}</Text>
-                        </Row>
-                        <Row>
-                          <Title level={5}>Center Y mm</Title>
-                        </Row>
-                        <Row>
-                          <Text>{appt.ultrasoundRecord.center_y_mm}</Text>
-                        </Row>
-                        <Row>
-                          <Title level={5}>Semi Axes A mm</Title>
-                        </Row>
-                        <Row>
-                          <Text>{appt.ultrasoundRecord.semi_axes_a_mm}</Text>
-                        </Row>
-                        <Row>
-                          <Title level={5}>Semi Axes B mm</Title>
-                        </Row>
-                        <Row>
-                          <Text>{appt.ultrasoundRecord.semi_axes_b_mm}</Text>
-                        </Row>
-                        <Row>
-                          <Title level={5}>Angle (in rad)</Title>
-                        </Row>
-                        <Row>
-                          <Text>{appt.ultrasoundRecord.angle_rad}</Text>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Panel>
-                );
-              })}
-          </Collapse>
-        </Fade>
-      )}
 
       {(ultrasoundRecords?.length == null ||
         ultrasoundRecords?.length === 0) && (
