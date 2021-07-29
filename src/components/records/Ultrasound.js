@@ -408,7 +408,7 @@ export default function Ultrasound({
                                   setPredict(true);
                                 }}
                               >
-                                <Text>Predict</Text>
+                                <Text>Generate Measurements</Text>
                               </Button>
                             </Row>
                           </Col>
