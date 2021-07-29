@@ -58,7 +58,6 @@ export default function Ultrasound({
     }
     setFilelist(fileList);
   };
-  console.log(arrayBuffer);
 
   const [appointment, setAppointment] = useState();
   useEffect(() => {
