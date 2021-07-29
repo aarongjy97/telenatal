@@ -353,7 +353,7 @@ export default function Ultrasound({
                   return (
                     <Panel header={formatDateTime(appt?.date)} key={index}>
                       <Row style={{ paddingBottom: "20px" }}>
-                        {appointment?.imageBuffer && (
+                        {appt?.imageBuffer && (
                           <Col span={6} style={{ paddingLeft: 20 }}>
                             <Row>
                               <Title level={5}>Image</Title>
@@ -363,7 +363,7 @@ export default function Ultrasound({
                                 width={200}
                                 height={200}
                                 src={`data:image/png;base64,${Buffer.from(
-                                  appointment.imageBuffer.data
+                                  appt.imageBuffer.data
                                 ).toString("base64")}`}
                               />
                             </Row>
