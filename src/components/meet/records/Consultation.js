@@ -1,10 +1,6 @@
 import React from "react";
 import { Form, Input, Button, message, Popconfirm } from "antd";
-
-const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 14 },
-};
+import Fade from "react-reveal";
 
 export default function Consultation(props) {
   const [form] = Form.useForm();
@@ -32,37 +28,43 @@ export default function Consultation(props) {
   };
 
   return (
-    <>
-      <Form {...formItemLayout} form={form} name="consultation-create">
-        <Form.Item
-          name={["diagnosis"]}
-          label="Diagnosis"
-          rules={[{ required: true }]}
+    <div className="consultationView">
+      <Fade>
+        <Form form={form} name="consultation-create">
+          <Form.Item
+            name={["diagnosis"]}
+            label="Diagnosis"
+            rules={[{ required: true }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            name={["medication"]}
+            label="Medication"
+            rules={[{ required: true }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            name={["notes"]}
+            label="Notes"
+            rules={[{ required: true }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+        </Form>
+        <Popconfirm
+          title="Are you sure?"
+          visible={popconfirmVisible}
+          onConfirm={handleSubmit}
+          okButtonProps={{ loading: confirmLoading }}
+          onCancel={handleCancel}
         >
-          <Input.TextArea />
-        </Form.Item>
-        <Form.Item
-          name={["medication"]}
-          label="Medication"
-          rules={[{ required: true }]}
-        >
-          <Input.TextArea />
-        </Form.Item>
-        <Form.Item name={["notes"]} label="Notes" rules={[{ required: true }]}>
-          <Input.TextArea />
-        </Form.Item>
-      </Form>
-      <Popconfirm
-        title="Are you sure?"
-        visible={popconfirmVisible}
-        onConfirm={handleSubmit}
-        okButtonProps={{ loading: confirmLoading }}
-        onCancel={handleCancel}
-      >
-        <Button onClick={showPopconfirm} htmlType="submit">
-          Save and Submit
-        </Button>
-      </Popconfirm>
-    </>
+          <Button onClick={showPopconfirm} htmlType="submit">
+            Save and Submit
+          </Button>
+        </Popconfirm>
+      </Fade>
+    </div>
   );
 }

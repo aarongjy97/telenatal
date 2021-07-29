@@ -23,7 +23,6 @@ export default function MeetingView(props) {
             onClick={props.onEndCall}
             label="Leave Meeting"
           />
-          {/* <ContentShareControl /> */}
         </ControlBar>
       </div>
     </div>

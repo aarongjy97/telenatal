@@ -2,8 +2,6 @@ import React from "react";
 import MeetingView from "./MeetingView";
 import {
   useMeetingManager,
-  MeetingStatus,
-  useMeetingStatus,
 } from "amazon-chime-sdk-component-library-react";
 import { teleConstants } from "../constants";
 import BeforeCallView from "./BeforeCallView";
@@ -11,7 +9,6 @@ import AfterCallView from "./AfterCallView";
 import { joinCall } from "../../../api/Teleconference";
 export default function Teleconference(props) {
   const meetingManager = useMeetingManager();
-  const meetingStatus = useMeetingStatus();
 
   const onEndCall = async () => {
     const meetingId = meetingManager.meetingId;
