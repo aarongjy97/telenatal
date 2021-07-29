@@ -13,6 +13,7 @@ import { teleConstants } from "./constants";
 import {
   getPatientUpcomingAppointments,
   getProfessionalUpcomingAppointments,
+  updateAppointment,
 } from "../../api/Appointment";
 import { getPatient } from "../../api/User";
 import { userContext } from "./../../userContext";
@@ -96,7 +97,10 @@ export default function Meet(props) {
     setJoinedCall(false);
   };
 
-  const onRecordsSubmit = () => {};
+  const onRecordsSubmit = (consultationRecord) => {
+    appointment.consultationRecord = consultationRecord;
+    updateAppointment(appointment);
+  };
 
   // the one that pieces together all the components (appointment list, records input, teleconference)
   return (

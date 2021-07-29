@@ -11,7 +11,12 @@ export default function Records(props) {
   const onRecordsSubmit = (values) => {
     console.log("received from form: " + JSON.stringify(values));
     // Save values to database
-    props.onRecordsSubmit();
+    var consultationRecord = {
+      diagnosis: values.diagnosis,
+      medication: values.medication,
+      notes: values.notes,
+    };
+    props.onRecordsSubmit(consultationRecord);
   };
 
   const [selectedView, setSelectedView] = useState();
