@@ -164,7 +164,20 @@ export default function RecordsMain() {
             }
             key="3"
           >
-            <Ultrasound userType={userType} patientRecords={patientRecords} />
+            <Ultrasound
+              userType={userType}
+              patientRecords={patientRecords}
+              ultrasoundRecords={patientRecords?.flatMap((appt) => {
+                if (appt?.ultrasoundRecord == null) {
+                  return [];
+                }
+                const ultrasoundRecord = { ...appt?.ultrasoundRecord };
+                ultrasoundRecord["date"] = appt?.date
+                  ? new Date(appt?.date).toUTCString()
+                  : null;
+                return [ultrasoundRecord];
+              })}
+            />
           </TabPane>
           <TabPane
             tab={
