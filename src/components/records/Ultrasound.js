@@ -251,7 +251,7 @@ export default function Ultrasound({
           <Button key="cancel" onClick={() => setIsEditModalVisible(false)}>
             Cancel
           </Button>,
-          <Button form="health-record-edit" key="submit" htmlType="submit">
+          <Button form="ultrasound-edit" key="submit" htmlType="submit">
             Submit
           </Button>,
         ]}
