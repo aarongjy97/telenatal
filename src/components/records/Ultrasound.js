@@ -42,27 +42,16 @@ export default function Ultrasound({
 }) {
   const history = useHistory();
 
-  const arrayBufferToBase64 = (buffer) => {
-    var binary = "";
-    var bytes = new Uint8Array(buffer);
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-  };
-
   const [editAppt, setEditAppt] = useState();
   const [removePhoto, setRemovePhoto] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [predict, setPredict] = useState(false);
   const [form] = Form.useForm();
+
   const [fileList, setFilelist] = useState([]);
   const [arrayBuffer, setArrayBuffer] = useState();
   const handleUpload = ({ fileList }) => {
-    console.log("fileList", fileList);
-    console.log(fileList?.[0]?.originFileObj);
     if (fileList?.[0]) {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -97,9 +86,8 @@ export default function Ultrasound({
       professionalId: appointment.professionalId,
     };
     if (arrayBuffer) {
-      payload["imageBuffer"] = arrayBuffer;
+      payload["imageBuffer"] = Buffer.from(arrayBuffer).toString("base64");
     }
-    console.log(payload);
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
@@ -217,7 +205,6 @@ export default function Ultrasound({
     );
   };
 
-  console.log(editAppt);
   const onFinishEdit = (values) => {
     const appointment = patientRecords?.find(
       (record) => record.appointmentId === editAppt.appointmentId
@@ -239,7 +226,6 @@ export default function Ultrasound({
     };
     if (arrayBuffer) {
       payload["imageBuffer"] = Buffer.from(arrayBuffer).toString("base64");
-      // payload["imageBuffer"] = arrayBufferToBase64(arrayBuffer);
     } else if (appointment?.imageBuffer) {
       payload["imageBuffer"] = appointment?.imageBuffer;
     }
@@ -250,10 +236,10 @@ export default function Ultrasound({
         setEditAppt(null);
         setArrayBuffer(null);
         setIsEditModalVisible(false);
-        // history.go(0);
-        // history.push({
-        //   state: { tab: "ultrasound", patient: appointment.patientId },
-        // });
+        history.go(0);
+        history.push({
+          state: { tab: "ultrasound", patient: appointment.patientId },
+        });
       })
       .catch((error) => console.log(error));
   };
