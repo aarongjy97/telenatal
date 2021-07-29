@@ -14,7 +14,7 @@ import {
   Upload,
   Empty,
 } from "antd";
-import { PlusOutlined, UploadOutlined, EditOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined, EditOutlined, CalculatorOutlined } from "@ant-design/icons";
 import Fade from "react-reveal";
 import { PROFESSIONAL, PATIENT } from "../../constants/constants";
 import { formatDateTime } from "../utils";
@@ -39,6 +39,7 @@ export default function Ultrasound({
   const [editAppt, setEditAppt] = useState();
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [predict, setPredict] = useState(false);
   const [form] = Form.useForm();
   const [fileList, setFilelist] = useState([]);
   const [arrayBuffer, setArrayBuffer] = useState();
@@ -227,6 +228,11 @@ export default function Ultrasound({
       patientId: appointment.patientId,
       professionalId: appointment.professionalId,
     };
+    if (arrayBuffer) {
+      payload["imageBuffer"] = arrayBuffer;
+    } else if (appointment?.imageBuffer) {
+      payload["imageBuffer"] = appointment?.imageBuffer;
+    }
     updateAppointment(payload)
       .then((result) => {
         console.log(result);
@@ -344,7 +350,7 @@ export default function Ultrasound({
         ultrasoundRecords &&
         ultrasoundRecords?.length > 0 && (
           <Fade bottom>
-            <Collapse style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }}>
+            <Collapse style={{ marginTop: userType === PROFESSIONAL ? 0 : 20 }} onChange={() => setPredict(false)}>
               {patientRecords
                 .filter((appt, _) => {
                   return appt.ultrasoundRecord != null;
@@ -367,9 +373,20 @@ export default function Ultrasound({
                                 ).toString("base64")}`}
                               />
                             </Row>
+                            <Row style={{ paddingTop: "20px" }}>
+                              <Button
+                                type="secondary"
+                                icon={<CalculatorOutlined />}
+                                onClick={() => {
+                                  setPredict(true)
+                                }}
+                              >
+                                <Text>Predict</Text>
+                              </Button>
+                            </Row>
                           </Col>
                         )}
-                        <Col span={6} flex="auto" style={{ paddingLeft: 10 }}>
+                        {predict && <Col span={6} flex="auto" style={{paddingLeft: 10}}>
                           <Row>
                             <Title level={5}>Center X mm</Title>
                           </Row>
@@ -401,6 +418,7 @@ export default function Ultrasound({
                             <Text>{appt.ultrasoundRecord.angle_rad}</Text>
                           </Row>
                         </Col>
+                        }
                       </Row>
                       <Row justify="end" style={{ paddingBottom: "20px" }}>
                         <Button
@@ -452,10 +470,34 @@ export default function Ultrasound({
                       )}
                       <Col span={6} flex="auto" style={{ paddingLeft: 10 }}>
                         <Row>
-                          <Title level={5}>center_x_mm</Title>
+                          <Title level={5}>Center X mm</Title>
                         </Row>
                         <Row>
                           <Text>{appt.ultrasoundRecord.center_x_mm}</Text>
+                        </Row>
+                        <Row>
+                          <Title level={5}>Center Y mm</Title>
+                        </Row>
+                        <Row>
+                          <Text>{appt.ultrasoundRecord.center_y_mm}</Text>
+                        </Row>
+                        <Row>
+                          <Title level={5}>Semi Axes A mm</Title>
+                        </Row>
+                        <Row>
+                          <Text>{appt.ultrasoundRecord.semi_axes_a_mm}</Text>
+                        </Row>
+                        <Row>
+                          <Title level={5}>Semi Axes B mm</Title>
+                        </Row>
+                        <Row>
+                          <Text>{appt.ultrasoundRecord.semi_axes_b_mm}</Text>
+                        </Row>
+                        <Row>
+                          <Title level={5}>Angle (in rad)</Title>
+                        </Row>
+                        <Row>
+                          <Text>{appt.ultrasoundRecord.angle_rad}</Text>
                         </Row>
                       </Col>
                     </Row>
