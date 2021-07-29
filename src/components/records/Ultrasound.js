@@ -59,15 +59,6 @@ export default function Ultrasound({
     setFilelist(fileList);
   };
 
-  const [appointment, setAppointment] = useState();
-  useEffect(() => {
-    getAppointment("3f949cdc-657e-4357-8c23-af974d4417da")
-      .then((result) => {
-        setAppointment(result.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
   const onFinishCreate = (values) => {
     const appointment = patientRecords?.find(
       (record) => record.appointmentId === values.appointment
