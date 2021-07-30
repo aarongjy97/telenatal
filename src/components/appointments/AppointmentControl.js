@@ -101,8 +101,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
         .catch((error) => console.log(error));
     }
 
-    console.log("book: ", values);
-
     let purpose = selectedPurpose; // Account for input
     let date = new Date(values.time).valueOf();
     let location = "";
@@ -172,6 +170,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
         getProfessional(values.professionalId)
           .then((result) => {
             let professional = result.data;
+            // Fetch clinic details
             getClinic(professional.clinicId)
               .then((result) => {
                 let clinic = result.data;
@@ -191,7 +190,7 @@ export default function AppointmentControl({ upcomingAppointments }) {
           })
           .catch((error) => console.log(error));
       } else if (userType === PROFESSIONAL) {
-        // Load clinic details
+        // Fetch clinic details
         getClinic(user.clinicId)
           .then((result) => {
             let clinic = result.data;
@@ -213,7 +212,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
   };
 
   const onRescheduleSubmit = (values) => {
-    console.log("reschedule: ", values);
     let appointmentId = values.appointmentId;
     let date = new Date(values.time).valueOf();
     updateAppointmentDate(appointmentId, date).then((result) => {
@@ -227,7 +225,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
   };
 
   const onCancelSubmit = (values) => {
-    console.log("cancel: ", values);
     let appointmentId = values.appointment;
     let meetingId = selectedAppointment.meetingId;
     deleteAppointment(appointmentId, meetingId).then((result) => {
