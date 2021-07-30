@@ -28,6 +28,7 @@ import {
   createAppointment,
 } from "./../../api/Appointment";
 import { getPatient, getProfessional } from "./../../api/User";
+import { getClinic } from "./../../api/Clinic";
 import AppointmentCard from "./AppointmentCard";
 import { formatDateTime, formatTime } from "./../utils";
 import { userContext } from "./../../userContext";
@@ -124,14 +125,14 @@ export default function AppointmentControl({ upcomingAppointments }) {
       location = "Video Conference";
       postalCode = 0;
       sendBookRequest(
-          purpose,
-          date,
-          location,
-          postalCode,
-          patientId,
-          professionalId,
-          remarks
-        );
+        purpose,
+        date,
+        location,
+        postalCode,
+        patientId,
+        professionalId,
+        remarks
+      );
     } else if (values.location === "patient") {
       if (userType === PATIENT) {
         // Load patient details
@@ -171,9 +172,31 @@ export default function AppointmentControl({ upcomingAppointments }) {
         getProfessional(values.professionalId)
           .then((result) => {
             let professional = result.data;
-            location =
-              professional.clinicName + ", " + professional.clinicAddress;
-            postalCode = professional.clinicPostalCode;
+            getClinic(professional.clinicId)
+              .then((result) => {
+                let clinic = result.data;
+                location = clinic.clinicName + ", " + clinic.clinicAddress;
+                postalCode = clinic.clinicPostalCode;
+                sendBookRequest(
+                  purpose,
+                  date,
+                  location,
+                  postalCode,
+                  patientId,
+                  professionalId,
+                  remarks
+                );
+              })
+              .catch((error) => console.log(error));
+          })
+          .catch((error) => console.log(error));
+      } else if (userType === PROFESSIONAL) {
+        // Load clinic details
+        getClinic(user.clinicId)
+          .then((result) => {
+            let clinic = result.data;
+            location = clinic.clinicName + ", " + clinic.clinicAddress;
+            postalCode = clinic.clinicPostalCode;
             sendBookRequest(
               purpose,
               date,
@@ -185,19 +208,6 @@ export default function AppointmentControl({ upcomingAppointments }) {
             );
           })
           .catch((error) => console.log(error));
-      } else if (userType === PROFESSIONAL) {
-        // Load professional details
-        location = user.clinicName + ", " + user.clinicAddress;
-        postalCode = user.clinicPostalCode;
-        sendBookRequest(
-          purpose,
-          date,
-          location,
-          postalCode,
-          patientId,
-          professionalId,
-          remarks
-        );
       }
     }
   };

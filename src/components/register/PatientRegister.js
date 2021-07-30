@@ -21,7 +21,6 @@ export default function PatientRegister() {
   const [errorMessage, setErrorMessage] = useState();
 
   const onRegistration = (values) => {
-    // TODO: fix all the optional/undefined values
     registerPatient(
       values.name,
       values.password,
@@ -29,7 +28,12 @@ export default function PatientRegister() {
       values.phone,
       values.dob.valueOf(),
       values.address,
-      values.postalCode
+      values.postalCode,
+      values.drugAllergies,
+      values.healthConditions,
+      values.babyName,
+      values.babyGender,
+      values.dueDate
     )
       .then((result) => {
         console.log(result);
