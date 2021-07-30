@@ -11,7 +11,7 @@ export default function AppointmentsList({
 
   setTimeout(function () {
     setShowList(true);
-  }, 1000);
+  }, 2000);
 
   return (
     <Layout id="appointmentListMeet">
