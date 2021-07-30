@@ -1,5 +1,5 @@
 import React from "react";
 
 export default function Maps(props) {
-  return <div>show map here</div>;
+  return <div>This is a physical appointment.</div>;
 }
