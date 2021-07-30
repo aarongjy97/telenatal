@@ -8,6 +8,7 @@ import { Layout, message } from "antd";
 import Teleconference from "./teleconference/Teleconference";
 import Records from "./records/Records";
 import AppointmentsList from "./appointments/AppointmentList";
+import Maps from "./maps/Maps";
 import { teleConstants } from "./constants";
 import {
   getPatientUpcomingAppointments,
@@ -60,17 +61,19 @@ export default function Meet(props) {
     console.log(appointment);
     setAppointment(appointment);
 
-
-    // Video Conference
-    if (!joinedCall) {
-      // change the view on the child
-      // get the appointment deets
-      setTeleconView(teleConstants.BEFORE_CALL_VIEW);
-    } else {
-      // not allowed to get out of meeting before ending call
-      message.warning(
-        "End the current call before joining another appointment"
-      );
+    // no physical location for appointment, set to teleconference
+    if (appointment.postalCode === 0) {
+      // Video Conference
+      if (!joinedCall) {
+        // change the view on the child
+        // get the appointment deets
+        setTeleconView(teleConstants.BEFORE_CALL_VIEW);
+      } else {
+        // not allowed to get out of meeting before ending call
+        message.warning(
+          "End the current call before joining another appointment"
+        );
+      }
     }
 
     if (userType === PROFESSIONAL) {
@@ -117,7 +120,7 @@ export default function Meet(props) {
       <Content className="meetContent">
         {!isDictEmpty(appointment) && <TitleView appointment={appointment} />}
         <div className="meetCore">
-          {!isDictEmpty(appointment) && (
+          {!isDictEmpty(appointment) && appointment.postalCode === 0 && (
             <ThemeProvider theme={darkTheme}>
               <MeetingProvider>
                 <Teleconference
@@ -128,6 +131,9 @@ export default function Meet(props) {
                 />
               </MeetingProvider>
             </ThemeProvider>
+          )}
+          {!isDictEmpty(appointment) && appointment.postalCode !== 0 && (
+            <Maps />
           )}
           {isDictEmpty(appointment) && <PlaceholderView />}
         </div>
